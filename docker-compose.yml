@@ -1,0 +1,50 @@
+version: "3.7"
+
+x-default-service:
+  &default-service
+  restart: always
+  env_file:
+    - .env
+
+services:
+  nginx-proxy:
+    <<: *default-service
+    build:
+      context: ./nginx-proxy/
+      args:
+        - DOMAIN_NAME=${DOMAIN_NAME}
+    ports:
+      - "${NGINX_PROXY_PORT}:80"
+    volumes:
+      - ./logs/nginx-proxy:/var/log/nginx
+      - ./api/staticfiles:/var/www/apistatic
+    depends_on:
+      - api
+
+#  frontend:
+#    <<: *default-service
+#    build:
+#      context: ./frontend/
+
+  db:
+    <<: *default-service
+    image: postgres
+    volumes:
+      - volume-db:/var/lib/postgresql/data
+    ports:
+      - "${DB_EXPOSED_PORT:-1111:1111}"
+
+  api:
+    <<: *default-service
+    build:
+      context: ./api/
+      args:
+        GUNICORN_WORKERS: ${API_GUNICORN_WORKERS:-5}
+    volumes:
+      - ./api/:/home/app
+    depends_on:
+      - db
+
+volumes:
+  volume-db:
+    name: finance-volume-db
