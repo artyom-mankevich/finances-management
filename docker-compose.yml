@@ -21,10 +21,17 @@ services:
     depends_on:
       - api
 
-#  frontend:
-#    <<: *default-service
-#    build:
-#      context: ./frontend/
+  frontend:
+    <<: *default-service
+    build:
+      context: ./angular/
+    ports:
+      - "${ANGULAR_PORT}:4200"
+    volumes:
+    - ./angular/:/home/frontend
+    depends_on:
+    - nginx-proxy
+
 
   db:
     <<: *default-service

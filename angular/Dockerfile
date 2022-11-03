@@ -1,7 +1,3 @@
-FROM node:alpine AS trpo-build
-WORKDIR /app
-COPY . .
-RUN npm ci && npm run build
-FROM nginx:alpine
-COPY --from=trpo-build  /app/dist/trpo-angular /usr/share/nginx/html
-EXPOSE 80
+ FROM trion/ng-cli
+ WORKDIR /home/frontend
+ CMD sh -c 'ng serve --host 0.0.0.0'
