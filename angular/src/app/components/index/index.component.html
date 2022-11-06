@@ -1,0 +1,62 @@
+<header class="index-header">
+    <p class="app-name">name</p>
+    <a class='features-link' (click)="scroll(features)">Feautres</a>
+    <a href="" class="sign-in-button">Sign in</a>
+</header>
+<main class="main-content">
+    <article>
+        <h2 class="point-title">Making manging your finances simple</h2>
+        <p>Lorem ipsum Lorem ipsumLorem ipsum Lorem ipsum Lorem ipsumLorem ipsum Lorem ipsum Lorem ipsumLorem ipsum</p>
+    </article>
+    <div class="design-image-wrapper">
+        <img class="design-image" src="../../../assets/home-example.png" alt="">
+
+    </div>
+    <article #features>
+        <h2 class="point-title">Features</h2>
+        <p class="features-description">Lorem ipsum Lorem ipsumLorem ipsum Lorem ipsum Lorem ipsumLorem ipsum Lorem ipsum Lorem ipsumLorem ipsum</p>
+    </article>
+
+    <section class="features-card">
+        <div>
+            <div class="feature-entry" [ngClass]="{'highlighted-feature': highlightedFeature === Features.Transactions}" (click)="selectFeature(Features.Transactions)">
+                <img src="../../../assets/dollar-sign-circle.svg" alt="">
+                <article class="feature-name-description">
+                    <h2>Transaction</h2>
+                    <p>Keep track of your spendings</p>
+                </article>
+            </div>
+            <div class="feature-entry" [ngClass]="{'highlighted-feature': highlightedFeature === Features.Investments}" (click)="selectFeature(Features.Investments)" >
+                <img src="../../../assets/bank-circle.svg" alt="">
+                <article class="feature-name-description">
+                    <h2>Investments</h2>
+                    <p>Track your ivestment portfolio</p>
+                </article>
+            </div>
+            <div class="feature-entry" [ngClass]="{'highlighted-feature': highlightedFeature === Features.Debts}" (click)="selectFeature(Features.Debts)">
+                <img src="../../../assets/money-bag-circle.svg" alt="">
+                <article class="feature-name-description">
+                    <h2>Debts</h2>
+                    <p>Track your debts to pay them faster and more efficiently</p>
+                </article>
+            </div>
+            <div class="feature-entry" [ngClass]="{'highlighted-feature': highlightedFeature === Features.Analytics}" (click)="selectFeature(Features.Analytics)" >
+                <img src="../../../assets/analytics-circle.svg" alt="">
+                <article class="feature-name-description">
+                    <h2>Analytics</h2>
+                    <p>Analyze your investments, budgets, predict your future spendings</p>
+                </article>
+            </div>
+    
+        </div>
+       <div class="feature-example-img">
+         <img *ngIf="highlightedFeature === Features.Transactions" src="../../../assets/transactions-card.png" alt="" >
+         <img *ngIf="highlightedFeature === Features.Investments" src="../../../assets/investments=card.png" alt="" >
+         <img *ngIf="highlightedFeature === Features.Debts" src="../../../assets/debts-card.png" alt="" >
+         <img *ngIf="highlightedFeature === Features.Analytics" src="../../../assets/analytics-card.png" alt="" >
+
+       </div>
+    </section>
+</main>
+
+
