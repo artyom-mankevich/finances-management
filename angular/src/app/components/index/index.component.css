@@ -42,7 +42,6 @@ article {
 .design-image {
     max-width: 850px;
     max-height: 100%;
-
     width: 80%;
     border: 15px solid black;
     border-radius: 24px;
@@ -56,6 +55,11 @@ article {
     font-size: 21px;
     transition-duration: 200ms;
     cursor: pointer;
+}
+
+.main-points p{
+    font-size: 21px;
+    color: #7D848F;
 }
 
 .features-link:hover {
@@ -273,5 +277,9 @@ article {
 
     .sign-in-button {
         margin-right: 10px;
+    }
+
+    .app-name {
+        margin-left: 10px;
     }
 }
