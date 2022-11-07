@@ -41,6 +41,8 @@ article {
 
 .design-image {
     max-width: 850px;
+    max-height: 100%;
+
     width: 80%;
     border: 15px solid black;
     border-radius: 24px;
@@ -100,7 +102,8 @@ article {
 }
 
 .feature-entry {
-    width: 535px;
+    width: 90%;
+    max-width: 535px;
     height: 140px;
     display: flex;
     flex-direction: row;
@@ -141,8 +144,9 @@ article {
 }
 
 .feature-example-img {
-    width: 600px;
-    height: 400px;
+    max-width: 600px;
+    width: 80%;
+    height: auto;
     border-radius: 23px;
     border: 3px solid #D9D9D9;
     display: flex;
@@ -154,11 +158,120 @@ article {
 .feature-example-img img {
     max-width: 90%;
     max-height: 90%;
+    margin-top: 5%;
+    margin-bottom: 5%;
 }
 
 .features-card {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
     align-items: center;
     width: 90%;
+}
+
+.footer {
+    background-color: #3E68D1;
+    height: 100px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.feature-list {
+    max-width: 535px;
+}
+
+.main-points {
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.main-points p{
+    text-align: center;
+    max-width: 75%;
+}
+
+.footer p {
+    color: white;
+}
+
+.footer a{
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+@media only screen and (max-width: 900px) {
+    .feature-name-description {
+        display: none;
+    }
+
+    .feature-entry {
+        height: auto;
+        filter: grayscale(100%);
+        justify-content: center;
+    }
+
+    .highlighted-feature {
+        background-color: transparent;
+        filter: grayscale(0);
+    }
+
+    .feature-entry:hover {
+        background-color: transparent;
+    }
+
+    .feature-entry img{
+        margin: 0px;
+       
+    }
+
+    .feature-list {
+        display: flex;
+        max-width: 90%;
+        flex-direction: row;
+        justify-content: space-around;
+        width: 90%;
+    }
+
+    .features-card {
+        flex-direction: column;
+    }
+
+    .point-title {
+        min-width: 0px;
+    }
+
+    .design-image {
+        content: url('../../../assets/home-mobile-view.png');
+        width: auto;
+        border-width: 10px;
+    }
+
+    .design-image-wrapper {
+        max-height: 500px;
+        height: 500px;
+        background: none;        
+    }
+
+    .feature-example-img {
+        width: 95%;
+        margin-top: 20px;
+        box-shadow: none;
+    }
+
+    .features-link {
+        display: none;
+    }
+
+    .sign-in-button {
+        margin-right: 10px;
+    }
 }

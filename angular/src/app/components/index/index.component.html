@@ -4,21 +4,19 @@
     <a href="" class="sign-in-button">Sign in</a>
 </header>
 <main class="main-content">
-    <article>
+    <article class="main-points">
         <h2 class="point-title">Making manging your finances simple</h2>
         <p>Lorem ipsum Lorem ipsumLorem ipsum Lorem ipsum Lorem ipsumLorem ipsum Lorem ipsum Lorem ipsumLorem ipsum</p>
     </article>
     <div class="design-image-wrapper">
         <img class="design-image" src="../../../assets/home-example.png" alt="">
-
     </div>
-    <article #features>
+    <article #features class="main-points">
         <h2 class="point-title">Features</h2>
         <p class="features-description">Lorem ipsum Lorem ipsumLorem ipsum Lorem ipsum Lorem ipsumLorem ipsum Lorem ipsum Lorem ipsumLorem ipsum</p>
     </article>
-
     <section class="features-card">
-        <div>
+        <div class="feature-list">
             <div class="feature-entry" [ngClass]="{'highlighted-feature': highlightedFeature === Features.Transactions}" (click)="selectFeature(Features.Transactions)">
                 <img src="../../../assets/dollar-sign-circle.svg" alt="">
                 <article class="feature-name-description">
@@ -47,16 +45,16 @@
                     <p>Analyze your investments, budgets, predict your future spendings</p>
                 </article>
             </div>
-    
         </div>
        <div class="feature-example-img">
          <img *ngIf="highlightedFeature === Features.Transactions" src="../../../assets/transactions-card.png" alt="" >
          <img *ngIf="highlightedFeature === Features.Investments" src="../../../assets/investments=card.png" alt="" >
          <img *ngIf="highlightedFeature === Features.Debts" src="../../../assets/debts-card.png" alt="" >
          <img *ngIf="highlightedFeature === Features.Analytics" src="../../../assets/analytics-card.png" alt="" >
-
        </div>
     </section>
 </main>
-
-
+<footer class="footer">
+    <p class="copyright-notice">Copyright © 2022 Adam Korzun. All rights reserved.</p>
+    <a href="https://github.com/AdamKorzun/" class="contact-link">Contact</a>
+</footer>
