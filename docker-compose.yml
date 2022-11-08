@@ -29,6 +29,7 @@ services:
       - "${ANGULAR_PORT}:4200"
     volumes:
     - ./angular/:/home/frontend
+    - /home/frontend/node_modules
     depends_on:
     - nginx-proxy
 
