@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from '@auth0/auth0-angular';
 
 import { Features } from 'src/app/enums/features';
 @Component({
@@ -9,15 +10,21 @@ import { Features } from 'src/app/enums/features';
 export class IndexComponent implements OnInit {
   Features = Features;
   highlightedFeature = Features.Transactions;
-  constructor() { }
+  constructor(private auth: AuthService) { }
 
   ngOnInit(): void {  }
+  
   selectFeature(feature: Features){
     this.highlightedFeature = feature;
   }
 
   scroll(el: HTMLElement) {
     el.scrollIntoView({behavior: 'smooth'});
-}
+  }
+
+  signin(){
+    this.auth.loginWithRedirect();
+  }
+
 }
 
