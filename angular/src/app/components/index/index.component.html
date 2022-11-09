@@ -14,32 +14,37 @@
     </div>
     <article #features class="main-points">
         <h2 class="point-title">Features</h2>
-        <p class="features-description">Dive into analytics, keep track of your transactions, visualize your investments, manage debts, make on-chain transactions  with our  built-in Ethereum wallet</p>
+        <p class="features-description">Dive into analytics, keep track of your transactions, visualize your
+            investments, manage debts, make on-chain transactions with our built-in Ethereum wallet</p>
     </article>
     <section class="features-card">
         <div class="feature-list">
-            <div class="feature-entry" [ngClass]="{'highlighted-feature': highlightedFeature === Features.Transactions}" (click)="selectFeature(Features.Transactions)">
+            <div class="feature-entry" [ngClass]="{'highlighted-feature': highlightedFeature === Features.Transactions}"
+                (click)="selectFeature(Features.Transactions)">
                 <img src="../../../assets/dollar-sign-circle.svg" alt="">
                 <article class="feature-name-description">
                     <h2>Transaction</h2>
                     <p>Keep track of your spendings</p>
                 </article>
             </div>
-            <div class="feature-entry" [ngClass]="{'highlighted-feature': highlightedFeature === Features.Investments}" (click)="selectFeature(Features.Investments)" >
+            <div class="feature-entry" [ngClass]="{'highlighted-feature': highlightedFeature === Features.Investments}"
+                (click)="selectFeature(Features.Investments)">
                 <img src="../../../assets/bank-circle.svg" alt="">
                 <article class="feature-name-description">
                     <h2>Investments</h2>
                     <p>Track your ivestment portfolio</p>
                 </article>
             </div>
-            <div class="feature-entry" [ngClass]="{'highlighted-feature': highlightedFeature === Features.Debts}" (click)="selectFeature(Features.Debts)">
+            <div class="feature-entry" [ngClass]="{'highlighted-feature': highlightedFeature === Features.Debts}"
+                (click)="selectFeature(Features.Debts)">
                 <img src="../../../assets/money-bag-circle.svg" alt="">
                 <article class="feature-name-description">
                     <h2>Debts</h2>
                     <p>Track your debts to pay them faster and more efficiently</p>
                 </article>
             </div>
-            <div class="feature-entry" [ngClass]="{'highlighted-feature': highlightedFeature === Features.Analytics}" (click)="selectFeature(Features.Analytics)" >
+            <div class="feature-entry" [ngClass]="{'highlighted-feature': highlightedFeature === Features.Analytics}"
+                (click)="selectFeature(Features.Analytics)">
                 <img src="../../../assets/analytics-circle.svg" alt="">
                 <article class="feature-name-description">
                     <h2>Analytics</h2>
@@ -47,12 +52,18 @@
                 </article>
             </div>
         </div>
-       <div class="feature-example-img">
-         <img *ngIf="highlightedFeature === Features.Transactions" src="../../../assets/transactions-card.png" alt="" >
-         <img *ngIf="highlightedFeature === Features.Investments" src="../../../assets/investments=card.png" alt="" >
-         <img *ngIf="highlightedFeature === Features.Debts" src="../../../assets/debts-card.png" alt="" >
-         <img *ngIf="highlightedFeature === Features.Analytics" src="../../../assets/analytics-card.png" alt="" >
-       </div>
+        <div class="feature-example-img" @slideIn *ngIf="highlightedFeature === Features.Transactions">
+            <img src="../../../assets/transactions-card.png" alt="">
+        </div>
+        <div class="feature-example-img" @slideIn *ngIf="highlightedFeature === Features.Investments">
+            <img src="../../../assets/investments=card.png" alt="">
+        </div>
+        <div class="feature-example-img" @slideIn *ngIf="highlightedFeature === Features.Debts">
+            <img src="../../../assets/debts-card.png" alt="">
+        </div>
+        <div class="feature-example-img" @slideIn *ngIf="highlightedFeature === Features.Analytics">
+            <img src="../../../assets/analytics-card.png" alt="">
+        </div>
     </section>
 </main>
 <footer class="footer">

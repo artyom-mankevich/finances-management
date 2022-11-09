@@ -8,6 +8,7 @@ import { AuthModule } from '@auth0/auth0-angular';
 import { environment } from 'src/environments/environment';
 import { HomeComponent } from './components/home/home.component';
 import { LoaderSpinnerComponent } from './components/loader-spinner/loader-spinner.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 @NgModule({
   declarations: [
     AppComponent,
@@ -22,6 +23,7 @@ import { LoaderSpinnerComponent } from './components/loader-spinner/loader-spinn
       domain: environment.authDomain,
       clientId: environment.authClientId,
     }),
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
