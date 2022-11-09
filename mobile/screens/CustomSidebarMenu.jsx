@@ -1,44 +1,70 @@
-import React from 'react';
-import { SafeAreaView, View, StyleSheet, Image, Linking } from 'react-native';
+import { React } from 'react';
+import {SafeAreaView, View, StyleSheet, Image, Linking, Text, ImageBackground, TouchableOpacity} from 'react-native';
 import { DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
-import logo from '../assets/bebra_logo.png';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const CustomSidebarMenu = (props) => {
     return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <View style={{ marginTop: 40, }}>
+        <SafeAreaView style={{ flex: 1 }}
+                      pressColor={"#d0d0d0"}>
+            {/*<View style={{ marginTop: 40, }}>
                 <Image
                     source={logo}
                     style={styles.sideMenuProfileIcon}
                 />
-            </View>
+            </View>*/}
             <DrawerContentScrollView {...props}>
-                <DrawerItemList {...props}  />
-                <DrawerItem
-                    icon={({ focused, color, size }) =>
-                        <MaterialCommunityIcons name="web" color={color} size={size} color={focused ? '#3e68d1' : '#ccc'}/>
-                }
-                    label="Bebra Website"
-                    onPress={() => Linking.openURL('https://github.com/artyom-mankevich/trpo')}
-                />
-                <View style={styles.customItem}>
+                <ImageBackground
+                    style={styles.customHeader}
+                    source={require('../assets/background.png')}>
+                    <Image
+                        source={require('../assets/c71.png')}
+                        style={styles.sideMenuProfileIcon} />
+                    <Text style={styles.textHeader}>User</Text>
+                </ImageBackground>
+                <View style={{backgroundColor: 'transparent'}}>
+                    <DrawerItemList {...props}/>
                 </View>
+
             </DrawerContentScrollView>
+            <DrawerItem
+                icon={({ focused, color, size }) =>
+                    <MaterialCommunityIcons name="web" color={color} size={size} color={focused ? '#fff' : '#363636FF'}/>
+                }
+                label="Website"
+                onPress={() => Linking.openURL('https://github.com/artyom-mankevich/trpo')}
+            />
         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
     sideMenuProfileIcon: {
-        width: '100%',
-        height: 60,
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        marginBottom: 10,
+    },
+    textFooter: {
+        textAlign: 'center',
+    },
+    textHeader: {
+        textAlignVertical: 'center',
+        justifyContent: 'center',
+        marginLeft: 15,
+        fontSize: 24,
+    },
+    customHeader: {
+        display: 'flex',
+        flexDirection: 'column',
+        padding: 10,
     },
     customItem: {
-        padding: 16,
-        flexDirection: 'row',
-        alignItems: 'center',
+        labelFontSize: 28,
     },
+    label: {
+        fontSize: 28,
+    }
 });
 
 export default CustomSidebarMenu;
