@@ -5,18 +5,22 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { IndexComponent } from './components/index/index.component';
 import { AuthModule } from '@auth0/auth0-angular';
-
+import { environment } from 'src/environments/environment';
+import { HomeComponent } from './components/home/home.component';
+import { LoaderSpinnerComponent } from './components/loader-spinner/loader-spinner.component';
 @NgModule({
   declarations: [
     AppComponent,
-    IndexComponent
+    IndexComponent,
+    HomeComponent,
+    LoaderSpinnerComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     AuthModule.forRoot({
-      domain: 'dev-16fr5mnt2b0eess4.us.auth0.com',
-      clientId: 'wJglglq2HWbavW7FtnsOkVvN2ikrPvSf',
+      domain: environment.authDomain,
+      clientId: environment.authClientId,
     }),
   ],
   providers: [],

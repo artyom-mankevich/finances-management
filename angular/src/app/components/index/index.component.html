@@ -1,7 +1,8 @@
 <header class="index-header">
     <p class="app-name">finance</p>
     <a class='features-link' (click)="scroll(features)">Features</a>
-    <a href="" class="sign-in-button" (click)="signin()">Sign in</a>
+    <a *ngIf="(auth.isAuthenticated$ | async) === false" class="sign-in-button" (click)="signin()">Sign in</a>
+    <a *ngIf="(auth.isAuthenticated$ | async)" routerLink="home" class="sign-in-button">Home</a>
 </header>
 <main class="main-content">
     <article class="main-points">

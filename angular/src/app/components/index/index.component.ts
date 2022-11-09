@@ -10,7 +10,7 @@ import { Features } from 'src/app/enums/features';
 export class IndexComponent implements OnInit {
   Features = Features;
   highlightedFeature = Features.Transactions;
-  constructor(private auth: AuthService) { }
+  constructor(public auth: AuthService) { }
 
   ngOnInit(): void {  }
   
