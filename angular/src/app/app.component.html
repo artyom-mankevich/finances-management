@@ -1,1 +1,4 @@
-<router-outlet></router-outlet>
+<app-loader-spinner *ngIf="auth.isLoading$ | async; else loaded"></app-loader-spinner>
+<ng-template #loaded>
+    <router-outlet></router-outlet>
+</ng-template>
