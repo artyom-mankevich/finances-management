@@ -87,6 +87,8 @@ article {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .design-image-wrapper {
