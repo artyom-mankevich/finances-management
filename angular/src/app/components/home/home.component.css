@@ -1,0 +1,15 @@
+app-sidemenu {
+    height: 100%;
+    width: 30%;
+    max-width: 320px;
+}
+main {
+    height: 100%;
+    flex-grow: 1;
+}
+
+.container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+}
