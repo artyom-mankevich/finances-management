@@ -14,7 +14,7 @@ import * as React from "react";
 
 export default function SidebarMenu(Drawer) {
     return (
-            <Drawer.Navigator
+        <Drawer.Navigator
             screenOptions={{
                 drawerStyle: {backgroundColor: 'rgb(255,255,255)'},
                 headerStyle: {
@@ -36,56 +36,56 @@ export default function SidebarMenu(Drawer) {
                 pressColor: '#363636',
                 pressOpacity: 0.5,
             }}
-                drawerContent={(props) => <CustomSidebarMenu {...props}/>}>
-                <Drawer.Screen name='Overview' component={OverviewPage}
-                    options={{
-                        drawerIcon: ({focused, size}) => (
-                            <MaterialIcons name="dashboard" size={size} color={focused ? '#ffffff' : '#363636'} />
-                        ),
-                    }}
-                />
-                <Drawer.Screen name='Transactions' component={TransactionsPage}
-                    options={{
-                        drawerIcon: ({focused, size}) => (
-                            <FontAwesome name="dollar" size={size} color={focused ? '#ffffff' : '#363636'} />
-                        ),
-                    }}
-                />
-                <Drawer.Screen name='Wallet' component={WalletPage}
-                    options={{
-                        drawerIcon: ({focused, size}) => (
-                            <Ionicons name="wallet" size={size} color={focused ? '#ffffff' : '#363636'} />
-                        ),
-                    }}
-                />
-                <Drawer.Screen name='Analytics' component={AnalyticsPage}
-                    options={{
-                        drawerIcon: ({focused, size}) => (
-                            <Ionicons name="analytics" size={size} color={focused ? '#ffffff' : '#363636'} />
-                        ),
-                    }}
-                />
-                <Drawer.Screen name='Investments' component={InvestmentsPage}
-                    options={{
-                        drawerIcon: ({focused, size}) => (
-                            <FontAwesome name="bank" size={size} color={focused ? '#ffffff' : '#363636'} />
-                        ),
-                    }}
-                />
-                <Drawer.Screen name='Debts' component={DebtsPage}
-                    options={{
-                        drawerIcon: ({focused, size}) => (
-                            <FontAwesome name="shopping-bag" size={size} color={focused ? '#ffffff' : '#363636'} />
-                        ),
-                    }}
-                />
-                <Drawer.Screen name='Crypto' component={CryptoPage}
-                    options={{
-                        drawerIcon: ({focused, size}) => (
-                            <MaterialCommunityIcons name="ethereum" size={size} color={focused ? '#ffffff' : '#363636'} />
-                        ),
-                    }}
-                />
-            </Drawer.Navigator>
+            drawerContent={(props) => <CustomSidebarMenu {...props} pressColor={"#f6f8ff"}/>}>
+            <Drawer.Screen name='Overview' component={OverviewPage}
+                           options={{
+                               drawerIcon: ({focused, size}) => (
+                                   <MaterialIcons name="dashboard" size={size} color={focused ? '#ffffff' : '#363636'} />
+                               ),
+                           }}
+            />
+            <Drawer.Screen name='Transactions' component={TransactionsPage}
+                           options={{
+                               drawerIcon: ({focused, size}) => (
+                                   <FontAwesome name="dollar" size={size} color={focused ? '#ffffff' : '#363636'} />
+                               ),
+                           }}
+            />
+            <Drawer.Screen name='Wallet' component={WalletPage}
+                           options={{
+                               drawerIcon: ({focused, size}) => (
+                                   <Ionicons name="wallet" size={size} color={focused ? '#ffffff' : '#363636'} />
+                               ),
+                           }}
+            />
+            <Drawer.Screen name='Analytics' component={AnalyticsPage}
+                           options={{
+                               drawerIcon: ({focused, size}) => (
+                                   <Ionicons name="analytics" size={size} color={focused ? '#ffffff' : '#363636'} />
+                               ),
+                           }}
+            />
+            <Drawer.Screen name='Investments' component={InvestmentsPage}
+                           options={{
+                               drawerIcon: ({focused, size}) => (
+                                   <FontAwesome name="bank" size={size} color={focused ? '#ffffff' : '#363636'} />
+                               ),
+                           }}
+            />
+            <Drawer.Screen name='Debts' component={DebtsPage}
+                           options={{
+                               drawerIcon: ({focused, size}) => (
+                                   <FontAwesome name="shopping-bag" size={size} color={focused ? '#ffffff' : '#363636'} />
+                               ),
+                           }}
+            />
+            <Drawer.Screen name='Crypto' component={CryptoPage}
+                           options={{
+                               drawerIcon: ({focused, size}) => (
+                                   <MaterialCommunityIcons name="ethereum" size={size} color={focused ? '#ffffff' : '#363636'} />
+                               ),
+                           }}
+            />
+        </Drawer.Navigator>
     )
 }

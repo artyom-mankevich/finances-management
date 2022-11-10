@@ -1,6 +1,16 @@
 import { React } from 'react';
-import {SafeAreaView, View, StyleSheet, Image, Linking, Text, ImageBackground, TouchableOpacity} from 'react-native';
-import { DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
+import {
+    SafeAreaView,
+    View,
+    StyleSheet,
+    Image,
+    Linking,
+    Text,
+    ImageBackground,
+
+} from 'react-native';
+import DrawerItemList from "../components/DrawerItemList";
+import { DrawerContentScrollView /*DrawerItemList*/, DrawerItem } from '@react-navigation/drawer';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const CustomSidebarMenu = (props) => {
@@ -29,11 +39,13 @@ const CustomSidebarMenu = (props) => {
             </DrawerContentScrollView>
             <DrawerItem
                 icon={({ focused, color, size }) =>
-                    <MaterialCommunityIcons name="web" color={color} size={size} color={focused ? '#fff' : '#363636FF'}/>
+                    <MaterialCommunityIcons name="web" size={size} color={focused ? '#fff' : '#363636FF'}/>
                 }
-                label="Website"
+                pressColor={"#f6f8ff"}
+                label={() => <Text style={{fontSize: 18, color: '#363636FF'}}>Website</Text>}
                 onPress={() => Linking.openURL('https://github.com/artyom-mankevich/trpo')}
             />
+
         </SafeAreaView>
     );
 }
