@@ -25,7 +25,7 @@
 
 .sidemenu-wrapper {
     max-width: 320px;
-    width: 100%;
+    width: 20vw;
     margin: 0px;
     height: 100%;
     border-right: 3px solid var(--light-gray);
@@ -43,8 +43,8 @@
     justify-content: center;
     align-items: center;
     width: 100%;
-    margin: 140px 0 0 0;
-    padding: 0px;
+    padding: 140px 0 0 0;
+    margin: 0px;
 }
 
 .menu-option:hover {
@@ -85,4 +85,27 @@
 .selected-option svg path {
     fill: var(--main-blue);
     transition-duration: 200ms;
+}
+
+@media only screen and (max-width: 900px) {
+    .menu-option-name {
+        display: none;
+    }
+
+    .item-icon-name {
+        justify-content: center;
+    }
+
+    .sidemenu-wrapper {
+        max-width: 60px;
+    }
+
+    .item-icon-name svg {
+        margin-right: 0px;
+    }
+
+    .app-name {
+        display: none;
+    }
+
 }
