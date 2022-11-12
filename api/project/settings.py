@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 APPS_DIR = os.path.realpath(os.path.join(BASE_DIR, "apps"))
 sys.path.append(APPS_DIR)
 
@@ -38,7 +38,11 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
-
+    "decorations",
+    "accounts",
+    "crypto",
+    "investments",
+    "wallets",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
