@@ -36,6 +36,9 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     "rest_framework",
     "drf_yasg",
+    "corsheaders",
+    "rest_framework_jwt",
+    "rest_framework_jwt.blacklist",
 ]
 
 LOCAL_APPS = [
@@ -49,10 +52,12 @@ LOCAL_APPS = [
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
+    "corsheaders.middleware.CorsPostCsrfMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.auth.middleware.RemoteUserMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -60,7 +65,6 @@ MIDDLEWARE = [
 ]
 
 AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.ModelBackend",
     "django.contrib.auth.backends.RemoteUserBackend",
 ]
 
@@ -68,8 +72,6 @@ ROOT_URLCONF = "project.urls"
 
 WSGI_APPLICATION = "project.wsgi.application"
 ASGI_APPLICATION = "project.asgi.application"
-
-CORS_ORIGIN_ALLOW_ALL = True
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -187,4 +189,25 @@ REST_FRAMEWORK = {
 
 SWAGGER_SETTINGS = {
    'USE_SESSION_AUTH': False
+}
+
+CORS_ALLOWED_ORIGINS = []
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_REPLACE_HTTPS_REFERER = True
+
+AUTH0_IDENTIFIER = os.environ["AUTH0_IDENTIFIER"]
+AUTH0_DOMAIN = os.environ["AUTH0_DOMAIN"]
+JWT_ALGORITHM = "RS256"
+
+JWT_AUTH = {
+    "JWT_PAYLOAD_GET_USERNAME_HANDLER":
+        "accounts.utils.jwt_get_username_from_payload_handler",
+    "JWT_DECODE_HANDLER":
+        "accounts.utils.jwt_decode_token",
+    "JWT_ALGORITHM": JWT_ALGORITHM,
+    "JWT_AUDIENCE": "https://finances-be.com/",
+    "JWT_ISSUER": "https://dev-16fr5mnt2b0eess4.us.auth0.com/",
+    "JWT_AUTH_HEADER_PREFIX": "Bearer",
 }
