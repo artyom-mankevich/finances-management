@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { IndexComponent } from './components/index/index.component';
 import { AuthModule, AuthHttpInterceptor } from '@auth0/auth0-angular';
-import { environment } from 'src/environments/environment';
+import { ApiEndpoints, environment } from 'src/environments/environment';
 import { HomeComponent } from './components/home/home.component';
 import { LoaderSpinnerComponent } from './components/loader-spinner/loader-spinner.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -24,9 +24,8 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from  '@angular/common/http';
     AuthModule.forRoot({
       domain: environment.authDomain,
       clientId: environment.authClientId,
-      audience: environment.baseUrl,
       httpInterceptor: {
-        allowedList: [environment.baseUrl]
+        allowedList: [`${environment.baseUrl}${ApiEndpoints.test}`]
       }
     }),
     BrowserAnimationsModule,

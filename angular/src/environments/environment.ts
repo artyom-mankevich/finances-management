@@ -10,7 +10,7 @@ export const environment = {
 };
 
 export enum ApiEndpoints  {
-  test = 'swager-ui/'
+  test = 'swagger-ui/'
 }
 
 /*
