@@ -4,11 +4,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { IndexComponent } from './components/index/index.component';
-import { AuthModule } from '@auth0/auth0-angular';
+import { AuthModule, AuthHttpInterceptor } from '@auth0/auth0-angular';
 import { environment } from 'src/environments/environment';
 import { HomeComponent } from './components/home/home.component';
 import { LoaderSpinnerComponent } from './components/loader-spinner/loader-spinner.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientModule, HTTP_INTERCEPTORS } from  '@angular/common/http';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -22,10 +24,19 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     AuthModule.forRoot({
       domain: environment.authDomain,
       clientId: environment.authClientId,
+      audience: environment.baseUrl,
+      httpInterceptor: {
+        allowedList: [environment.baseUrl]
+      }
     }),
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    HttpClientModule,
   ],
-  providers: [],
+  providers: [{
+    provide: HTTP_INTERCEPTORS,
+    useClass: AuthHttpInterceptor,
+    multi: true
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

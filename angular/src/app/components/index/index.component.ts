@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '@auth0/auth0-angular';
 
 import { Features } from 'src/app/enums/features';
+import { DataService } from 'src/app/services/data.service';
 
 
 @Component({
@@ -19,9 +20,11 @@ import { Features } from 'src/app/enums/features';
 export class IndexComponent implements OnInit {
   Features = Features;
   highlightedFeature = Features.Transactions;
-  constructor(public auth: AuthService) { }
+  constructor(public auth: AuthService, private ds: DataService) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void { 
+    this.ds.getTest().subscribe();
+  }
 
   selectFeature(feature: Features) {
     this.highlightedFeature = feature;
