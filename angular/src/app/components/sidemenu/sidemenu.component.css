@@ -1,0 +1,115 @@
+.menu-option {
+    list-style: none;
+    cursor: pointer;
+    margin: 0px;
+    display: flex;
+    height: 50px;
+    align-items: center;
+    width: 100%;
+    font-size: 20px;
+    color: var(--text-gray);
+    transition-duration: 200ms;
+    font-weight: 500;
+}
+
+.menu-option svg {
+    display: flex;
+    max-width: 24px;
+    max-height: 24px;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    margin-right: 20px;
+}
+
+.sidemenu-wrapper {
+    max-width: 320px;
+    width: 20vw;
+    margin: 0px;
+    height: 100%;
+    border-right: 3px solid var(--light-gray);
+}
+
+.app-name {
+    display: inline-block;
+    margin: 44px 0px 0px 10%;
+    font-size: 32px;
+}
+
+.menu-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 15vh 0 0 0;
+    margin: 0px;
+}
+
+.menu-option:hover {
+    color: var(--main-blue);
+}
+
+.menu-option:hover svg path {
+    fill: var(--main-blue);
+}
+
+.selected-box {
+    height: 100%;
+    background-color: var(--main-blue);
+    border-radius: 0px 4px 4px 0px;
+    width: 8px;
+    visibility: hidden;
+}
+
+.item-icon-name {
+    display: flex;
+    margin-left: auto;
+    height: 100%;
+    width: 90%;
+    align-items: center;
+}
+
+.selected-option .selected-box {
+    visibility: visible;
+    transition-duration: 200ms;
+}
+
+.selected-option {
+    color: var(--main-blue);
+    background-image: linear-gradient(to right, var(--light-gray), white);
+    transition-duration: 200ms;
+}
+
+.selected-option svg path {
+    fill: var(--main-blue);
+    transition-duration: 200ms;
+}
+
+@media only screen and (max-width: 900px) {
+    .menu-option-name {
+        display: none;
+    }
+
+    .item-icon-name {
+        justify-content: center;
+    }
+
+    .sidemenu-wrapper {
+        max-width: 60px;
+    }
+
+    .item-icon-name svg {
+        margin-right: 0px;
+    }
+
+    .app-name {
+        display: none;
+    }
+
+    .menu-list {
+        padding-top: 15vh;
+    }
+
+}

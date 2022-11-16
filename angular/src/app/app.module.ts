@@ -9,12 +9,14 @@ import { environment } from 'src/environments/environment';
 import { HomeComponent } from './components/home/home.component';
 import { LoaderSpinnerComponent } from './components/loader-spinner/loader-spinner.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SidemenuComponent } from './components/sidemenu/sidemenu.component';
 @NgModule({
   declarations: [
     AppComponent,
     IndexComponent,
     HomeComponent,
-    LoaderSpinnerComponent
+    LoaderSpinnerComponent,
+    SidemenuComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,14 @@
+app-sidemenu {
+    height: 100%;
+}
+
+main {
+    height: 100%;
+    flex-grow: 1;
+}
+
+.container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+}
