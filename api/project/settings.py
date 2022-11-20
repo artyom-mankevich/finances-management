@@ -35,6 +35,7 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = [
     "rest_framework",
+    "drf_yasg",
 ]
 
 LOCAL_APPS = [
@@ -182,4 +183,8 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.BasicAuthentication",
     ),
+}
+
+SWAGGER_SETTINGS = {
+   'USE_SESSION_AUTH': False
 }
