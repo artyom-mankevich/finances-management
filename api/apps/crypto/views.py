@@ -1,3 +1,9 @@
-from django.shortcuts import render
+from rest_framework import viewsets
 
-# Create your views here.
+from crypto.models import EthKeys
+from crypto.serializers import EthKeysSerializer
+
+
+class EthKeysViewSet(viewsets.ModelViewSet):
+    queryset = EthKeys.objects.all()
+    serializer_class = EthKeysSerializer
