@@ -6,7 +6,7 @@ from wallets.serializers import CurrencySerializer, WalletSerializer, \
     TransactionSerializer, TransactionTypeSerializer, TransactionCategorySerializer
 
 
-class CurrencyViewSet(viewsets.ModelViewSet):
+class CurrencyViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Currency.objects.all()
     serializer_class = CurrencySerializer
 
@@ -21,7 +21,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
     serializer_class = TransactionSerializer
 
 
-class TransactionTypeViewSet(viewsets.ModelViewSet):
+class TransactionTypeViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = TransactionType.objects.all()
     serializer_class = TransactionTypeSerializer
 

@@ -119,8 +119,8 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 if not os.path.isdir(STATIC_ROOT):
     os.makedirs(STATIC_ROOT, mode=0o755)
 
-if not os.path.isdir(STATIC_URL):
-    os.makedirs(STATIC_URL, mode=0o755)
+if not os.path.isdir(STATICFILES_DIRS[0]):
+    os.makedirs(STATICFILES_DIRS[0], mode=0o755)
 
 
 TEMPLATES = [
