@@ -24,6 +24,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from  '@angular/common/http';
     AuthModule.forRoot({
       domain: environment.authDomain,
       clientId: environment.authClientId,
+      audience: environment.authAudience,
       httpInterceptor: {
         allowedList: [`${environment.baseUrl}${ApiEndpoints.test}`]
       }
