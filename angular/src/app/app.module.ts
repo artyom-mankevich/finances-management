@@ -11,12 +11,14 @@ import { LoaderSpinnerComponent } from './components/loader-spinner/loader-spinn
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HTTP_INTERCEPTORS } from  '@angular/common/http';
 
+import { SidemenuComponent } from './components/sidemenu/sidemenu.component';
 @NgModule({
   declarations: [
     AppComponent,
     IndexComponent,
     HomeComponent,
-    LoaderSpinnerComponent
+    LoaderSpinnerComponent,
+    SidemenuComponent
   ],
   imports: [
     BrowserModule,
