@@ -5,8 +5,14 @@
 export const environment = {
   production: false,
   authDomain: 'dev-16fr5mnt2b0eess4.us.auth0.com',
-  authClientId: 'Wur3VjLXBn65LDBssrSiug7h0hWDFf1H'
+  authClientId: 'Wur3VjLXBn65LDBssrSiug7h0hWDFf1H',
+  authAudience: 'https://finances-be.com/',
+  baseUrl: 'http://localhost:8087/'
 };
+
+export enum ApiEndpoints  {
+  test = 'swagger-ui/'
+}
 
 /*
  * For easier debugging in development mode, you can import the following file

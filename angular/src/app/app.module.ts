@@ -4,11 +4,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { IndexComponent } from './components/index/index.component';
-import { AuthModule } from '@auth0/auth0-angular';
-import { environment } from 'src/environments/environment';
+import { AuthModule, AuthHttpInterceptor } from '@auth0/auth0-angular';
+import { ApiEndpoints, environment } from 'src/environments/environment';
 import { HomeComponent } from './components/home/home.component';
 import { LoaderSpinnerComponent } from './components/loader-spinner/loader-spinner.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientModule, HTTP_INTERCEPTORS } from  '@angular/common/http';
+
 import { SidemenuComponent } from './components/sidemenu/sidemenu.component';
 @NgModule({
   declarations: [
@@ -24,10 +26,19 @@ import { SidemenuComponent } from './components/sidemenu/sidemenu.component';
     AuthModule.forRoot({
       domain: environment.authDomain,
       clientId: environment.authClientId,
+      audience: environment.authAudience,
+      httpInterceptor: {
+        allowedList: [`${environment.baseUrl}${ApiEndpoints.test}`]
+      }
     }),
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    HttpClientModule,
   ],
-  providers: [],
+  providers: [{
+    provide: HTTP_INTERCEPTORS,
+    useClass: AuthHttpInterceptor,
+    multi: true
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
