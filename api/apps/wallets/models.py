@@ -18,7 +18,13 @@ class Wallet(models.Model):
     description = models.CharField(max_length=256, blank=True)
     color = models.ForeignKey(Color, on_delete=models.SET_DEFAULT, default="000000")
     goal = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
-    is_debt = models.BooleanField(default=False)
+
+
+class Debt(models.Model):
+    id = models.UUIDField(primary_key=True, editable=False)
+    user_id = models.CharField(max_length=64, db_index=True)
+    wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
+    expires_at = models.DateField()
 
 
 class Transaction(models.Model):
@@ -28,8 +34,18 @@ class Transaction(models.Model):
     category = models.ForeignKey("TransactionCategory", on_delete=models.SET_NULL, null=True)
     amount = models.DecimalField(max_digits=20, decimal_places=2)
     currency = models.ForeignKey(Currency, on_delete=models.SET_NULL, null=True)
-    source_wallet = models.ForeignKey(Wallet, on_delete=models.SET_NULL, null=True, related_name="source_wallet")
-    target_wallet = models.ForeignKey(Wallet, on_delete=models.SET_NULL, null=True, related_name="target_wallet")
+    source_wallet = models.ForeignKey(
+        Wallet,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="source_wallet_transactions"
+    )
+    target_wallet = models.ForeignKey(
+        Wallet,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="target_wallet_transactions"
+    )
     description = models.CharField(max_length=256, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

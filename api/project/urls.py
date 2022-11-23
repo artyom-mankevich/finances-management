@@ -13,7 +13,8 @@ from wallets.views import (
     CurrencyViewSet,
     TransactionViewSet,
     TransactionTypeViewSet,
-    TransactionCategoryViewSet
+    TransactionCategoryViewSet,
+    DebtViewSet
 )
 
 schema_view = get_schema_view(
@@ -36,6 +37,7 @@ router.register(r"investments", InvestmentViewSet)
 router.register(r"stocks", StockViewSet)
 router.register(r"currencies", CurrencyViewSet)
 router.register(r"wallets", WalletViewSet)
+router.register(r"debts", DebtViewSet)
 router.register(r"transactions", TransactionViewSet)
 router.register(r"transaction-types", TransactionTypeViewSet)
 router.register(r"transaction-categories", TransactionCategoryViewSet)

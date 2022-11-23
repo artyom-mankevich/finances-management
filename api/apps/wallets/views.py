@@ -1,9 +1,21 @@
 from rest_framework import viewsets
 
-from wallets.models import Currency, Wallet, Transaction, TransactionType, \
-    TransactionCategory
-from wallets.serializers import CurrencySerializer, WalletSerializer, \
-    TransactionSerializer, TransactionTypeSerializer, TransactionCategorySerializer
+from wallets.models import (
+    Currency,
+    Wallet,
+    Transaction,
+    TransactionType,
+    TransactionCategory,
+    Debt
+)
+from wallets.serializers import (
+    CurrencySerializer,
+    WalletSerializer,
+    TransactionSerializer,
+    TransactionTypeSerializer,
+    TransactionCategorySerializer,
+    DebtSerializer
+)
 
 
 class CurrencyViewSet(viewsets.ReadOnlyModelViewSet):
@@ -14,6 +26,11 @@ class CurrencyViewSet(viewsets.ReadOnlyModelViewSet):
 class WalletViewSet(viewsets.ModelViewSet):
     queryset = Wallet.objects.all()
     serializer_class = WalletSerializer
+
+
+class DebtViewSet(viewsets.ModelViewSet):
+    queryset = Debt.objects.all()
+    serializer_class = DebtSerializer
 
 
 class TransactionViewSet(viewsets.ModelViewSet):
