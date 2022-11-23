@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 
 from decorations.models import Color
@@ -6,7 +8,7 @@ from wallets.models import Wallet, Currency
 
 
 class Investment(models.Model):
-    id = models.UUIDField(primary_key=True, editable=False)
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     user_id = models.CharField(max_length=64, db_index=True)
     wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
     start_amount = models.DecimalField(max_digits=20, decimal_places=2)
@@ -19,7 +21,7 @@ class Investment(models.Model):
 
 
 class Stock(models.Model):
-    id = models.UUIDField(primary_key=True, editable=False)
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     user_id = models.CharField(max_length=64, db_index=True)
     amount = models.DecimalField(max_digits=20, decimal_places=2)
     company = models.CharField(max_length=10)
