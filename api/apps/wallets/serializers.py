@@ -1,3 +1,4 @@
+from datetime import datetime
 from rest_framework import serializers
 
 from wallets.models import (
@@ -27,6 +28,11 @@ class DebtSerializer(serializers.ModelSerializer):
         read_only_fields = ("id", "user_id", "wallet")
         fields = read_only_fields + ("expires_at",)
 
+    expires_at = serializers.SerializerMethodField()
+
+    def get_expires_at(self, obj: Debt) -> float:
+        return datetime.combine(obj.expires_at, datetime.min.time()).timestamp()
+
 
 class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -41,6 +47,11 @@ class TransactionSerializer(serializers.ModelSerializer):
             "target_wallet",
             "description",
         )
+
+    created_at = serializers.SerializerMethodField()
+
+    def get_created_at(self, obj: Transaction) -> float:
+        return datetime.combine(obj.created_at, datetime.min.time()).timestamp()
 
 
 class TransactionTypeSerializer(serializers.ModelSerializer):
