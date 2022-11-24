@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 
 from wallets.models import Currency
@@ -11,3 +13,10 @@ class AccountSettings(models.Model):
     )
     week_start = models.IntegerField(default=0)
     start_page = models.CharField(max_length=32, default="dashboard")
+
+
+class ChartSettings(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user_id = models.CharField(max_length=64, db_index=True)
+    chart_name = models.CharField(max_length=32, default=None, null=True)
+    chart_period = models.CharField(max_length=32, default=None, null=True)

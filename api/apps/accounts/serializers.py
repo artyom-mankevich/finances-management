@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from accounts.models import AccountSettings
+from accounts.models import AccountSettings, ChartSettings
 
 
 class AccountSettingsSerializer(serializers.ModelSerializer):
@@ -13,3 +13,10 @@ class AccountSettingsSerializer(serializers.ModelSerializer):
             "week_start",
             "start_page",
         )
+
+
+class ChartSettingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ChartSettings
+        read_only_fields = ("id", "user_id",)
+        fields = read_only_fields + ("chart_name", "chart_period")
