@@ -43,7 +43,7 @@ class StockSerializer(serializers.ModelSerializer):
         )
         fields = read_only_fields + (
             "amount",
-            "company",
+            "ticker",
             "color",
             "description",
             "currency",

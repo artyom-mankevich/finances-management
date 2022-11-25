@@ -6,7 +6,7 @@ from django.db import models
 
 class NewsFilter(models.Model):
     user_id = models.CharField(max_length=64, unique=True, primary_key=True)
-    symbols = ArrayField(models.CharField(max_length=10), default=list)
+    tickers = ArrayField(models.CharField(max_length=10), default=list)
     industries = models.ManyToManyField(
         "NewsIndustry",
         blank=True,
