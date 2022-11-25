@@ -5,10 +5,14 @@ from investments.serializers import InvestmentSerializer, StockSerializer
 
 
 class InvestmentViewSet(viewsets.ModelViewSet):
-    queryset = Investment.objects.all()
     serializer_class = InvestmentSerializer
+
+    def get_queryset(self):
+        return Investment.objects.all().filter(user_id=self.request.user)
 
 
 class StockViewSet(viewsets.ModelViewSet):
-    queryset = Stock.objects.all()
     serializer_class = StockSerializer
+
+    def get_queryset(self):
+        return Stock.objects.all().filter(user_id=self.request.user)

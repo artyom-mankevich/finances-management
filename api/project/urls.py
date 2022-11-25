@@ -30,26 +30,32 @@ schema_view = get_schema_view(
 router = routers.SimpleRouter()
 router.include_root_view = False
 
-router.register(r"account-settings", AccountSettingsViewSet)
-router.register(r"chart-settings", ChartSettingsViewSet)
+router.register(r"account-settings", AccountSettingsViewSet, basename="account-settings")
+router.register(r"chart-settings", ChartSettingsViewSet, basename="chart-settings")
 
-router.register(r"eth-keys", EthKeysViewSet)
+router.register(r"eth-keys", EthKeysViewSet, basename="eth-keys")
 
-router.register(r"icons", IconViewSet)
-router.register(r"colors", ColorViewSet)
+router.register(r"icons", IconViewSet, basename="icons")
+router.register(r"colors", ColorViewSet, basename="colors")
 
-router.register(r"investments", InvestmentViewSet)
-router.register(r"stocks", StockViewSet)
+router.register(r"investments", InvestmentViewSet, basename="investments")
+router.register(r"stocks", StockViewSet, basename="stocks")
 
-router.register(r"news-filters", NewsFilterViewSet)
-router.register(r"news-industries", NewsIndustryViewSet)
+router.register(r"news-filters", NewsFilterViewSet, basename="news-filters")
+router.register(r"news-industries", NewsIndustryViewSet, basename="news-industries")
 
-router.register(r"currencies", CurrencyViewSet)
-router.register(r"wallets", WalletViewSet)
-router.register(r"debts", DebtViewSet)
-router.register(r"transactions", TransactionViewSet)
-router.register(r"transaction-types", TransactionTypeViewSet)
-router.register(r"transaction-categories", TransactionCategoryViewSet)
+router.register(r"currencies", CurrencyViewSet, basename="currencies")
+router.register(r"wallets", WalletViewSet, basename="wallets")
+router.register(r"debts", DebtViewSet, basename="debts")
+router.register(r"transactions", TransactionViewSet, basename="transactions")
+router.register(
+    r"transaction-types", TransactionTypeViewSet, basename="transaction-types"
+)
+router.register(
+    r"transaction-categories",
+    TransactionCategoryViewSet,
+    basename="transaction-categories"
+)
 
 urlpatterns = [
     path("v2/", include(router.urls)),
