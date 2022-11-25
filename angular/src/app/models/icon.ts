@@ -1,3 +1,3 @@
 export interface Icon {
-    tite: string
+    title: string
 }
