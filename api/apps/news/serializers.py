@@ -8,7 +8,7 @@ class NewsFilterSerializer(serializers.ModelSerializer):
         model = NewsFilter
         read_only_fields = ("user_id",)
         fields = read_only_fields + (
-            "symbols",
+            "tickers",
             "industries",
         )
 
@@ -16,5 +16,5 @@ class NewsFilterSerializer(serializers.ModelSerializer):
 class NewsIndustrySerializer(serializers.ModelSerializer):
     class Meta:
         model = NewsIndustry
-        read_only_fields = ("id", "industry",)
+        read_only_fields = ("id", "name",)
         fields = read_only_fields

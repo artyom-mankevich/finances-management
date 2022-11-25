@@ -16,7 +16,7 @@ class Wallet(models.Model):
     user_id = models.CharField(max_length=64, db_index=True)
     currency = models.ForeignKey(Currency, on_delete=models.SET_NULL, null=True)
     balance = models.DecimalField(max_digits=20, decimal_places=2)
-    name = models.CharField(max_length=128, blank=True)
+    name = models.CharField(max_length=128)
     description = models.CharField(max_length=256, blank=True)
     color = models.ForeignKey(Color, on_delete=models.SET_DEFAULT, default="000000")
     goal = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
@@ -53,6 +53,7 @@ class Transaction(models.Model):
 
 
 class TransactionType(models.Model):
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     income = models.BooleanField()
     icon = models.ForeignKey(Icon, on_delete=models.SET_NULL, null=True)
 

@@ -10,11 +10,11 @@ from wallets.models import (
 )
 from wallets.serializers import (
     CurrencySerializer,
-    WalletSerializer,
+    ExtendedWalletSerializer,
     TransactionSerializer,
     TransactionTypeSerializer,
     TransactionCategorySerializer,
-    DebtSerializer
+    DebtSerializer,
 )
 
 
@@ -24,7 +24,7 @@ class CurrencyViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class WalletViewSet(viewsets.ModelViewSet):
-    serializer_class = WalletSerializer
+    serializer_class = ExtendedWalletSerializer
 
     def get_queryset(self):
         return Wallet.objects.filter(user_id=self.request.user)
