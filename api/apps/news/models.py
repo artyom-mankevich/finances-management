@@ -16,4 +16,4 @@ class NewsFilter(models.Model):
 
 class NewsIndustry(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    industry = models.CharField(max_length=32, unique=True, blank=False)
+    name = models.CharField(max_length=32, unique=True, blank=False)
