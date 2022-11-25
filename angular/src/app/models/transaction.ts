@@ -7,7 +7,7 @@ export interface Transaction {
     userId: string,
     createdAt: number,
     type: TransactionType,
-    caterogry: TransactionCategory,
+    category: TransactionCategory,
     amount: number,
     currency: string,
     sourceWallet: Wallet | null,
