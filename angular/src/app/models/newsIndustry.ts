@@ -1,4 +1,4 @@
 export interface newsIndustry {
     id: string,
-    industry: string
+    name: string
 }
