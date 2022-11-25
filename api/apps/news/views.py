@@ -6,8 +6,10 @@ from news.serializers import NewsFilterSerializer, NewsIndustrySerializer
 
 
 class NewsFilterViewSet(GenericViewSet, RetrieveUpdateAPIView):
-    queryset = NewsFilter.objects.all()
     serializer_class = NewsFilterSerializer
+
+    def get_queryset(self):
+        return NewsFilter.objects.filter(user_id=self.request.user)
 
 
 class NewsIndustryViewSet(ReadOnlyModelViewSet):

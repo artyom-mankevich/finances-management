@@ -24,18 +24,24 @@ class CurrencyViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class WalletViewSet(viewsets.ModelViewSet):
-    queryset = Wallet.objects.all()
     serializer_class = WalletSerializer
+
+    def get_queryset(self):
+        return Wallet.objects.filter(user_id=self.request.user)
 
 
 class DebtViewSet(viewsets.ModelViewSet):
-    queryset = Debt.objects.all()
     serializer_class = DebtSerializer
+
+    def get_queryset(self):
+        return Debt.objects.filter(user_id=self.request.user)
 
 
 class TransactionViewSet(viewsets.ModelViewSet):
-    queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
+
+    def get_queryset(self):
+        return Transaction.objects.filter(user_id=self.request.user)
 
 
 class TransactionTypeViewSet(viewsets.ReadOnlyModelViewSet):
@@ -44,5 +50,7 @@ class TransactionTypeViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class TransactionCategoryViewSet(viewsets.ModelViewSet):
-    queryset = TransactionCategory.objects.all()
     serializer_class = TransactionCategorySerializer
+
+    def get_queryset(self):
+        return TransactionCategory.objects.filter(user_id=self.request.user)
