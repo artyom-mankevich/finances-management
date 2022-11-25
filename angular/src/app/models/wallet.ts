@@ -2,10 +2,10 @@ export interface Wallet {
     id: string | null,
     userId: string,
     currency: string,
-    balance: string,
+    balance: number,
     name: string,
     description: string,
     color: string,
-    goal: string,
+    goal: number,
     lastUpdate: number | null
 }
