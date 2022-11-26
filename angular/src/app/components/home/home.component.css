@@ -7,6 +7,16 @@ main {
     flex-grow: 1;
 }
 
+header {
+    height: 100px;
+}
+
+h1 {
+    font-weight: 400;
+    margin-left: 5vw;
+    margin-top: 44px;
+}
+
 .container {
     height: 100%;
     width: 100%;

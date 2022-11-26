@@ -1,0 +1,27 @@
+<section class="wallet-builder">
+    <form class="wallet-input" action="" [formGroup]="form">
+        <label for="">Info</label>
+        <input type="text" placeholder="Name" formControlName="name" maxlength="50">
+        <input list="currencies" placeholder="Currency" formControlName="currency">
+        <datalist name="currencies" id="currencies">
+            <option value="$">United States Dollar </option>
+            <option value="Euro ()">
+        </datalist>
+        <label for="balance-input">Balances</label>
+        <input id="balance-input" type="number" min="0" placeholder="Balance" formControlName="balance" maxlength="20">
+        <input class="goal-input" type="number" placeholder="Goal (optional)" formControlName="goal">
+        <label for="colors">Color</label>
+        <div class="colors" id="colors">
+            <div *ngFor="let color of colors" class="color" [style.backgroundColor]="color"
+                (click)="changeBackgroundColor(color)">
+                <div *ngIf="color === wallet.color" class="selected-color"></div>
+            </div>
+        </div>
+        <button class="create-button" [style.backgroundColor]="wallet.color" type="submit">Create</button>
+    </form>
+    <div class="wallet-preview">
+        <p class="preview">Preview</p>
+        <app-wallet [wallet]="wallet" class="wallet"></app-wallet>
+        <p class="wallet-tip"> <b>Tip:</b> You can always change your wallet appearance in settings.</p>
+    </div>
+</section>

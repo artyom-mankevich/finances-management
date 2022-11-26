@@ -15,6 +15,10 @@ import { SidemenuComponent } from './components/sidemenu/sidemenu.component';
 import { WalletsPageComponent } from './components/wallets-page/wallets-page.component';
 import { WalletComponent } from './components/wallet/wallet.component';
 import { ShortNumberPipe } from './pipes/short-number.pipe';
+import { MatDialogModule } from '@angular/material/dialog';
+import { AddWalletModalComponent } from './components/add-wallet-modal/add-wallet-modal.component';
+import { ReactiveFormsModule } from '@angular/forms';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -24,7 +28,8 @@ import { ShortNumberPipe } from './pipes/short-number.pipe';
     SidemenuComponent,
     WalletsPageComponent,
     WalletComponent,
-    ShortNumberPipe
+    ShortNumberPipe,
+    AddWalletModalComponent
   ],
   imports: [
     BrowserModule,
@@ -39,6 +44,8 @@ import { ShortNumberPipe } from './pipes/short-number.pipe';
     }),
     BrowserAnimationsModule,
     HttpClientModule,
+    MatDialogModule,
+    ReactiveFormsModule,
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS,

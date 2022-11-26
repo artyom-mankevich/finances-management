@@ -1,0 +1,117 @@
+.wallet-input {
+    display: flex;
+    flex-direction: column;
+    margin-right: 50px;
+}
+
+.colors {
+    display: flex;
+    flex-direction: row;
+    margin-top: 15px;
+}
+
+.color {
+    width: 25px;
+    height: 25px;
+    border-radius: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.selected-color {
+    width: 8px;
+    height: 8px;
+    border-radius: 10px;
+    background-color: white;
+}
+
+.wallet-builder {
+    display: flex;
+}
+
+.wallet-preview {
+    /* justify-content: center; */
+    display: flex;
+    flex-direction: column;
+    max-width: 245px;
+}
+
+.preview {
+    font-weight: bold;
+    margin: 15px 0 15px 0;
+}
+
+.wallet-tip {
+    color: var(--text-gray);
+    margin: 15px 0 15px 0;
+    /* text-align: justify; */
+}
+
+.wallet-tip b {
+    color: black;
+}
+
+.goal-input {
+    justify-self: end;
+}
+
+.create-button {
+    width: 140px;
+    height: 45px;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 50px;
+    margin-top: 25px;
+    transition-duration: 200ms;
+}
+
+input {
+    width: 200px;
+    height: 36px;
+    border-radius: 5px;
+    border: 1px solid var(--text-gray);
+    margin-top: 15px;
+    text-indent: 15px;
+}
+
+label {
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+input:focus {
+    outline-color: var(--main-blue);
+    --webkit-appearance: none;
+    --moz-appearance: textfield;
+}
+
+@media only screen and (max-width: 750px) {
+    .wallet-builder {
+        flex-direction: column-reverse;
+    }
+
+    .wallet-input {
+        margin: 0;
+        justify-content: center;
+    }
+
+    input {
+        width: 100%;
+    }
+
+    .create-button {
+        margin: 15px auto 15px auto;
+    }
+}
