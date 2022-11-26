@@ -12,13 +12,19 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HTTP_INTERCEPTORS } from  '@angular/common/http';
 
 import { SidemenuComponent } from './components/sidemenu/sidemenu.component';
+import { WalletsPageComponent } from './components/wallets-page/wallets-page.component';
+import { WalletComponent } from './components/wallet/wallet.component';
+import { ShortNumberPipe } from './pipes/short-number.pipe';
 @NgModule({
   declarations: [
     AppComponent,
     IndexComponent,
     HomeComponent,
     LoaderSpinnerComponent,
-    SidemenuComponent
+    SidemenuComponent,
+    WalletsPageComponent,
+    WalletComponent,
+    ShortNumberPipe
   ],
   imports: [
     BrowserModule,

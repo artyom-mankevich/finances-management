@@ -1,0 +1,9 @@
+.add-wallet-button {
+    cursor: pointer;
+    animation-duration: 200ms;
+}
+
+.add-wallet-button:hover {
+    transform: scale(1.02);
+    animation-duration: 200m;
+}
