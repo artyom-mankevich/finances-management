@@ -45,8 +45,12 @@
 
 .wallet-name {
     font-weight: 400;
-    max-width: 150px;
+    max-width: 135px;
     word-wrap: break-word;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
 }
 
 .wallet-balance,

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Wallet } from 'src/app/models/wallet';
+import { MatDialogRef } from '@angular/material/dialog';
+import { DataService } from 'src/app/services/data.service';
 
 @Component({
   selector: 'app-add-wallet-modal',
@@ -15,42 +17,71 @@ export class AddWalletModalComponent implements OnInit {
     balance: 10035.45,
     name: 'Name',
     color: '#7A3EF8',
-    goal: 15000,
+    goal: null,
     lastUpdate: Date.now()
   }
-  colors: string[] = ['#F6BA1B', '#7A3EF8']
+  colors: string[] = ['#F6BA1B', '#7A3EF8', '#3E68D1', '#3EB5E8', '#EB4A82', '#555994'];
+  currencies = ['$', '€'];
   form: FormGroup;
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private ds: DataService, private dialogRef: MatDialogRef<AddWalletModalComponent>) {
     this.form = fb.group({
-      name: [this.wallet.name, Validators.required],
-      currency: [this.wallet.currency, Validators.required],
-      balance: [this.wallet.balance, Validators.required],
-      goal: [this.wallet.goal]
+      name: [, [Validators.required, Validators.maxLength(50)]],
+      currency: [, Validators.required],
+      balance: [, [Validators.required, Validators.max(99999999999999999)]],
+      goal: []
     })
-    this.form.valueChanges.subscribe(val => {
-      if (val.balance?.toString().length > 17) {
-        this.form.patchValue({ balance: Number.parseFloat(val.balance.toString().slice(0, 17)) })
+
+    this.form.controls['name'].valueChanges.subscribe(val => {
+      this.wallet.name = val;
+    })
+
+    this.form.controls['currency'].valueChanges.subscribe(val => {
+      if (this.currencies.includes(val)) {
+        this.wallet.currency = val;
       }
-      if (val.goal?.toString().length > 17) {
-        this.form.patchValue({ goal: Number.parseFloat(val.goal.toString().slice(0, 17)) })
+    })
+
+    this.form.controls['balance'].valueChanges.subscribe(val => {
+      if (isNaN(val) && val?.toString() !== '-'){
+        this.form.patchValue({ balance: 0});
+        return;
       }
-      this.wallet.name = val.name;
-      this.wallet.currency = val.currency;
-      if (typeof val.balance === 'number') {
-        this.wallet.balance = val.balance;
+      if (val?.toString().length > 17) {
+        this.form.patchValue({ balance: Number.parseFloat(val.toString().slice(0, 17)) })
+        return;
+      }
+      if (typeof val === 'number') {
+        this.wallet.balance = val;
       }
       else {
         this.wallet.balance = 0;
       }
-      if (typeof val.goal === 'number') {
-        this.wallet.goal = val.goal;
+    })
+
+    this.form.controls['goal'].valueChanges.subscribe(val => {
+      if (isNaN(val) && val?.toString() !== '-'){
+        this.form.patchValue({ goal: 0});
+        return;
+      }
+      if (val?.toString().length >17) {
+        this.form.patchValue({ goal: Number.parseFloat(val.toString().slice(0, 17)) })
+        return;
+      }
+      if (typeof val === 'number') {
+        this.wallet.goal = val;
       }
     })
+  }
+
+  createWallet() {
+    this.ds.createWallet(this.wallet).subscribe();
+    this.dialogRef.close();
   }
 
   changeBackgroundColor(color: string) {
     this.wallet.color = color;
   }
+  
   ngOnInit(): void {
   }
 

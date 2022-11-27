@@ -4,11 +4,11 @@
         <input type="text" placeholder="Name" formControlName="name" maxlength="50">
         <input list="currencies" placeholder="Currency" formControlName="currency">
         <datalist name="currencies" id="currencies">
-            <option value="$">United States Dollar </option>
-            <option value="Euro ()">
+            <option value="$">United States Dollar</option>
+            <option value="€">Euro</option>
         </datalist>
         <label for="balance-input">Balances</label>
-        <input id="balance-input" type="number" min="0" placeholder="Balance" formControlName="balance" maxlength="20">
+        <input id="balance-input" type="number" placeholder="Balance" formControlName="balance" maxlength="20">
         <input class="goal-input" type="number" placeholder="Goal (optional)" formControlName="goal">
         <label for="colors">Color</label>
         <div class="colors" id="colors">
@@ -17,7 +17,7 @@
                 <div *ngIf="color === wallet.color" class="selected-color"></div>
             </div>
         </div>
-        <button class="create-button" [style.backgroundColor]="wallet.color" type="submit">Create</button>
+        <button (click)="createWallet()" class="create-button" [style.backgroundColor]="wallet.color"  type="submit" [disabled]="!form.valid">Create</button>
     </form>
     <div class="wallet-preview">
         <p class="preview">Preview</p>

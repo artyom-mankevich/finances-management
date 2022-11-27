@@ -39,7 +39,7 @@ import { ReactiveFormsModule } from '@angular/forms';
       clientId: environment.authClientId,
       audience: environment.authAudience,
       httpInterceptor: {
-        allowedList: [`${environment.baseUrl}${ApiEndpoints.test}`]
+        allowedList: [`${environment.baseUrl}${ApiEndpoints.wallets}`]
       }
     }),
     BrowserAnimationsModule,

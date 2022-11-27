@@ -67,6 +67,21 @@
     border-radius: 50px;
     margin-top: 25px;
     transition-duration: 200ms;
+    cursor: pointer;
+}
+
+.create-button:hover {
+    transform: scale(1.03);
+}
+
+.create-button:active {
+    filter: grayscale(0.15);
+}
+
+.create-button:disabled,
+.create-button[disabled] {
+    background: var(--text-gray) !important;
+    cursor: default;
 }
 
 input {

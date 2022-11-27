@@ -6,7 +6,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class ShortNumberPipe implements PipeTransform {
 
   transform(number: number, args?: any): any {
-    number = Number.parseFloat(number.toFixed(5));
     if (number === 0) { 
       return '0'
     }
@@ -35,7 +34,8 @@ export class ShortNumberPipe implements PipeTransform {
             break;
         }
     }
-    return (isNegative ? '-' : '') + abs + key;
+    let result: string = (isNegative ? '-' : '') + abs.toString().slice(0,6) + key;
+    return result;
 }
 
 }
