@@ -11,6 +11,9 @@ export class WalletComponent implements OnInit {
   constructor() { }
   @Input()
   wallet!: Wallet;
+
+  @Input()
+  selected: boolean = false;
   ngOnInit(): void {
   }
 

@@ -1,4 +1,4 @@
-<div class="wallet" [style.backgroundColor]="wallet.color">
+<div class="wallet" [style.backgroundColor]="wallet.color" [ngClass]=" { 'selected-wallet' : selected }">
     <div class="wallet-content">
         <div class="wallet-name-update">
             <p class="wallet-name">{{wallet.name}}</p>

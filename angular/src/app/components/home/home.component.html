@@ -1,8 +1,8 @@
 <div class="container">
-    <app-sidemenu></app-sidemenu>
+    <app-sidemenu></app-sidemenu> 
     <main>
         <header>
-            <h1>Welcome back, </h1>
+            <h1 *ngIf="auth.user$ | async as user">Welcome back, <b>{{ user.name }}</b></h1>
         </header>
         <app-wallets-page></app-wallets-page>
     </main>
