@@ -1,35 +1,54 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Wallet } from 'src/app/models/wallet';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DataService } from 'src/app/services/data.service';
+import { WalletModalModes } from 'src/app/enums/walletModalModes';
 
 @Component({
   selector: 'app-add-wallet-modal',
   templateUrl: './add-wallet-modal.component.html',
   styleUrls: ['./add-wallet-modal.component.css']
 })
+
 export class AddWalletModalComponent implements OnInit {
   wallet: Wallet = {
     id: null,
     userId: '',
     currency: '$',
-    balance: 10035.45,
+    balance: 0,
     name: 'Name',
     color: '#7A3EF8',
     goal: null,
     lastUpdate: Date.now()
   }
-  colors: string[] = ['#F6BA1B', '#7A3EF8', '#3E68D1', '#3EB5E8', '#EB4A82', '#555994'];
+
+  colors: string[] = ['#7A3EF8', '#F6BA1B', '#3E68D1', '#3EB5E8', '#EB4A82', '#555994'];
   currencies = ['$', '€'];
   form: FormGroup;
-  constructor(private fb: FormBuilder, private ds: DataService, private dialogRef: MatDialogRef<AddWalletModalComponent>) {
+
+  modalMode: WalletModalModes = WalletModalModes.Create;
+
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any,  private fb: FormBuilder, private ds: DataService, private dialogRef: MatDialogRef<AddWalletModalComponent>) {
+
+   
+
     this.form = fb.group({
       name: [, [Validators.required, Validators.maxLength(50)]],
       currency: [, Validators.required],
       balance: [, [Validators.required, Validators.max(99999999999999999)]],
       goal: []
     })
+
+    if (this.data) {
+      this.wallet = data.wallet;
+      this.modalMode = WalletModalModes.Update;
+      this.updateAllFormFields();
+    }
+
+    if (this.data) {
+      this.wallet = data.wallet;
+    }
 
     this.form.controls['name'].valueChanges.subscribe(val => {
       this.wallet.name = val;
@@ -42,8 +61,8 @@ export class AddWalletModalComponent implements OnInit {
     })
 
     this.form.controls['balance'].valueChanges.subscribe(val => {
-      if (isNaN(val) && val?.toString() !== '-'){
-        this.form.patchValue({ balance: 0});
+      if (isNaN(val) && val?.toString() !== '-') {
+        this.form.patchValue({ balance: 0 });
         return;
       }
       if (val?.toString().length > 17) {
@@ -59,11 +78,11 @@ export class AddWalletModalComponent implements OnInit {
     })
 
     this.form.controls['goal'].valueChanges.subscribe(val => {
-      if (isNaN(val) && val?.toString() !== '-'){
-        this.form.patchValue({ goal: 0});
+      if (isNaN(val) && val?.toString() !== '-') {
+        this.form.patchValue({ goal: 0 });
         return;
       }
-      if (val?.toString().length >17) {
+      if (val?.toString().length > 17) {
         this.form.patchValue({ goal: Number.parseFloat(val.toString().slice(0, 17)) })
         return;
       }
@@ -71,17 +90,29 @@ export class AddWalletModalComponent implements OnInit {
         this.wallet.goal = val;
       }
     })
+
+   
   }
 
-  createWallet() {
+
+  updateAllFormFields() {
+    this.form.patchValue({
+      name : this.wallet.name,
+      currency: this.wallet.currency,
+      balance: this.wallet.balance,
+      goal: this.wallet.goal
+    })
+  }
+
+  createWallet(): void {
     this.ds.createWallet(this.wallet).subscribe();
     this.dialogRef.close();
   }
 
-  changeBackgroundColor(color: string) {
+  changeBackgroundColor(color: string): void {
     this.wallet.color = color;
   }
-  
+
   ngOnInit(): void {
   }
 

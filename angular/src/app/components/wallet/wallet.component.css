@@ -66,6 +66,10 @@
     cursor: pointer;
 }
 
+.wallet-settings-button:hover {
+    transform: scale(1.05);
+}
+
 .wallet-goal {
     font-size: 1rem;
 }

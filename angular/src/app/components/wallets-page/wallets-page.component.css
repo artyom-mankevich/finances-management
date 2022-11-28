@@ -22,3 +22,7 @@
 .wallet-wrapper {
     cursor: pointer;
 }
+
+h1 {
+    margin-left: 5%;
+}

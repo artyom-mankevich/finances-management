@@ -1,12 +1,13 @@
 app-sidemenu {
     height: 100%;
     position: fixed;
+    top: 0;
 }
 
 main {
     height: 100%;
     flex-grow: 1;
-    margin-left: min(20vw, 323px);
+    margin-left: min(calc(20vw + 3px), 323px);
 }
 
 header {
@@ -17,7 +18,9 @@ h1 {
     font-weight: 400;
     color: var(--text-gray);
     margin-left: 5vw;
-    margin-top: 44px;
+    margin-top: 0px;
+    padding-top: 44px;
+    margin-bottom: 0px;
 }
 
 h1 b {
