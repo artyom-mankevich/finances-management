@@ -11,7 +11,7 @@ from wallets.models import (
 class CurrencySerializer(serializers.ModelSerializer):
     class Meta:
         model = Currency
-        read_only_fields = ("code", "name", "icon")
+        read_only_fields = ("code", "name",)
         fields = read_only_fields
 
 
@@ -19,9 +19,7 @@ class WalletSerializer(serializers.ModelSerializer):
     class Meta:
         model = Wallet
         read_only_fields = ("id", "user_id")
-        fields = read_only_fields + (
-            "currency", "balance", "name", "description", "color", "goal",
-        )
+        fields = read_only_fields + ("currency", "balance", "name", "color", "goal",)
 
     currency = serializers.PrimaryKeyRelatedField(
         queryset=Currency.objects.all(), required=True
