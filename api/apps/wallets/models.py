@@ -7,8 +7,7 @@ from decorations.models import Color, Icon
 
 class Currency(models.Model):
     code = models.CharField(unique=True, primary_key=True, max_length=10)
-    name = models.CharField(max_length=32)
-    icon = models.ForeignKey(Icon, on_delete=models.SET_NULL, null=True)
+    name = models.CharField(max_length=64)
 
 
 class Wallet(models.Model):
