@@ -17,7 +17,6 @@ class Wallet(models.Model):
     currency = models.ForeignKey(Currency, on_delete=models.SET_NULL, null=True)
     balance = models.DecimalField(max_digits=20, decimal_places=2)
     name = models.CharField(max_length=128)
-    description = models.CharField(max_length=256, blank=True)
     color = models.ForeignKey(Color, on_delete=models.SET_DEFAULT, default="000000")
     goal = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
 
