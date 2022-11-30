@@ -44,11 +44,8 @@ class ExtendedWalletSerializer(WalletSerializer):
     last_updated = serializers.SerializerMethodField()
 
     def get_last_updated(self, obj: Wallet) -> float | None:
-        latest_transaction = Transaction.objects.filter(
-            Q(source_wallet=obj) | Q(target_wallet=obj)
-        ).order_by("-created_at").first()
-        if latest_transaction:
-            return latest_transaction.created_at.timestamp()
+        if obj.last_updated:
+            return obj.last_updated.timestamp()
 
         return None
 
