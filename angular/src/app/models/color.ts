@@ -1,3 +1,3 @@
 export interface Color {
-    hex_code: string
+    hexCode: string
 }
