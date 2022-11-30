@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Wallet } from 'src/app/models/wallet';
 import { AddWalletModalComponent } from '../add-wallet-modal/add-wallet-modal.component';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import { DataService } from 'src/app/services/data.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-wallets-page',
@@ -9,22 +11,10 @@ import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
   styleUrls: ['./wallets-page.component.css']
 })
 export class WalletsPageComponent implements OnInit {
-  wallets: Wallet[] = []
+  wallets$: Observable<Wallet[]> = this.ds.getUserWallets();
   selectedWallet: Wallet | undefined;
-  colors: string[] = ['#F6BA1B', '#7A3EF8', '#3E68D1', '#3EB5E8', '#EB4A82', '#555994']
   
-  constructor(private dialog: MatDialog) { 
-    for(let i = 0; i< 15; i++){
-      this.wallets.push({
-        id: null,
-        userId: '',
-        currency: 'USD',
-        balance: 10035.45,
-        name: 'Name',
-        color: this.colors[Math.floor(Math.random() * this.colors.length)],
-        lastUpdate: Date.now()
-      });
-    }
+  constructor(private dialog: MatDialog, public ds: DataService) { 
   }
 
   openModal() {
@@ -40,7 +30,7 @@ export class WalletsPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.selectedWallet = this.wallets[0];
+    this.ds.getUserWallets().subscribe(x => console.log(x));
   }
 
 }

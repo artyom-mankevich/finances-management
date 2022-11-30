@@ -42,8 +42,7 @@ import { CurrencySymbolPipe } from './pipes/currency-symbol.pipe';
       audience: environment.authAudience,
       httpInterceptor: {
         allowedList: [`${environment.baseUrl}${ApiEndpoints.wallets}`,
-        `${environment.baseUrl}${ApiEndpoints.colors}`,
-        `${environment.baseUrl}${ApiEndpoints.currencies}`]
+        `${environment.baseUrl}*`]
       }
     }),
     BrowserAnimationsModule,

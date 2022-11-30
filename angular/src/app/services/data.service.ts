@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { BehaviorSubject, map, Observable, tap } from 'rxjs';
 import { ApiEndpoints, environment } from 'src/environments/environment';
 import { Color } from '../models/color';
 import { Currency } from '../models/currency';
@@ -11,14 +11,19 @@ import { Wallet } from '../models/wallet';
 })
 export class DataService {
   private url: string = environment.baseUrl;
-
+  private _wallets: BehaviorSubject<Wallet[]>;
 
  
   constructor(private http: HttpClient) {
+    this._wallets = new BehaviorSubject<Wallet[]>([]);
+  }
+
+  private _getUserWallets(): void {
+    this.http.get<Wallet[]>(`${this.url}${ApiEndpoints.wallets}`).subscribe(wallets => this._wallets.next(wallets));
   }
 
   createWallet(wallet: Wallet) {
-    return this.http.post(`${this.url}${ApiEndpoints.wallets}`, wallet);
+    return this.http.post(`${this.url}${ApiEndpoints.wallets}`, wallet).pipe(tap(() => this._getUserWallets()));
   }
 
   getWalletColors(): Observable<string[]> {
@@ -30,6 +35,12 @@ export class DataService {
   }
 
   updateWallet(wallet: Wallet) {
-    return this.http.post(`${this.url}${ApiEndpoints.wallets}${wallet.id}/`, wallet);
+    return this.http.patch(`${this.url}${ApiEndpoints.wallets}${wallet.id}/`, wallet).pipe(tap(() => this._getUserWallets()));
+  }
+
+  getUserWallets(): Observable<Wallet[]>{
+    this._getUserWallets();
+    return this._wallets.asObservable();
+
   }
 }

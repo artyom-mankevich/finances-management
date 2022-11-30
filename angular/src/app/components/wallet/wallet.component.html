@@ -9,7 +9,7 @@
         </div>
         <div class="wallet-update-settings">
             
-            <p class="wallet-last-update">Last Update: <br> {{ wallet.lastUpdate | date: 'dd LLLL yyyy' }}</p>
+            <p class="wallet-last-update">Last Update: <br> {{ wallet.last_updated | date: 'dd LLLL yyyy' }}</p>
 
             <svg (click)="openWalletEditor();$event.stopPropagation()" class="wallet-settings-button" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="16" cy="16" r="15" stroke="white" stroke-width="2"/>
