@@ -28,7 +28,11 @@ class WalletSerializer(serializers.ModelSerializer):
         max_digits=30, decimal_places=10, coerce_to_string=False
     )
     goal = serializers.DecimalField(
-        max_digits=30, decimal_places=10, coerce_to_string=False, required=False
+        max_digits=30,
+        decimal_places=10,
+        coerce_to_string=False,
+        required=False,
+        allow_null=True
     )
 
 
