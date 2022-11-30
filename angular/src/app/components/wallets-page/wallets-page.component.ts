@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Wallet } from 'src/app/models/wallet';
 import { AddWalletModalComponent } from '../add-wallet-modal/add-wallet-modal.component';
-import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { DataService } from 'src/app/services/data.service';
 import { Observable } from 'rxjs';
 
@@ -13,8 +13,8 @@ import { Observable } from 'rxjs';
 export class WalletsPageComponent implements OnInit {
   wallets$: Observable<Wallet[]> = this.ds.getUserWallets();
   selectedWallet: Wallet | undefined;
-  
-  constructor(private dialog: MatDialog, public ds: DataService) { 
+
+  constructor(private dialog: MatDialog, public ds: DataService) {
   }
 
   openModal() {
@@ -30,7 +30,6 @@ export class WalletsPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.ds.getUserWallets().subscribe(x => console.log(x));
   }
 
 }
