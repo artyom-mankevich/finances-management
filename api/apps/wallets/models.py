@@ -14,10 +14,12 @@ class Wallet(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     user_id = models.CharField(max_length=64, db_index=True)
     currency = models.ForeignKey(Currency, on_delete=models.SET_NULL, null=True)
-    balance = models.DecimalField(max_digits=20, decimal_places=2)
+    balance = models.DecimalField(max_digits=30, decimal_places=10)
     name = models.CharField(max_length=128)
     color = models.ForeignKey(Color, on_delete=models.SET_DEFAULT, default="000000")
-    goal = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
+    goal = models.DecimalField(
+        max_digits=30, decimal_places=10, blank=True, null=True, default=None
+    )
 
 
 class Debt(models.Model):
@@ -32,7 +34,7 @@ class Transaction(models.Model):
     user_id = models.CharField(max_length=64, db_index=True)
     type = models.ForeignKey("TransactionType", on_delete=models.SET_NULL, null=True)
     category = models.ForeignKey("TransactionCategory", on_delete=models.SET_NULL, null=True)
-    amount = models.DecimalField(max_digits=20, decimal_places=2)
+    amount = models.DecimalField(max_digits=30, decimal_places=10)
     currency = models.ForeignKey(Currency, on_delete=models.SET_NULL, null=True)
     source_wallet = models.ForeignKey(
         Wallet,

@@ -25,10 +25,14 @@ class WalletSerializer(serializers.ModelSerializer):
         queryset=Currency.objects.all(), required=True
     )
     balance = serializers.DecimalField(
-        max_digits=20, decimal_places=2, coerce_to_string=False
+        max_digits=30, decimal_places=10, coerce_to_string=False
     )
     goal = serializers.DecimalField(
-        max_digits=20, decimal_places=2, coerce_to_string=False, required=False
+        max_digits=30,
+        decimal_places=10,
+        coerce_to_string=False,
+        required=False,
+        allow_null=True
     )
 
 
@@ -42,7 +46,7 @@ class ExtendedWalletSerializer(WalletSerializer):
     def get_last_updated(self, obj: Wallet) -> float | None:
         latest_transaction = Transaction.objects.filter(
             Q(source_wallet=obj) | Q(target_wallet=obj)
-        ).latest("created_at")
+        ).order_by("-created_at").first()
         if latest_transaction:
             return latest_transaction.created_at.timestamp()
 
@@ -94,7 +98,7 @@ class TransactionSerializer(serializers.ModelSerializer):
     type = TransactionTypeSerializer()
     category = TransactionCategorySerializer()
     amount = serializers.DecimalField(
-        max_digits=20, decimal_places=2, coerce_to_string=False
+        max_digits=30, decimal_places=10, coerce_to_string=False
     )
     source_wallet = WalletSerializer()
     target_wallet = WalletSerializer()
