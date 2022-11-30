@@ -1,5 +1,6 @@
 from rest_framework import viewsets
 
+from accounts.views import SetUserIdFromTokenOnCreateMixin
 from wallets.models import (
     Currency,
     Wallet,
@@ -23,21 +24,21 @@ class CurrencyViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = CurrencySerializer
 
 
-class WalletViewSet(viewsets.ModelViewSet):
+class WalletViewSet(viewsets.ModelViewSet, SetUserIdFromTokenOnCreateMixin):
     serializer_class = ExtendedWalletSerializer
 
     def get_queryset(self):
         return Wallet.objects.filter(user_id=self.request.user)
 
 
-class DebtViewSet(viewsets.ModelViewSet):
+class DebtViewSet(viewsets.ModelViewSet, SetUserIdFromTokenOnCreateMixin):
     serializer_class = DebtSerializer
 
     def get_queryset(self):
         return Debt.objects.filter(user_id=self.request.user)
 
 
-class TransactionViewSet(viewsets.ModelViewSet):
+class TransactionViewSet(viewsets.ModelViewSet, SetUserIdFromTokenOnCreateMixin):
     serializer_class = TransactionSerializer
 
     def get_queryset(self):
@@ -49,7 +50,7 @@ class TransactionTypeViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = TransactionTypeSerializer
 
 
-class TransactionCategoryViewSet(viewsets.ModelViewSet):
+class TransactionCategoryViewSet(viewsets.ModelViewSet, SetUserIdFromTokenOnCreateMixin):
     serializer_class = TransactionCategorySerializer
 
     def get_queryset(self):
