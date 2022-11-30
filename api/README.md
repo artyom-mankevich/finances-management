@@ -6,9 +6,7 @@ Run the following commands after starting the API docker container for the first
 time or after clearing the volume:
 
 ```bash
-docker exec -ti <container_name> bash
-python manage.py migrate
-python manage.py collectstatic
+docker exec -i trpo_api_1 bash init.sh
 ```
 
 ## API endpoints docs
