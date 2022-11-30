@@ -6,6 +6,15 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "scheme": "https://auth.expo.io/@username/TRPO_TOFI_Project",
+    "plugins": [
+      [
+        "react-native-auth0",
+        {
+          "domain": "dev-16fr5mnt2b0eess4.us.auth0.com"
+        }
+      ]
+    ],
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
