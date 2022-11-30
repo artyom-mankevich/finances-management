@@ -1,4 +1,5 @@
 from rest_framework.generics import RetrieveUpdateAPIView
+from rest_framework.mixins import CreateModelMixin
 from rest_framework.viewsets import GenericViewSet
 
 from accounts.models import AccountSettings, ChartSettings
@@ -17,3 +18,8 @@ class ChartSettingsViewSet(GenericViewSet, RetrieveUpdateAPIView):
 
     def get_queryset(self):
         return ChartSettings.objects.all().filter(user_id=self.request.user)
+
+
+class SetUserIdFromTokenOnCreateMixin(CreateModelMixin):
+    def perform_create(self, serializer):
+        serializer.save(user_id=self.request.user)
