@@ -4,7 +4,7 @@
             <p class="wallet-name">{{wallet.name}}</p>
             <div class="wallet-balance-wrapper">
                 <p class="wallet-balance"> {{(wallet.currency | currencySymbol ) + (wallet.balance | shortNumber)}}</p>
-                <p *ngIf="wallet.goal !== null" class="wallet-goal"> {{(wallet.currency | currencySymbol) + (wallet.goal | shortNumber)}}</p>
+                <p *ngIf="wallet.goal" class="wallet-goal"> {{(wallet.currency | currencySymbol) + (wallet.goal | shortNumber)}}</p>
             </div>
         </div>
         <div class="wallet-update-settings">

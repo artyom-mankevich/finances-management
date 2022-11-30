@@ -22,7 +22,6 @@ export class WalletsPageComponent implements OnInit {
         balance: 10035.45,
         name: 'Name',
         color: this.colors[Math.floor(Math.random() * this.colors.length)],
-        goal: null,
         lastUpdate: Date.now()
       });
     }

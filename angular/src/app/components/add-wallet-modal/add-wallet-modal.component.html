@@ -4,7 +4,7 @@
         <input type="text" placeholder="Name" formControlName="name" maxlength="50">
         <input list="currencies" placeholder="Currency" formControlName="currency">
         <datalist name="currencies" id="currencies">
-            <option *ngFor="let currency of currencies" value="{{currency.code}}">{{currency.name}}
+            <option *ngFor="let currency of dss.currencies" value="{{currency.code}}">{{currency.name}}
             </option>
         </datalist>
         <label for="balance-input">Balances</label>
@@ -17,7 +17,7 @@
                 <div *ngIf="color === wallet.color" class="selected-color"></div>
             </div>
         </div>
-        <button (click)="createWallet()" class="create-button" [style.backgroundColor]="wallet.color" type="submit"
+        <button (click)="modifyWallet()" class="create-button" [style.backgroundColor]="wallet.color" type="submit"
             [disabled]="!form.valid">{{ modalMode }}</button>
     </form>
     <div class="wallet-preview">

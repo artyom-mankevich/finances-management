@@ -18,7 +18,7 @@ export class DataService {
   }
 
   createWallet(wallet: Wallet) {
-    return this.http.post(`${this.url}${ApiEndpoints.wallets}`, wallet)
+    return this.http.post(`${this.url}${ApiEndpoints.wallets}`, wallet);
   }
 
   getWalletColors(): Observable<string[]> {
@@ -27,5 +27,9 @@ export class DataService {
 
   getCurrencies(): Observable<Currency[]> {
     return this.http.get<Currency[]>(`${this.url}${ApiEndpoints.currencies}`);
+  }
+
+  updateWallet(wallet: Wallet) {
+    return this.http.post(`${this.url}${ApiEndpoints.wallets}${wallet.id}/`, wallet);
   }
 }

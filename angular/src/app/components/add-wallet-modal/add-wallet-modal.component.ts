@@ -22,18 +22,15 @@ export class AddWalletModalComponent implements OnInit {
     balance: 0,
     name: 'Name',
     color: '#7A3EF8',
-    goal: null,
     lastUpdate: Date.now()
   }
 
-  currencies: Currency[] = [];
   form: FormGroup;
 
   modalMode: WalletModalModes = WalletModalModes.Create;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any,  private fb: FormBuilder, private ds: DataService, private dialogRef: MatDialogRef<AddWalletModalComponent>, public dss: DataStorageService) {
     
-    this.currencies = this.dss.currencies;
     this.form = this.fb.group({
       name: [, [Validators.required, Validators.maxLength(50)]],
       currency: [, Validators.required],
@@ -56,8 +53,7 @@ export class AddWalletModalComponent implements OnInit {
     })
 
     this.form.controls['currency'].valueChanges.subscribe(val => {
-      console.log(this.currencies);
-      if (this.currencies.map(c => c.code).includes(val)) {
+      if (this.dss.currencies.map(c => c.code).includes(val)) {
         this.wallet.currency = val;
       }
     })
@@ -106,8 +102,13 @@ export class AddWalletModalComponent implements OnInit {
     })
   }
 
-  createWallet(): void {
-    this.ds.createWallet(this.wallet).subscribe();
+  modifyWallet(): void {
+    if (this.modalMode === WalletModalModes.Create){
+      this.ds.createWallet(this.wallet).subscribe();
+    }
+    else if (this.modalMode === WalletModalModes.Update){
+       this.ds.updateWallet(this.wallet).subscribe();
+    }
     this.dialogRef.close();
   }
 

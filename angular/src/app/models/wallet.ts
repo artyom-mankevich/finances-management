@@ -5,6 +5,6 @@ export interface Wallet {
     balance: number,
     name: string,
     color: string,
-    goal: number | null,
+    goal?: number,
     lastUpdate: number | null
 }

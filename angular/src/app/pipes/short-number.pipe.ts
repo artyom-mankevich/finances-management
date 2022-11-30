@@ -5,16 +5,16 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class ShortNumberPipe implements PipeTransform {
 
-  transform(number: number, args?: any): any {
-    if (number === 0) { 
+  transform(val: number, args?: any): any {
+    if (val === 0) { 
       return '0'
     }
-    if (isNaN(number)) return null;
-    if (number === null) return null;
+    if (isNaN(val)) return null;
+    if (val === null) return null;
    
-    let abs = Math.abs(number);
+    let abs = Math.abs(val);
     const rounder = Math.pow(10, 1);
-    const isNegative = number < 0;
+    const isNegative = val < 0;
     let key = '';
 
     const powers = [
