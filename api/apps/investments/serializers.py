@@ -24,10 +24,10 @@ class InvestmentSerializer(serializers.ModelSerializer):
 
     wallet = WalletSerializer(read_only=True)
     start_amount = serializers.DecimalField(
-        max_digits=20, decimal_places=2, coerce_to_string=False
+        max_digits=30, decimal_places=10, coerce_to_string=False
     )
     current_amount = serializers.DecimalField(
-        max_digits=20, decimal_places=2, coerce_to_string=False
+        max_digits=30, decimal_places=10, coerce_to_string=False
     )
     percent = serializers.DecimalField(
         max_digits=6, decimal_places=2, coerce_to_string=False
@@ -50,5 +50,5 @@ class StockSerializer(serializers.ModelSerializer):
         )
 
     amount = serializers.DecimalField(
-        max_digits=20, decimal_places=2, coerce_to_string=False
+        max_digits=30, decimal_places=10, coerce_to_string=False
     )

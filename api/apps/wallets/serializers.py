@@ -25,10 +25,10 @@ class WalletSerializer(serializers.ModelSerializer):
         queryset=Currency.objects.all(), required=True
     )
     balance = serializers.DecimalField(
-        max_digits=20, decimal_places=2, coerce_to_string=False
+        max_digits=30, decimal_places=10, coerce_to_string=False
     )
     goal = serializers.DecimalField(
-        max_digits=20, decimal_places=2, coerce_to_string=False, required=False
+        max_digits=30, decimal_places=10, coerce_to_string=False, required=False
     )
 
 
@@ -94,7 +94,7 @@ class TransactionSerializer(serializers.ModelSerializer):
     type = TransactionTypeSerializer()
     category = TransactionCategorySerializer()
     amount = serializers.DecimalField(
-        max_digits=20, decimal_places=2, coerce_to_string=False
+        max_digits=30, decimal_places=10, coerce_to_string=False
     )
     source_wallet = WalletSerializer()
     target_wallet = WalletSerializer()
