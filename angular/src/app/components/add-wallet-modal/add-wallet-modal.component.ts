@@ -22,7 +22,7 @@ export class AddWalletModalComponent implements OnInit {
     balance: 0,
     name: 'Name',
     color: '#7A3EF8',
-    last_updated: Date.now()
+    lastUpdated: Date.now()
   }
 
   form: FormGroup;

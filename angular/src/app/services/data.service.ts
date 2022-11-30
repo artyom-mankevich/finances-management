@@ -20,8 +20,8 @@ export class DataService {
 
   private _getUserWallets(): void {
     this.http.get<Wallet[]>(`${this.url}${ApiEndpoints.wallets}`).subscribe(wallets => this._wallets.next(wallets.map(w => {
-      if (w.last_updated) {
-        w.last_updated *= 1000
+      if (w.lastUpdated) {
+        w.lastUpdated *= 1000
       }
       return w;
     })));
@@ -32,7 +32,7 @@ export class DataService {
   }
 
   getWalletColors(): Observable<string[]> {
-    return this.http.get<Color[]>(`${this.url}${ApiEndpoints.colors}`).pipe(map(colors => colors.map((color) => color.hex_code)));
+    return this.http.get<Color[]>(`${this.url}${ApiEndpoints.colors}`).pipe(map(colors => colors.map((color) => color.hexCode)));
   }
 
   getCurrencies(): Observable<Currency[]> {
