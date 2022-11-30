@@ -1,6 +1,7 @@
 import uuid
 
 from django.db import models
+from django.utils import timezone
 
 from decorations.models import Color, Icon
 
@@ -20,6 +21,7 @@ class Wallet(models.Model):
     goal = models.DecimalField(
         max_digits=30, decimal_places=10, blank=True, null=True, default=None
     )
+    last_updated = models.DateTimeField(auto_now=True)
 
 
 class Debt(models.Model):
@@ -50,6 +52,16 @@ class Transaction(models.Model):
     )
     description = models.CharField(max_length=256, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if self.source_wallet:
+            self.source_wallet.last_updated = timezone.now()
+            self.source_wallet.save()
+        if self.target_wallet:
+            self.target_wallet.last_updated = timezone.now()
+            self.target_wallet.save()
+
+        super().save(*args, **kwargs)
 
 
 class TransactionType(models.Model):
