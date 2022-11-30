@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Wallet } from 'src/app/models/wallet';
-import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { AddWalletModalComponent } from '../add-wallet-modal/add-wallet-modal.component';
 
 @Component({
@@ -21,8 +21,8 @@ export class WalletComponent implements OnInit {
   displayOnly: boolean = false;
 
   openWalletEditor() {
-    if (!this.displayOnly){
-      this.dialog.open(AddWalletModalComponent, {data : {wallet: {...this.wallet}}})
+    if (!this.displayOnly) {
+      this.dialog.open(AddWalletModalComponent, { data: { wallet: { ...this.wallet } } })
     }
   }
 

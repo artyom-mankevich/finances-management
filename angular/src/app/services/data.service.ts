@@ -13,13 +13,18 @@ export class DataService {
   private url: string = environment.baseUrl;
   private _wallets: BehaviorSubject<Wallet[]>;
 
- 
+
   constructor(private http: HttpClient) {
     this._wallets = new BehaviorSubject<Wallet[]>([]);
   }
 
   private _getUserWallets(): void {
-    this.http.get<Wallet[]>(`${this.url}${ApiEndpoints.wallets}`).subscribe(wallets => this._wallets.next(wallets));
+    this.http.get<Wallet[]>(`${this.url}${ApiEndpoints.wallets}`).subscribe(wallets => this._wallets.next(wallets.map(w => {
+      if (w.last_updated) {
+        w.last_updated *= 1000
+      }
+      return w;
+    })));
   }
 
   createWallet(wallet: Wallet) {
@@ -38,7 +43,7 @@ export class DataService {
     return this.http.patch(`${this.url}${ApiEndpoints.wallets}${wallet.id}/`, wallet).pipe(tap(() => this._getUserWallets()));
   }
 
-  getUserWallets(): Observable<Wallet[]>{
+  getUserWallets(): Observable<Wallet[]> {
     this._getUserWallets();
     return this._wallets.asObservable();
 
