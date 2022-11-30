@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AuthService } from '@auth0/auth0-angular';
+import { DataStorageService } from './services/data-storage.service';
 
 @Component({
   selector: 'app-root',
@@ -8,5 +9,5 @@ import { AuthService } from '@auth0/auth0-angular';
 })
 export class AppComponent {
   title = 'Trpo';
-  constructor(public auth: AuthService) {}
+  constructor(public auth: AuthService, private dss: DataStorageService) {}
 }

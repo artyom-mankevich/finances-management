@@ -6,6 +6,7 @@
     --main-blue: #3E68D1;
     --text-gray: #7D848F;
     --light-gray: #F1F2F2;
+    --purple: #7A3EF8;
 }
 html {
     font-family: 'Roboto', sans-serif;
@@ -13,6 +14,11 @@ html {
     height: 100%;
 
 }
+
+.mat-dialog-container {
+    border-radius: 15px !important;
+}
+
 body {
     margin: 0px;
     height: 100%;

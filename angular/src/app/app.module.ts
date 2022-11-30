@@ -12,13 +12,26 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HTTP_INTERCEPTORS } from  '@angular/common/http';
 
 import { SidemenuComponent } from './components/sidemenu/sidemenu.component';
+import { WalletsPageComponent } from './components/wallets-page/wallets-page.component';
+import { WalletComponent } from './components/wallet/wallet.component';
+import { ShortNumberPipe } from './pipes/short-number.pipe';
+import { MatDialogModule } from '@angular/material/dialog';
+import { AddWalletModalComponent } from './components/add-wallet-modal/add-wallet-modal.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { CurrencySymbolPipe } from './pipes/currency-symbol.pipe';
+
 @NgModule({
   declarations: [
     AppComponent,
     IndexComponent,
     HomeComponent,
     LoaderSpinnerComponent,
-    SidemenuComponent
+    SidemenuComponent,
+    WalletsPageComponent,
+    WalletComponent,
+    ShortNumberPipe,
+    AddWalletModalComponent,
+    CurrencySymbolPipe
   ],
   imports: [
     BrowserModule,
@@ -28,11 +41,14 @@ import { SidemenuComponent } from './components/sidemenu/sidemenu.component';
       clientId: environment.authClientId,
       audience: environment.authAudience,
       httpInterceptor: {
-        allowedList: [`${environment.baseUrl}${ApiEndpoints.test}`]
+        allowedList: [`${environment.baseUrl}${ApiEndpoints.wallets}`,
+        `${environment.baseUrl}*`]
       }
     }),
     BrowserAnimationsModule,
     HttpClientModule,
+    MatDialogModule,
+    ReactiveFormsModule,
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS,

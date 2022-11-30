@@ -1,0 +1,81 @@
+.wallet {
+    width: 245px;
+    height: 154px;
+    border-radius: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition-duration: 200ms;
+}
+
+.wallet-content {
+    width: 90%;
+    max-width: 90%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.wallet-update-settings,
+.wallet-name-balance {
+    display: flex;
+    justify-content: space-between;
+}
+
+.wallet-balance-settings {
+    align-items: flex-end;
+}
+
+.wallet-name,
+.wallet-balance,
+.wallet-goal,
+.wallet-last-update {
+    color: white;
+    width: max-content;
+    margin: 0;
+    display: block;
+    font-size: 1.25rem;
+}
+
+.wallet-balance-wrapper {
+    display: flex;
+    flex-direction: column;
+    padding-left: 10px;
+    align-items: flex-end;
+}
+
+.wallet-name {
+    font-weight: 400;
+    max-width: 135px;
+    word-wrap: break-word;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+
+.wallet-balance,
+.wallet-goal {
+    font-weight: bold;
+}
+
+.wallet-last-update {
+    font-size: 0.9rem;
+}
+
+.wallet-settings-button {
+    cursor: pointer;
+}
+
+.wallet-settings-button:hover {
+    transform: scale(1.05);
+}
+
+.wallet-goal {
+    font-size: 1rem;
+}
+
+.selected-wallet {
+    transform: scale(1.1);
+}

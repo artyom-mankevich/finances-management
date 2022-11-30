@@ -1,0 +1,28 @@
+.add-wallet-button {
+    cursor: pointer;
+    animation-duration: 200ms;
+}
+
+.add-wallet-button:hover {
+    transform: scale(1.02);
+    animation-duration: 200m;
+}
+
+.wallets {
+    margin: auto;
+    width: 95%;
+    display: grid;
+    column-gap: 58px;
+    justify-content: center;
+    row-gap: 40px;
+    grid-column: auto;
+    grid-template-columns: repeat(auto-fill, 245px);
+}
+
+.wallet-wrapper {
+    cursor: pointer;
+}
+
+h1 {
+    margin-left: 5%;
+}

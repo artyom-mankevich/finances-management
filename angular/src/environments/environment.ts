@@ -7,11 +7,13 @@ export const environment = {
   authDomain: 'dev-16fr5mnt2b0eess4.us.auth0.com',
   authClientId: 'Wur3VjLXBn65LDBssrSiug7h0hWDFf1H',
   authAudience: 'https://finances-be.com/',
-  baseUrl: 'http://localhost:8087/'
+  baseUrl: 'http://localhost:8087/v2/'
 };
 
 export enum ApiEndpoints  {
-  test = 'swagger-ui/'
+  wallets = 'wallets/',
+  colors = 'colors/',
+  currencies = 'currencies/'
 }
 
 /*
