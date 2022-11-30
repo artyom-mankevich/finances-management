@@ -4,6 +4,9 @@ import { Wallet } from 'src/app/models/wallet';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DataService } from 'src/app/services/data.service';
 import { WalletModalModes } from 'src/app/enums/walletModalModes';
+import { DataStorageService } from 'src/app/services/data-storage.service';
+import { Currency } from 'src/app/models/currency';
+import { getCurrencySymbol } from '@angular/common';
 
 @Component({
   selector: 'app-add-wallet-modal',
@@ -15,7 +18,7 @@ export class AddWalletModalComponent implements OnInit {
   wallet: Wallet = {
     id: null,
     userId: '',
-    currency: '$',
+    currency: 'USD',
     balance: 0,
     name: 'Name',
     color: '#7A3EF8',
@@ -23,20 +26,18 @@ export class AddWalletModalComponent implements OnInit {
     lastUpdate: Date.now()
   }
 
-  colors: string[] = ['#7A3EF8', '#F6BA1B', '#3E68D1', '#3EB5E8', '#EB4A82', '#555994'];
-  currencies = ['$', '€'];
+  currencies: Currency[] = [];
   form: FormGroup;
 
   modalMode: WalletModalModes = WalletModalModes.Create;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any,  private fb: FormBuilder, private ds: DataService, private dialogRef: MatDialogRef<AddWalletModalComponent>) {
-
-   
-
-    this.form = fb.group({
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any,  private fb: FormBuilder, private ds: DataService, private dialogRef: MatDialogRef<AddWalletModalComponent>, public dss: DataStorageService) {
+    
+    this.currencies = this.dss.currencies;
+    this.form = this.fb.group({
       name: [, [Validators.required, Validators.maxLength(50)]],
       currency: [, Validators.required],
-      balance: [, [Validators.required, Validators.max(99999999999999999)]],
+      balance: [, [Validators.required, Validators.max(99999999999999999), Validators.min(-99999999999999999)]],
       goal: []
     })
 
@@ -55,7 +56,8 @@ export class AddWalletModalComponent implements OnInit {
     })
 
     this.form.controls['currency'].valueChanges.subscribe(val => {
-      if (this.currencies.includes(val)) {
+      console.log(this.currencies);
+      if (this.currencies.map(c => c.code).includes(val)) {
         this.wallet.currency = val;
       }
     })

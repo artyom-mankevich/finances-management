@@ -18,7 +18,7 @@ export class WalletsPageComponent implements OnInit {
       this.wallets.push({
         id: null,
         userId: '',
-        currency: '$',
+        currency: 'USD',
         balance: 10035.45,
         name: 'Name',
         color: this.colors[Math.floor(Math.random() * this.colors.length)],

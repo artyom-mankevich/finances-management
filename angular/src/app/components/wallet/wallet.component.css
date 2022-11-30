@@ -10,15 +10,16 @@
 
 .wallet-content {
     width: 90%;
+    max-width: 90%;
     height: 90%;
     display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
-.wallet-name-update,
-.wallet-balance-settings {
+.wallet-update-settings,
+.wallet-name-balance {
     display: flex;
-    flex-direction: column;
-    flex-grow: 1;
     justify-content: space-between;
 }
 
@@ -33,13 +34,14 @@
     color: white;
     width: max-content;
     margin: 0;
-    display: inline-block;
+    display: block;
     font-size: 1.25rem;
 }
 
 .wallet-balance-wrapper {
     display: flex;
     flex-direction: column;
+    padding-left: 10px;
     align-items: flex-end;
 }
 

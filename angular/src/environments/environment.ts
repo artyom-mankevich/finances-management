@@ -11,7 +11,9 @@ export const environment = {
 };
 
 export enum ApiEndpoints  {
-  wallets = 'wallets/'
+  wallets = 'wallets/',
+  colors = 'colors/',
+  currencies = 'currencies/'
 }
 
 /*

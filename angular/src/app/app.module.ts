@@ -18,6 +18,7 @@ import { ShortNumberPipe } from './pipes/short-number.pipe';
 import { MatDialogModule } from '@angular/material/dialog';
 import { AddWalletModalComponent } from './components/add-wallet-modal/add-wallet-modal.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { CurrencySymbolPipe } from './pipes/currency-symbol.pipe';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     WalletsPageComponent,
     WalletComponent,
     ShortNumberPipe,
-    AddWalletModalComponent
+    AddWalletModalComponent,
+    CurrencySymbolPipe
   ],
   imports: [
     BrowserModule,
@@ -39,7 +41,9 @@ import { ReactiveFormsModule } from '@angular/forms';
       clientId: environment.authClientId,
       audience: environment.authAudience,
       httpInterceptor: {
-        allowedList: [`${environment.baseUrl}${ApiEndpoints.wallets}`]
+        allowedList: [`${environment.baseUrl}${ApiEndpoints.wallets}`,
+        `${environment.baseUrl}${ApiEndpoints.colors}`,
+        `${environment.baseUrl}${ApiEndpoints.currencies}`]
       }
     }),
     BrowserAnimationsModule,
