@@ -1,7 +1,7 @@
 export enum Pages {
     Overview = 'Overview',
     Transactions = 'Transactions',
-    Wallet = 'Wallet',
+    Wallets = 'Wallets',
     Analytics = 'Analytics',
     Investments = 'Investments',
     Debts = 'Debts',

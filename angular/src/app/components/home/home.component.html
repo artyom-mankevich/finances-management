@@ -1,6 +1,9 @@
 <div class="container">
-    <app-sidemenu></app-sidemenu>
+    <app-sidemenu (pageChangeEvent)="changePage($event)"></app-sidemenu> 
     <main>
-        <p>home works!</p>
+        <header>
+            <h1 *ngIf="auth.user$ | async as user">Welcome back, <b>{{ user.name }}</b></h1>
+        </header>
+        <app-wallets-page  *ngIf="currentPage === pages.Wallets" @fadeIn></app-wallets-page>
     </main>
 </div>

@@ -22,8 +22,7 @@ export class IndexComponent implements OnInit {
   highlightedFeature = Features.Transactions;
   constructor(public auth: AuthService, private ds: DataService) { }
 
-  ngOnInit(): void { 
-    this.ds.getTest().subscribe();
+  ngOnInit(): void {
   }
 
   selectFeature(feature: Features) {

@@ -26,8 +26,8 @@
                     <span class="menu-option-name">{{ pages.Transactions }}</span>
                 </div>
             </li>
-            <li [ngClass]="{ 'selected-option': currentPage===pages.Wallet }" class="menu-option"
-                (click)="changeCurrentPage(pages.Wallet)">
+            <li [ngClass]="{ 'selected-option': currentPage===pages.Wallets }" class="menu-option"
+                (click)="changeCurrentPage(pages.Wallets)">
                 <div class="selected-box"></div>
                 <div class="item-icon-name">
                     <svg width="24" height="20" viewBox="0 0 24 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -42,7 +42,7 @@
                             </clipPath>
                         </defs>
                     </svg>
-                    <span class="menu-option-name">{{ pages.Wallet }}</span>
+                    <span class="menu-option-name">{{ pages.Wallets }}</span>
                 </div>
             </li>
             <li [ngClass]="{ 'selected-option': currentPage===pages.Analytics }" class="menu-option"
