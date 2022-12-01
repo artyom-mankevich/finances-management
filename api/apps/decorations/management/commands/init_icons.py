@@ -29,6 +29,9 @@ class Command(BaseCommand):
             "brain",
             "gift",
             "gas-pump",
+            "arrow-up",
+            "arrow-down",
+            "arrows-rotate",
         ]
         self.stdout.write(self.style.SUCCESS("START - Creating missing Icon objects"))
 
