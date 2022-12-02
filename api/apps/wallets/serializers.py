@@ -74,7 +74,7 @@ class TransactionCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = TransactionCategory
         read_only_fields = ("id", "user_id",)
-        fields = read_only_fields + ("name", "icon", "color", "currency",)
+        fields = read_only_fields + ("name", "icon", "color",)
 
 
 class TransactionSerializer(serializers.ModelSerializer):
