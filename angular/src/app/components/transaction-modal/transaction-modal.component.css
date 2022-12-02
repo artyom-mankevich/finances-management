@@ -1,0 +1,109 @@
+.transaction-builder {
+    display: flex;
+    flex-direction: column;
+}
+.transaction-input {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.create-button {
+    width: 140px;
+    height: 45px;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 50px;
+    transition-duration: 200ms;
+    cursor: pointer;
+    margin: 25px auto 0 auto;
+}
+
+.create-button:hover {
+    transform: scale(1.03);
+}
+
+.create-button:active {
+    filter: grayscale(0.15);
+}
+
+.create-button:disabled,
+.create-button[disabled] {
+    background: var(--text-gray) !important;
+    cursor: default;
+}
+
+
+.transaction-type-button {
+    color: white;
+    height: 60px;
+    margin: 0;
+    flex-grow: 1;
+    font-size: 1.25rem;
+    line-height: 40px;
+    padding: 0 20px 0 20px;
+    transition-duration: 100ms;
+    border: none;
+}
+
+.reversed-wrapper {
+    flex-direction: row-reverse;
+}
+.data-input {
+    padding: 0px 20px 20px 20px;
+}
+
+.transaction-type-select {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--light-gray);
+}
+
+.unselected-transaction-type {
+    color: var(--text-gray);
+    background-color: white !important;
+}
+
+.one-line-inputs-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+
+}
+
+.one-line-input {
+    margin: 0;
+}
+
+input {
+    flex-grow: 1;
+    height: 36px;
+    border-radius: 5px;
+    border: 1px solid var(--text-gray);
+    margin-top: 15px;
+    text-indent: 15px;
+}
+
+label {
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+input:focus {
+    outline-color: var(--main-blue);
+    --webkit-appearance: none;
+    --moz-appearance: textfield;
+}

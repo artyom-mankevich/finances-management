@@ -1,1 +1,33 @@
-<p>transaction-modal works!</p>
+<section class="transaction-builder">
+    <section class="transaction-type-select">
+        <button [ngClass]="{'unselected-transaction-type': transactionType.value !== selectedType  }"
+            [ngStyle]="{'background-color' : transaction.category.color }"
+            class="transaction-type-button" (click)="selectType(transactionType.value)"
+            *ngFor="let transactionType of transactionTypes | keyvalue">{{ transactionType.key }}</button>
+    </section>
+    <div class="data-input">
+        <form class="transaction-input">
+            <label for="">Amount</label>
+            <input type="number" placeholder="Amount">
+            <label for="description">Info</label>
+            <div class="one-line-inputs-wrapper" [ngClass]="{'reversed-wrapper' : selectedType === transactionTypes.Expense}">
+                <input class="one-line-input" type="text" name="category" placeholder="Category"
+                    *ngIf="(selectedType === transactionTypes.Expense) || (selectedType === transactionTypes.Income)">
+                <mat-icon fontIcon="material-icons-round" *ngIf="(selectedType === transactionTypes.Expense)">east
+                </mat-icon>
+                <input class="one-line-input"
+                    *ngIf="(selectedType === transactionTypes.Expense) || (selectedType === transactionTypes.Transfer)"
+                    type="text" name="sourceWallet" placeholder="Source wallet">
+                <mat-icon fontIcon="material-icons-round" *ngIf="(selectedType !== transactionTypes.Expense)">east
+                </mat-icon>
+                <input class="one-line-input"
+                    *ngIf="(selectedType === transactionTypes.Income) || (selectedType === transactionTypes.Transfer)"
+                    type="text" name="targetWallet" placeholder="Target wallet">
+            </div>
+            <input type="text" name="description" placeholder="Description (optional)">
+        </form>
+        <button (click)="modifyTransaction()" class="create-button" [style.backgroundColor]="transaction.category.color"
+            type="submit" [disabled]="!form.valid">{{ modalMode }}
+        </button>
+    </div>
+</section>

@@ -97,6 +97,7 @@
 .transaction-description-icon {
     display: flex;
     align-items: center;
+    transition-duration: 100ms;
 }
 
 .transaction-category {

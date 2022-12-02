@@ -22,6 +22,10 @@ html {
     border-radius: 15px !important;
 }
 
+.transaction-dialog .mat-dialog-container {
+    padding: 0px;
+}
+
 body {
     margin: 0px;
     height: 100%;

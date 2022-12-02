@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TransactionFilters } from 'src/app/enums/transactionFilters';
 import { Transaction } from 'src/app/models/transaction';
@@ -46,7 +46,7 @@ export class TransactionsPageComponent implements OnInit {
   }
 
   openModal() {
-    this.dialog.open(TransactionModalComponent);
+    this.dialog.open(TransactionModalComponent, {panelClass: 'transaction-dialog'});
   }
 
 }
