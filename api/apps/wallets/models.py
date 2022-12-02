@@ -66,7 +66,7 @@ class Transaction(models.Model):
 
 class TransactionType(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
-    income = models.BooleanField()
+    income = models.BooleanField(null=True)
     icon = models.ForeignKey(Icon, on_delete=models.SET_NULL, null=True)
 
 
@@ -76,4 +76,3 @@ class TransactionCategory(models.Model):
     name = models.CharField(max_length=128)
     icon = models.ForeignKey(Icon, on_delete=models.SET_NULL, null=True)
     color = models.ForeignKey(Color, on_delete=models.SET_DEFAULT, default="000000")
-    currency = models.ForeignKey(Currency, on_delete=models.SET_NULL, null=True)
