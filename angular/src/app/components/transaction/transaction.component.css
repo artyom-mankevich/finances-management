@@ -1,3 +1,104 @@
 .transaction-wrapper {
-    margin: 50px 0 50px 0;
+    margin: 40px 0 40px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition-duration: 200ms;
+    height:  70px;
+}
+
+.transaction-main-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.transaction-description,
+.transaction-category {
+    margin: 0;
+    width: max-content;
+}
+
+.transaction-amount,
+.transaction-description {
+    font-weight: bold;
+    font-size: 1.25rem;
+}
+
+
+.transaction-date {
+    color: var(--text-gray);
+}
+
+.mat-button {
+    border: none;
+    padding: 0px;
+    color: var(--text-gray);
+
+}
+
+.transaction-edit {
+    height: 25px;
+    font-size: 25px;
+    width: 25px;
+}
+
+.transaction-edit:hover {
+    transform: scale(1.05);
+    color: var(--main-blue);
+    cursor: pointer;
+}
+
+.transaction-edit:active {
+    filter: grayscale(0.1);
+}
+
+.transaction-menu {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 300px;
+}
+
+.transaction-edit-menu {
+    visibility: hidden;
+    opacity: 0;
+    transition-duration: 100ms;
+}
+
+.transaction-wrapper:hover .transaction-edit-menu{
+    visibility: visible;
+    opacity: 1;
+    transition-duration: 100ms;
+}
+
+.transaction-wrapper:hover {
+    transform: scale(1.02);
+}
+
+.transaction-type-icon {
+    background-color: var(--transaction-type-background);
+    border-radius: 30px;
+    width: 54px;
+    height: 54px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.transaction-type-icon mat-icon{
+    width: 43px;
+    height: 43px;
+    font-size: 43px;
+    color: var(--transaction-income);
+}
+
+.transaction-description-icon {
+    display: flex;
+    align-items: center;
+}
+
+.transaction-category {
+    margin-left: 5px;
 }

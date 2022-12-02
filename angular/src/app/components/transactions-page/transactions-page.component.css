@@ -11,6 +11,7 @@
     padding: 0 20px 0 20px;
     transition-duration: 200ms;
 }
+
 .transaction-filter-button:hover,
 .add-transaction-button:hover {
     cursor: pointer;
@@ -19,11 +20,11 @@
     border-color: var(--main-blue);
     transform: scale(1.05);
 }
+
 .transaction-filter-button:active,
 .add-transaction-button:active {
     filter: grayscale(0.15);
 }
-
 
 .add-transaction-button {
     background-color: var(--main-blue);
@@ -38,8 +39,11 @@
 }
 
 .transactions-menu {
-    width: 80%;
     display: flex;
     justify-content: space-between;
-    margin: auto;
+}
+
+.transactions-page-wrapper { 
+    width: 90%;
+    margin:auto;
 }

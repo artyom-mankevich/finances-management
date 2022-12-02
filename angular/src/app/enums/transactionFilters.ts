@@ -1,5 +1,6 @@
 export enum TransactionFilters {
     All = 'All',
-    Spendings = 'Spendings',
-    Income = 'Income'
+    Income = 'Income',
+    Expense = 'Expense',
+    Transfer = 'Transfer'
 }

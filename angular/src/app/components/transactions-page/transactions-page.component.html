@@ -1,10 +1,11 @@
-<section class="transactions-menu">
-    <div class="filters-wrapper">
-        <button [ngClass]="{ 'selected-filter': selectedFilter === transactionFilter.key }"  class="transaction-filter-button" *ngFor="let transactionFilter of transactionFilters | keyvalue" (click)="selectFilter(transactionFilter.value)">{{ transactionFilter.value}}</button>
+<div class="transactions-page-wrapper">
+    <section class="transactions-menu">
+        <div class="filters-wrapper">
+            <button [ngClass]="{ 'selected-filter': selectedFilter === transactionFilter.key }"  class="transaction-filter-button" *ngFor="let transactionFilter of transactionFilters | keyvalue" (click)="selectFilter(transactionFilter.value)">{{ transactionFilter.value}}</button>
+        </div>
+        <button class="add-transaction-button" (click)="openModal()">Add Transaction</button>
+    </section>
+    <div class="transaction-wrapper" *ngFor="let transaction of transactions">
+        <app-transaction [transaction]="transaction" ></app-transaction>
     </div>
-    <button class="add-transaction-button" (click)="openModal()">Add Transaction</button>
-</section>
-<div class="transaction-wrapper" *ngFor="let transaction of transactions">
-    <app-transaction [transaction]="transaction" ></app-transaction>
-
 </div>

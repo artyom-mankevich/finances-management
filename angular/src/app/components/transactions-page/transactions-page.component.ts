@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TransactionFilters } from 'src/app/enums/transactionFilters';
 import { Transaction } from 'src/app/models/transaction';
+import { DataStorageService } from 'src/app/services/data-storage.service';
 import { TransactionModalComponent } from '../transaction-modal/transaction-modal.component';
 
 @Component({
@@ -17,7 +18,7 @@ export class TransactionsPageComponent implements OnInit {
   selectFilter(filter: TransactionFilters) {
     this.selectedFilter = filter;
   }
-  constructor(private dialog: MatDialog) { 
+  constructor(private dialog: MatDialog, private dss: DataStorageService) { 
     for (let i = 0; i < 15; i++){
       this.transactions.push({
         id: null,
@@ -26,13 +27,13 @@ export class TransactionsPageComponent implements OnInit {
         type: {
           id: '',
           income: true,
-          icon: 'house'},
+          icon: 'arrow_upwards'},
         category: { 
           id: null,
           userId: '', 
           name: 'House',
-          icon: 'string',
-          color: '#3E68D1'},
+          icon: 'cottage',
+          color: dss.colors[Math.floor(Math.random() * dss.colors.length)]},
         amount: 1000,
         currency: 'USD',
         sourceWallet: null,

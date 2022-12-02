@@ -1,14 +1,27 @@
 <section class="transaction-wrapper">
-    <div class="transaction-icon-wrapper">
-        <svg *ngIf="transaction.type.income === false" width="53" height="53" viewBox="0 0 53 53" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="26.5" cy="26.5" r="26.5" fill="#F8F9FD"/>
-            <path d="M27.2279 25.0444C22.9912 23.9956 21.6287 22.9111 21.6287 21.2222C21.6287 19.2844 23.5138 17.9333 26.668 17.9333C29.9902 17.9333 31.222 19.4444 31.334 21.6667H35.4587C35.3281 18.6089 33.3684 15.8 29.4676 14.8933V11H23.8684V14.84C20.2475 15.5867 17.336 17.8267 17.336 21.2578C17.336 25.3644 20.9008 27.4089 26.1081 28.6C30.7741 29.6667 31.7073 31.2311 31.7073 32.8844C31.7073 34.1111 30.7927 36.0667 26.668 36.0667C22.8232 36.0667 21.3114 34.4311 21.1061 32.3333H17C17.224 36.2267 20.2849 38.4133 23.8684 39.1422V43H29.4676V39.1778C33.1071 38.52 36 36.5111 36 32.8667C36 27.8178 31.4646 26.0933 27.2279 25.0444Z" fill="#F29912"/>
-        </svg>
+    <div class="transaction-main-info">
+        <div class="transaction-type-icon">
+            <mat-icon  fontIcon="material-icons-round">{{ transaction.type.icon }}</mat-icon>
+        </div>
+        <div>
+            <p class="transaction-description">{{ transaction.description }}</p>
+            <div [ngStyle]="{'color': transaction.category.color}" class="transaction-description-icon">
+                <mat-icon fontIcon="material-icons-round" >{{ transaction.category.icon }}</mat-icon>
+                <p class="transaction-category">{{ transaction.category.name }}</p>
+            </div>
+        </div>
     </div>
-    <div>
-        <p> {{transaction.description }}</p>
-        <p> {{transaction.category.name }}</p>
-
+    <div class="transaction-menu">
+        <div class="transaction-edit-menu">
+            <button class="mat-button transaction-edit"> 
+                <mat-icon fontIcon="material-icons-round" inline="true">edit</mat-icon>
+            </button>
+            <button class="mat-button transaction-edit">
+                <mat-icon fontIcon="material-icons-round" inline="true">close</mat-icon>
+            </button>
+        </div>
+        <p class="transaction-date">{{ transaction.createdAt | date: 'dd LLLL yyyy' }}</p>
+        <p class="transaction-amount">{{ (transaction.currency | currencySymbol ) + (transaction.amount | shortNumber) }}</p>
     </div>
-  
+ 
 </section>
