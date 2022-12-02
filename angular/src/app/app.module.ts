@@ -19,6 +19,9 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { AddWalletModalComponent } from './components/add-wallet-modal/add-wallet-modal.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CurrencySymbolPipe } from './pipes/currency-symbol.pipe';
+import { TransactionsPageComponent } from './components/transactions-page/transactions-page.component';
+import { TransactionComponent } from './components/transaction/transaction.component';
+import { TransactionModalComponent } from './components/transaction-modal/transaction-modal.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +34,10 @@ import { CurrencySymbolPipe } from './pipes/currency-symbol.pipe';
     WalletComponent,
     ShortNumberPipe,
     AddWalletModalComponent,
-    CurrencySymbolPipe
+    CurrencySymbolPipe,
+    TransactionsPageComponent,
+    TransactionComponent,
+    TransactionModalComponent
   ],
   imports: [
     BrowserModule,

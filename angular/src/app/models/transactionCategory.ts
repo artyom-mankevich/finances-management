@@ -3,6 +3,5 @@ export interface TransactionCategory {
     userId: string, 
     name: string,
     icon: string,
-    color: string,
-    currency: string
+    color: string
 }

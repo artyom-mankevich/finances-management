@@ -12,5 +12,5 @@ export interface Transaction {
     currency: string,
     sourceWallet: Wallet | null,
     targetWallet: Wallet | null,
-    description: string
+    description?: string
 }
