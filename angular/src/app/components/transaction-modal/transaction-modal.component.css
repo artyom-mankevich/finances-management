@@ -80,13 +80,19 @@
     margin: 0;
 }
 
-input {
+input,
+select {
     flex-grow: 1;
     height: 36px;
     border-radius: 5px;
     border: 1px solid var(--text-gray);
     margin-top: 15px;
-    text-indent: 15px;
+    text-indent: 15px;  
+}
+
+select {
+    width: 100px;
+    height: 40px;
 }
 
 label {

@@ -1,0 +1,94 @@
+.colors {
+    display: flex;
+    flex-direction: row;
+    margin-top: 15px;
+}
+
+.color {
+    width: 25px;
+    height: 25px;
+    border-radius: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.color:hover {
+    cursor: pointer;
+}
+
+.selected-color {
+    width: 8px;
+    height: 8px;
+    border-radius: 10px;
+    background-color: white;
+}
+
+.category-input {
+    display: flex;
+    flex-direction: column;
+}
+
+.category-builder {
+    display: flex;
+    flex-direction: column;
+}
+
+.create-button {
+    width: 140px;
+    height: 45px;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 50px;
+    margin-top: 25px;
+    transition-duration: 200ms;
+    cursor: pointer;
+    background-color: red;
+}
+
+mat-icon {
+    color: var(--text-gray);
+    margin: 5px;
+    width: 30px;
+    height: 30px;
+    font-size: 30px;
+    transition-duration: 100ms;
+}
+
+mat-icon:hover {
+    cursor: pointer;
+}
+
+.available-icons {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.unselected-icon {
+    color: var(--text-gray) !important;
+    transition-duration: 100ms;
+
+}
+
+input {
+    flex-grow: 1;
+    height: 36px;
+    border-radius: 5px;
+    border: 1px solid var(--text-gray);
+    margin-top: 15px;
+    text-indent: 15px;
+}
+
+label {
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+input:focus {
+    outline-color: var(--main-blue);
+    --webkit-appearance: none;
+    --moz-appearance: textfield;
+}

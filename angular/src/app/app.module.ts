@@ -23,6 +23,7 @@ import { TransactionsPageComponent } from './components/transactions-page/transa
 import { TransactionComponent } from './components/transaction/transaction.component';
 import { TransactionModalComponent } from './components/transaction-modal/transaction-modal.component';
 import { MatIconModule } from '@angular/material/icon';
+import { CategoryModalComponent } from './components/category-modal/category-modal.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { MatIconModule } from '@angular/material/icon';
     CurrencySymbolPipe,
     TransactionsPageComponent,
     TransactionComponent,
-    TransactionModalComponent
+    TransactionModalComponent,
+    CategoryModalComponent
   ],
   imports: [
     BrowserModule,

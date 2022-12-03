@@ -1,4 +1,11 @@
 <div class="transactions-page-wrapper">
+    <h2>Categories</h2>
+    <section class="categories">
+        <button class="category category-add-button" (click)="openCategoryModal()" >+</button>
+        <div [style.backgroundColor]="category.color" class="category" (click)="openCategoryModal(category)" *ngFor="let category of categories | slice:0:maxCategories">{{ category.name }}</div>
+        <button class="category show-all-hide-button" (click)="showAllCateogires()">{{ showAllText }}</button>
+    </section>
+    <h2>Transactions</h2>
     <section class="transactions-menu">
         <div class="filters-wrapper">
             <button [ngClass]="{ 'selected-filter': selectedFilter === transactionFilter.key }"  class="transaction-filter-button" *ngFor="let transactionFilter of transactionFilters | keyvalue" (click)="selectFilter(transactionFilter.value)">{{ transactionFilter.value}}</button>

@@ -1,0 +1,25 @@
+<section class="category-builder">
+    <form class="category-input" [formGroup]="form">
+        <label for="">Name</label>
+        <input type="text" placeholder="Name" formControlName="name">
+    </form>
+    <label for="">Icon</label>
+    <div class="available-icons">
+        <mat-icon (click)="selectIcon('cottage')" [ngClass]="{ 'unselected-icon' : category.icon !== 'cottage'}"
+            fontIcon="material-icons-round" [style.color]="category.color">cottage</mat-icon>
+        <mat-icon (click)="selectIcon('palette')" [ngClass]="{ 'unselected-icon' : category.icon !== 'palette'}"
+            fontIcon="material-icons-round" [style.color]="category.color">palette</mat-icon>
+    </div>
+    <label for="">Color</label>
+    <div class="colors" id="colors">
+        <div *ngFor="let color of dss.colors" class="color" [style.backgroundColor]="color"
+            (click)="changeColor(color)">
+            <div *ngIf="color === category.color" class="selected-color"></div>
+        </div>
+    </div>
+    <div>
+        <button (click)="modifyCategory()" class="create-button" [style.backgroundColor]="category.color" type="submit"
+            [disabled]="!form.valid">{{ modalMode }}
+        </button>
+    </div>
+</section>
