@@ -1,5 +1,6 @@
 import uuid
 from decimal import Decimal
+from random import choice
 
 from django.db import models, transaction
 from django.utils import timezone
@@ -109,7 +110,12 @@ class Transaction(models.Model):
     @transaction.atomic
     def create_balance_transaction(cls, wallet_new, wallet_old):
         other_category, created = TransactionCategory.objects.get_or_create(
-            name="Other", user_id=wallet_new.user_id, defaults={"icon": None, }
+            name="Other", user_id=wallet_new.user_id, defaults={
+                "icon": None,
+                "color": Color.objects.get(
+                    pk=choice(Color.objects.values_list("pk", flat=True))
+                ),
+            }
         )
         if wallet_old.balance > wallet_new.balance:
             cls.objects.create(
@@ -134,4 +140,4 @@ class TransactionCategory(models.Model):
     user_id = models.CharField(max_length=64, db_index=True)
     name = models.CharField(max_length=128)
     icon = models.ForeignKey(Icon, on_delete=models.SET_NULL, null=True)
-    color = models.ForeignKey(Color, on_delete=models.SET_DEFAULT, default="#000000")
+    color = models.ForeignKey(Color, on_delete=models.SET_NULL, null=True)

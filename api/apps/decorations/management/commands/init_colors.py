@@ -8,7 +8,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         colors = [
-            "#7A3EF8", "#F6BA1B", "#3E68D1", "#3EB5E8", "#EB4A82", "#555994", "#000000",
+            "#7A3EF8", "#F6BA1B", "#3E68D1", "#3EB5E8", "#EB4A82", "#555994",
         ]
         self.stdout.write(self.style.SUCCESS("START - Creating missing Color objects"))
 
