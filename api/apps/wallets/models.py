@@ -42,7 +42,7 @@ class Wallet(models.Model):
 
     @transaction.atomic
     def save(self, *args, **kwargs):
-        update = self.pk is not None
+        update = Wallet.objects.filter(pk=self.pk).exists()
         if update:
             old_obj = Wallet.objects.get(pk=self.pk)
             if old_obj.balance != self.balance:

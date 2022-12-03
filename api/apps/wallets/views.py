@@ -1,5 +1,6 @@
 from django.db.models import QuerySet
-from django_filters.rest_framework import DjangoFilterBackend
+from django_filters import CharFilter
+from django_filters.rest_framework import DjangoFilterBackend, FilterSet
 from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
 
@@ -39,10 +40,30 @@ class DebtViewSet(viewsets.ModelViewSet, SetUserIdFromTokenOnCreateMixin):
         return Debt.objects.filter(user_id=self.request.user)
 
 
+class TransactionFilter(FilterSet):
+    type = CharFilter(method="filter_type")
+
+    class Meta:
+        model = Transaction
+        fields = ("category", "target_wallet", "source_wallet", "type")
+
+    def filter_type(self, queryset, name, value):
+        if value == "income":
+            return queryset.filter(source_wallet=None)
+        elif value == "expense":
+            return queryset.filter(target_wallet=None)
+        elif value == "transfer":
+            return queryset.filter(
+                source_wallet__isnull=False, target_wallet__isnull=False
+            )
+
+
 class TransactionViewSet(viewsets.ModelViewSet, SetUserIdFromTokenOnCreateMixin):
     serializer_class = TransactionSerializer
+
     filter_backends = (DjangoFilterBackend,)
-    filterset_fields = ("category", "target_wallet", "source_wallet")
+    filterset_class = TransactionFilter
+
     pagination_class = PageNumberPagination
     pagination_class.page_size = 15
 
