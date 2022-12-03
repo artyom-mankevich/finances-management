@@ -7,7 +7,9 @@ class Command(BaseCommand):
     help = "Create missing Color objects in the database."
 
     def handle(self, *args, **options):
-        colors = ["#7A3EF8", "#F6BA1B", "#3E68D1", "#3EB5E8", "#EB4A82", "#555994", ]
+        colors = [
+            "#7A3EF8", "#F6BA1B", "#3E68D1", "#3EB5E8", "#EB4A82", "#555994", "#000000",
+        ]
         self.stdout.write(self.style.SUCCESS("START - Creating missing Color objects"))
 
         counter = 0
