@@ -13,7 +13,6 @@ from wallets.views import (
     WalletViewSet,
     CurrencyViewSet,
     TransactionViewSet,
-    TransactionTypeViewSet,
     TransactionCategoryViewSet,
     DebtViewSet
 )
@@ -48,9 +47,6 @@ router.register(r"currencies", CurrencyViewSet, basename="currencies")
 router.register(r"wallets", WalletViewSet, basename="wallets")
 router.register(r"debts", DebtViewSet, basename="debts")
 router.register(r"transactions", TransactionViewSet, basename="transactions")
-router.register(
-    r"transaction-types", TransactionTypeViewSet, basename="transaction-types"
-)
 router.register(
     r"transaction-categories",
     TransactionCategoryViewSet,

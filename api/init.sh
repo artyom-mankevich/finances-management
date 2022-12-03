@@ -17,6 +17,3 @@ echo
 
 python manage.py init_currencies
 echo
-
-python manage.py init_transaction_types
-echo
