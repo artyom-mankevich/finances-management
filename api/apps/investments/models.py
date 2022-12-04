@@ -6,20 +6,6 @@ from decorations.models import Color
 from wallets.models import Wallet, Currency
 
 
-
-class Investment(models.Model):
-    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
-    user_id = models.CharField(max_length=64, db_index=True)
-    wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
-    start_amount = models.DecimalField(max_digits=30, decimal_places=10)
-    current_amount = models.DecimalField(max_digits=30, decimal_places=10)
-    percent = models.DecimalField(max_digits=6, decimal_places=2)
-    name = models.CharField(max_length=128)
-    description = models.CharField(max_length=256, blank=True)
-    color = models.ForeignKey(Color, on_delete=models.SET_DEFAULT, default="000000")
-    currency = models.ForeignKey(Currency, on_delete=models.SET_NULL, null=True)
-
-
 class Stock(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     user_id = models.CharField(max_length=64, db_index=True)
@@ -28,3 +14,4 @@ class Stock(models.Model):
     color = models.ForeignKey(Color, on_delete=models.SET_DEFAULT, default="000000")
     description = models.CharField(max_length=256, blank=True)
     currency = models.ForeignKey(Currency, on_delete=models.SET_NULL, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
