@@ -6,12 +6,12 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "scheme": "https://auth.expo.io/@username/TRPO_TOFI_Project",
+    "scheme": "com.trpo",
     "plugins": [
       [
         "react-native-auth0",
         {
-          "domain": "dev-16fr5mnt2b0eess4.us.auth0.com"
+          "domain": "https://dev-16fr5mnt2b0eess4.us.auth0.com"
         }
       ]
     ],
@@ -30,6 +30,7 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.trpo",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
@@ -37,6 +38,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "21087310-f784-4487-9b7f-24734a063507"
+      }
     }
   }
 }
