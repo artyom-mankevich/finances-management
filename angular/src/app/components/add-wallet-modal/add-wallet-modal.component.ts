@@ -7,11 +7,15 @@ import { WalletModalModes } from 'src/app/enums/walletModalModes';
 import { DataStorageService } from 'src/app/services/data-storage.service';
 import { Currency } from 'src/app/models/currency';
 import { getCurrencySymbol } from '@angular/common';
+import { WhiteSpaceValidator } from 'src/app/validators/whitespace.validator';
+import { CurrencyValidator } from 'src/app/validators/currency.validator';
 
 @Component({
   selector: 'app-add-wallet-modal',
   templateUrl: './add-wallet-modal.component.html',
-  styleUrls: ['./add-wallet-modal.component.css']
+  styleUrls: ['./add-wallet-modal.component.css'],
+  providers: [CurrencyValidator]
+
 })
 
 export class AddWalletModalComponent implements OnInit {
@@ -29,15 +33,16 @@ export class AddWalletModalComponent implements OnInit {
 
   modalMode: WalletModalModes = WalletModalModes.Create;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any,  private fb: FormBuilder, private ds: DataService, private dialogRef: MatDialogRef<AddWalletModalComponent>, public dss: DataStorageService) {
-    
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private fb: FormBuilder, private ds: DataService, private dialogRef: MatDialogRef<AddWalletModalComponent>, public dss: DataStorageService, private cv: CurrencyValidator) {
+
     this.form = this.fb.group({
-      name: [, [Validators.required, Validators.maxLength(50)]],
-      currency: [, Validators.required],
+      name: [, [Validators.required, Validators.maxLength(50), WhiteSpaceValidator.noWhiteSpace]],
+      currency: [, [Validators.required, this.cv.allowedCurrency.bind(this.cv)]],
       balance: [, [Validators.required, Validators.max(99999999999999999), Validators.min(-99999999999999999)]],
       goal: []
     })
 
+    // , 
     if (this.data) {
       this.wallet = data.wallet;
       this.modalMode = WalletModalModes.Update;
@@ -49,7 +54,7 @@ export class AddWalletModalComponent implements OnInit {
     }
 
     this.form.controls['name'].valueChanges.subscribe(val => {
-      this.wallet.name = val;
+      this.wallet.name = val.trim();
     })
 
     this.form.controls['currency'].valueChanges.subscribe(val => {
@@ -89,13 +94,13 @@ export class AddWalletModalComponent implements OnInit {
       }
     })
 
-   
+
   }
 
 
   updateAllFormFields() {
     this.form.patchValue({
-      name : this.wallet.name,
+      name: this.wallet.name,
       currency: this.wallet.currency,
       balance: this.wallet.balance,
       goal: this.wallet.goal
@@ -103,11 +108,11 @@ export class AddWalletModalComponent implements OnInit {
   }
 
   modifyWallet(): void {
-    if (this.modalMode === WalletModalModes.Create){
+    if (this.modalMode === WalletModalModes.Create) {
       this.ds.createWallet(this.wallet).subscribe();
     }
-    else if (this.modalMode === WalletModalModes.Update){
-       this.ds.updateWallet(this.wallet).subscribe();
+    else if (this.modalMode === WalletModalModes.Update) {
+      this.ds.updateWallet(this.wallet).subscribe();
     }
     this.dialogRef.close();
   }

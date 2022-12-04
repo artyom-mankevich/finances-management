@@ -13,6 +13,14 @@ docker exec -i trpo_api_1 bash init.sh
 
 You can find the API endpoints docs at http://localhost:<your_port>/swagger-ui/
 
+## Database access
+
+You can access the database using the following command:
+
+```bash
+docker exec -ti trpo_db_1 psql -U <POSTGRES_USER> -d <POSTGRES_DB>
+```
+
 ## Default values initialization
 
 ### Color
