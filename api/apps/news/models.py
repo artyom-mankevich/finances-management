@@ -33,6 +33,13 @@ class NewsFilter(models.Model):
         news_filter.tickers.append(new_ticker)
         news_filter.save()
 
+    @classmethod
+    @transaction.atomic
+    def remove_ticker(cls, user_id, ticker):
+        news_filter = cls.objects.select_for_update().get(user_id=user_id)
+        news_filter.tickers.remove(ticker)
+        news_filter.save()
+
 
 class NewsIndustry(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

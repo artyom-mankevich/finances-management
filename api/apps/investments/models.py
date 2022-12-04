@@ -29,3 +29,9 @@ class Stock(models.Model):
                 NewsFilter.update_ticker(self.user_id, obj_old.ticker, self.ticker)
 
         super().save(*args, **kwargs)
+
+    @transaction.atomic
+    def delete(self, *args, **kwargs):
+        if Stock.objects.filter(ticker=self.ticker).count() == 1:
+            NewsFilter.remove_ticker(self.user_id, self.ticker)
+        super().delete(*args, **kwargs)
