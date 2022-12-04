@@ -1,23 +1,10 @@
 import uuid
 
-from django.db import models
+from django.db import models, transaction
 
 from decorations.models import Color
+from news.models import NewsFilter
 from wallets.models import Wallet, Currency
-
-
-
-class Investment(models.Model):
-    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
-    user_id = models.CharField(max_length=64, db_index=True)
-    wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
-    start_amount = models.DecimalField(max_digits=30, decimal_places=10)
-    current_amount = models.DecimalField(max_digits=30, decimal_places=10)
-    percent = models.DecimalField(max_digits=6, decimal_places=2)
-    name = models.CharField(max_length=128)
-    description = models.CharField(max_length=256, blank=True)
-    color = models.ForeignKey(Color, on_delete=models.SET_DEFAULT, default="000000")
-    currency = models.ForeignKey(Currency, on_delete=models.SET_NULL, null=True)
 
 
 class Stock(models.Model):
@@ -27,4 +14,24 @@ class Stock(models.Model):
     ticker = models.CharField(max_length=10)
     color = models.ForeignKey(Color, on_delete=models.SET_DEFAULT, default="000000")
     description = models.CharField(max_length=256, blank=True)
-    currency = models.ForeignKey(Currency, on_delete=models.SET_NULL, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    @transaction.atomic
+    def save(self, *args, **kwargs):
+        update = Stock.objects.filter(id=self.id).exists()
+
+        if not update:
+            NewsFilter.add_ticker(self.user_id, self.ticker)
+        else:
+            obj_old = Stock.objects.select_for_update().get(id=self.id)
+
+            if obj_old.ticker != self.ticker:
+                NewsFilter.update_ticker(self.user_id, obj_old.ticker, self.ticker)
+
+        super().save(*args, **kwargs)
+
+    @transaction.atomic
+    def delete(self, *args, **kwargs):
+        if Stock.objects.filter(ticker=self.ticker, user_id=self.user_id).count() == 1:
+            NewsFilter.remove_ticker(self.user_id, self.ticker)
+        super().delete(*args, **kwargs)

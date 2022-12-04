@@ -17,3 +17,6 @@ echo
 
 python manage.py init_currencies
 echo
+
+python manage.py init_news_industries
+echo
