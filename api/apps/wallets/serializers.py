@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from rest_framework import serializers
+from rest_framework import serializers, exceptions
 
 from wallets.models import (
     Currency, Wallet, Transaction, TransactionCategory, Debt
@@ -83,7 +83,6 @@ class TransactionSerializer(serializers.ModelSerializer):
         )
 
     created_at = serializers.SerializerMethodField()
-    category = serializers.SerializerMethodField()
     source_amount = serializers.DecimalField(
         max_digits=30,
         decimal_places=10,
@@ -98,36 +97,32 @@ class TransactionSerializer(serializers.ModelSerializer):
         required=False,
         allow_null=True
     )
-    source_wallet = serializers.SerializerMethodField()
-    target_wallet = serializers.SerializerMethodField()
+    source_wallet = serializers.PrimaryKeyRelatedField(
+        queryset=Wallet.objects.all(), required=False, allow_null=True
+    )
+    target_wallet = serializers.PrimaryKeyRelatedField(
+        queryset=Wallet.objects.all(), required=False, allow_null=True
+    )
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        data["category"] = TransactionCategorySerializer(
+            instance.category
+        ).data if instance.category else None
+
+        data["source_wallet"] = WalletSerializer(
+            instance.source_wallet
+        ).data if instance.source_wallet else None
+
+        data["target_wallet"] = WalletSerializer(
+            instance.target_wallet
+        ).data if instance.target_wallet else None
+
+        return data
 
     def get_created_at(self, obj: Transaction) -> float:
         return datetime.combine(obj.created_at, datetime.min.time()).timestamp() * 1000
-
-    def get_category(self, obj):
-        if obj.category:
-            return TransactionCategorySerializer(obj.category).data
-        return None
-
-    def get_source_wallet(self, obj):
-        if obj.source_wallet:
-            return WalletSerializer(obj.source_wallet).data
-        return None
-
-    def get_target_wallet(self, obj):
-        if obj.target_wallet:
-            return WalletSerializer(obj.target_wallet).data
-        return None
-
-    def create(self, validated_data):
-        self._set_validated_data_from_initial(validated_data)
-
-        return super().create(validated_data)
-
-    def update(self, instance, validated_data):
-        self._set_validated_data_from_initial(validated_data)
-
-        return super().update(instance, validated_data)
 
     def validate(self, data):
         if not (
@@ -171,31 +166,21 @@ class TransactionSerializer(serializers.ModelSerializer):
         return value
 
     def validate_source_wallet(self, value):
-        user_id = self.context["request"].user
+        user_id = str(self.context["request"].user)
 
-        if not Wallet.objects.filter(pk=value, user_id=user_id).exists():
-            raise serializers.ValidationError(
-                {"source_wallet": f"Wallet '{value}' does not exist"}
+        if not value.user_id == user_id:
+            raise exceptions.PermissionDenied(
+                "You do not have permission to perform this action."
             )
 
         return value
 
     def validate_target_wallet(self, value):
-        user_id = self.context["request"].user
+        user_id = str(self.context["request"].user)
 
-        if not Wallet.objects.filter(pk=value, user_id=user_id).exists():
-            raise serializers.ValidationError(
-                {"target_wallet": f"Wallet '{value}' does not exist"}
-            )
-
-        return value
-
-    def validate_category(self, value):
-        user_id = self.context["request"].user
-
-        if not TransactionCategory.objects.filter(pk=value, user_id=user_id).exists():
-            raise serializers.ValidationError(
-                {"category": f"Transaction category '{value}' does not exist"}
+        if not value.user_id == user_id:
+            raise exceptions.PermissionDenied(
+                "You do not have permission to perform this action."
             )
 
         return value
@@ -280,19 +265,3 @@ class TransactionSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {"category": "Category should not be specified during transfer"}
             )
-
-    def _set_validated_data_from_initial(self, validated_data):
-        if self.initial_data.get("category"):
-            validated_data["category"] = TransactionCategory.objects.get(
-                pk=self.initial_data["category"]
-            )
-        if self.initial_data.get("source_wallet"):
-            validated_data["source_wallet"] = Wallet.objects.get(
-                pk=self.initial_data["source_wallet"]
-            )
-        if self.initial_data.get("target_wallet"):
-            validated_data["target_wallet"] = Wallet.objects.get(
-                pk=self.initial_data["target_wallet"]
-            )
-
-        return validated_data

@@ -117,6 +117,18 @@ class Transaction(models.Model):
 
         super().save(*args, **kwargs)
 
+    @transaction.atomic
+    def delete(self, *args, **kwargs):
+        if self.source_wallet and not self.target_wallet:
+            self.source_wallet.deposit(self.source_amount)
+        elif self.target_wallet and not self.source_wallet:
+            self.target_wallet.withdraw(self.target_amount)
+        elif self.source_wallet and self.target_wallet:
+            self.source_wallet.deposit(self.source_amount)
+            self.target_wallet.withdraw(self.target_amount)
+
+        super().delete(*args, **kwargs)
+
     @classmethod
     @transaction.atomic
     def create_balance_transaction(cls, wallet_new, wallet_old):
