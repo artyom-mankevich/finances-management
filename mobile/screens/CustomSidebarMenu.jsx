@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import * as Linking from 'expo-linking';
 import {
     SafeAreaView,
@@ -14,54 +14,65 @@ import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import config from "../auth0.config";
 import * as AuthSession from "expo-auth-session";
-import jwtDecode from "jwt-decode";
 import * as React from "react";
-
-
-const auth0ClientId = config.clientId;
-const authorizationEndpoint = `${config.domain}/authorize`;
+import {fetchUserInfoAsync} from "expo-auth-session";
 
 const useProxy = Platform.select({ web: false, default: true });
-const redirectUri = AuthSession.makeRedirectUri({ useProxy });
 
+const discovery = {
+    authorizationEndpoint: `${config.domain}/authorize`,
+    tokenEndpoint: `${config.domain}/token`,
+    userInfoEndpoint: `${config.domain}/userinfo`,
+}
 
 const CustomSidebarMenu = (props) => {
     const [name, setName] = useState(null);
+    const [avatar, setAvatar] = useState(null);
 
     const [request, response, promptAsync] = AuthSession.useAuthRequest(
         {
-            redirectUri,
-            clientId: auth0ClientId,
-            responseType: "id_token",
-            scopes: ["openid", "profile", "email", "offline_access"],
+            redirectUri: AuthSession.makeRedirectUri({
+                useProxy,
+            }),
             extraParams: {
+                auth_type: "rerequest",
+                audience: config.audience,
                 nonce: "nonce",
             },
+            clientId: config.clientId,
+            responseType: AuthSession.ResponseType.Token,
+            scopes: ['openid', 'profile', 'email', 'offline_access'],
         },
-        { authorizationEndpoint }
+        discovery
     );
 
-    console.log(`Redirect URL: ${redirectUri}`);
+    const onLogin = async () => {
+        const result = await promptAsync({
+            useProxy
+        });
 
-    useEffect(() => {
-        if (response) {
-            if (response.error) {
-                Alert.alert(
-                    "Authentication error",
-                    response.params.error_description || "something went wrong"
-                );
-                return;
-            }
-            if (response.type === "success") {
-                const jwtToken = response.params.id_token;
-                const userInfo = jwtDecode(jwtToken);
-                Alert.alert("Logged in!", `Hi ${userInfo.name}!`);
-                const { name } = userInfo;
-                setName(name);
-            }
+        if (result.type !== "success") {
+            Alert.alert("Error", "Authentication failed");
+            return;
         }
-    }, [response]);
+        const accessToken = result.params.access_token;
 
+        const userInfo = await fetchUserInfoAsync(
+            {
+                accessToken,
+                domain: config.domain,
+                clientId: config.clientId,
+            },
+            discovery
+        )
+        setName(userInfo.name);
+        setAvatar(userInfo.picture);
+    }
+
+    const onLogout = () => {
+        setName(null);
+        setAvatar(null);
+    }
 
     return (
         <SafeAreaView style={{ flex: 1 }}
@@ -71,7 +82,7 @@ const CustomSidebarMenu = (props) => {
                     style={styles.customHeader}
                     source={require('../assets/background.png')}>
                     <Image
-                        source={require('../assets/c71.png')}
+                        source={avatar ? {uri: avatar} : require('../assets/c71.png')}
                         style={styles.sideMenuProfileIcon} />
                     <Text style={styles.textHeader}>
                         {name && <Text>{name}</Text>}
@@ -92,7 +103,7 @@ const CustomSidebarMenu = (props) => {
                     }
                     pressColor={"#f6f8ff"}
                     label={() => <Text style={{fontSize: 18, color: '#363636FF'}}>Logout</Text>}
-                    onPress={() => setName(null)}
+                    onPress={onLogout}
                 />
             }
             {!name &&
@@ -102,7 +113,7 @@ const CustomSidebarMenu = (props) => {
                     }
                     pressColor={"#f6f8ff"}
                     label={() => <Text style={{fontSize: 18, color: '#363636FF'}}>Login</Text>}
-                    onPress={async () => promptAsync({ useProxy })}
+                    onPress={onLogin}
                 />
             }
             <DrawerItem
