@@ -165,13 +165,13 @@ class TransactionSerializer(serializers.ModelSerializer):
         return data
 
     def validate_source_amount(self, value):
-        if value <= 0:
+        if value is not None and value <= 0:
             raise serializers.ValidationError("Source amount must be greater than 0")
 
         return value
 
     def validate_target_amount(self, value):
-        if value <= 0:
+        if value is not None and value <= 0:
             raise serializers.ValidationError("Target amount must be greater than 0")
 
         return value
