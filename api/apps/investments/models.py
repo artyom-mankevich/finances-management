@@ -13,5 +13,4 @@ class Stock(models.Model):
     ticker = models.CharField(max_length=10)
     color = models.ForeignKey(Color, on_delete=models.SET_DEFAULT, default="000000")
     description = models.CharField(max_length=256, blank=True)
-    currency = models.ForeignKey(Currency, on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)

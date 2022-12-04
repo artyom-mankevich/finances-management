@@ -15,7 +15,6 @@ class StockSerializer(serializers.ModelSerializer):
             "ticker",
             "color",
             "description",
-            "currency",
         )
 
     amount = serializers.DecimalField(
