@@ -80,6 +80,10 @@
     margin: 0;
 }
 
+input {
+    text-indent: 15px;  
+}
+
 input,
 select {
     flex-grow: 1;
@@ -87,7 +91,7 @@ select {
     border-radius: 5px;
     border: 1px solid var(--text-gray);
     margin-top: 15px;
-    text-indent: 15px;  
+    background-color: transparent;
 }
 
 select {
@@ -106,6 +110,10 @@ input[type=number]::-webkit-outer-spin-button {
     -moz-appearance: none;
     appearance: none;
     margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance:textfield;
 }
 
 input:focus {

@@ -1,7 +1,10 @@
 <section class="transaction-wrapper">
     <div class="transaction-main-info">
         <div class="transaction-type-icon">
-            <mat-icon  fontIcon="material-icons-round">{{ transaction.type.icon }}</mat-icon>
+            <mat-icon  fontIcon="material-icons-round" *ngIf="transactionType == transactionTypes.Income">arrow_upwards</mat-icon>
+            <mat-icon  fontIcon="material-icons-round" *ngIf="transactionType == transactionTypes.Expense">arrow_downwards</mat-icon>
+            <mat-icon  fontIcon="material-icons-round" *ngIf="transactionType == transactionTypes.Transfer">sync</mat-icon>
+
         </div>
         <div>
             <p class="transaction-description">{{ transaction.description }}</p>
@@ -21,7 +24,7 @@
             </button>
         </div>
         <p class="transaction-date">{{ transaction.createdAt | date: 'dd LLLL yyyy' }}</p>
-        <p class="transaction-amount">{{ (transaction.currency | currencySymbol ) + (transaction.amount | shortNumber) }}</p>
+        <p *ngIf="transaction.sourceAmount" class="transaction-amount">{{ (transaction.currency | currencySymbol ) + (transaction.sourceAmount | shortNumber) }}</p>
     </div>
  
 </section>

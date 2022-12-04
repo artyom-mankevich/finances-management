@@ -5,10 +5,8 @@
     </form>
     <label for="">Icon</label>
     <div class="available-icons">
-        <mat-icon (click)="selectIcon('cottage')" [ngClass]="{ 'unselected-icon' : category.icon !== 'cottage'}"
-            fontIcon="material-icons-round" [style.color]="category.color">cottage</mat-icon>
-        <mat-icon (click)="selectIcon('palette')" [ngClass]="{ 'unselected-icon' : category.icon !== 'palette'}"
-            fontIcon="material-icons-round" [style.color]="category.color">palette</mat-icon>
+        <mat-icon *ngFor="let icon of icons$ | async" (click)="selectIcon(icon.code)" [ngClass]="{ 'unselected-icon' : category.icon !== icon.code}"
+            fontIcon="material-icons-round" [style.color]="category.color">{{ icon.code }}</mat-icon>
     </div>
     <label for="">Color</label>
     <div class="colors" id="colors">

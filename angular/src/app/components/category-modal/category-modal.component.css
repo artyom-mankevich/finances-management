@@ -65,6 +65,7 @@ mat-icon:hover {
 .available-icons {
     display: flex;
     flex-wrap: wrap;
+    max-width: 300px;
 }
 
 .unselected-icon {
@@ -91,4 +92,10 @@ input:focus {
     outline-color: var(--main-blue);
     --webkit-appearance: none;
     --moz-appearance: textfield;
+}
+
+.create-button:disabled,
+.create-button[disabled] {
+    background: var(--text-gray) !important;
+    cursor: default;
 }

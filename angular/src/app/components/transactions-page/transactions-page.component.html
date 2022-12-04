@@ -2,7 +2,7 @@
     <h2>Categories</h2>
     <section class="categories">
         <button class="category category-add-button" (click)="openCategoryModal()" >+</button>
-        <div [style.backgroundColor]="category.color" class="category" (click)="openCategoryModal(category)" *ngFor="let category of categories | slice:0:maxCategories">{{ category.name }}</div>
+        <div [style.backgroundColor]="category.color" class="category" (click)="openCategoryModal(category)" *ngFor="let category of categories$ | async  | slice:0:maxCategories">{{ category.name }}</div>
         <button class="category show-all-hide-button" (click)="showAllCateogires()">{{ showAllText }}</button>
     </section>
     <h2>Transactions</h2>
@@ -12,7 +12,7 @@
         </div>
         <button class="add-transaction-button" (click)="openModal()">Add Transaction</button>
     </section>
-    <div class="transaction-wrapper" *ngFor="let transaction of transactions">
+    <div class="transaction-wrapper" *ngFor="let transaction of transactions$ | async">
         <app-transaction [transaction]="transaction" ></app-transaction>
     </div>
 </div>

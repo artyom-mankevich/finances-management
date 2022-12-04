@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { TransactionTypes } from 'src/app/enums/transactionTypes';
 import { Transaction } from 'src/app/models/transaction';
 import { TransactionModalComponent } from '../transaction-modal/transaction-modal.component';
 
@@ -11,13 +12,23 @@ import { TransactionModalComponent } from '../transaction-modal/transaction-moda
 export class TransactionComponent implements OnInit {
   @Input()
   transaction! : Transaction;
-  constructor(private dialog: MatDialog) { }
+  transactionType: TransactionTypes = TransactionTypes.Income;
+  transactionTypes = TransactionTypes;
+  constructor(private dialog: MatDialog) { 
+  
+  }
 
   openTransactionModal() {
     this.dialog.open(TransactionModalComponent,  { data: {transaction: {...this.transaction}}, panelClass: 'transaction-dialog'})
   }
 
   ngOnInit(): void {
+    if (this.transaction.sourceWallet && this.transaction.targetWallet) {
+      this.transactionType = TransactionTypes.Transfer;
+    }
+    else {
+      this.transactionType  = this.transaction.sourceWallet ? TransactionTypes.Expense : TransactionTypes.Income;
+    }
   }
 
 }

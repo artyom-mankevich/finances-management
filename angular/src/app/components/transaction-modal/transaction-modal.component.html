@@ -9,8 +9,10 @@
         <form class="transaction-input" [formGroup]="form">
             <label for="">Amount</label>
             <div class="one-line-inputs-wrapper">
-                <input class="one-line-input" type="number" placeholder="Amount" formControlName="amount">
-                <input class="one-line-input" *ngIf="selectedType === transactionTypes.Transfer" type="number"
+                <input *ngIf="selectedType !== transactionTypes.Income" class="one-line-input" type="number" placeholder="Source Amount" formControlName="sourceAmount">
+                <mat-icon fontIcon="material-icons-round" *ngIf="(selectedType === transactionTypes.Transfer)">east
+                </mat-icon>
+                <input class="one-line-input" *ngIf="selectedType !== transactionTypes.Expense" type="number"
                     placeholder="Target Amount" formControlName="targetAmount">
 
             </div>
@@ -20,20 +22,28 @@
                 <select class="one-line-input" type="text" name="category" placeholder="Category"
                     *ngIf="(selectedType === transactionTypes.Expense) || (selectedType === transactionTypes.Income)"
                     formControlName="category">
+                    <option [ngValue]="null" disabled selected hidden>Category</option>
+                    <option *ngFor="let category of categories$ | async" [ngValue]="category">{{category.name}}
+                    </option>
                 </select>
                 <mat-icon fontIcon="material-icons-round" *ngIf="(selectedType === transactionTypes.Expense)">east
                 </mat-icon>
-                <select class="one-line-input" list="wallets"
+                <select class="one-line-input"
                     *ngIf="(selectedType === transactionTypes.Expense) || (selectedType === transactionTypes.Transfer)"
-                    type="text" name="sourceWallet" placeholder="Source wallet" formControlName="sourceWallet">
+                    formControlName="sourceWallet">
+                    <option [ngValue]="null" disabled selected hidden>Source wallet</option>
+
                     <option *ngFor="let wallet of wallets$ | async" [ngValue]="wallet">{{wallet.name}}
                     </option>
                 </select>
                 <mat-icon fontIcon="material-icons-round" *ngIf="(selectedType !== transactionTypes.Expense)">east
                 </mat-icon>
-                <select class="one-line-input" list="wallets"
+                <select class="one-line-input"
                     *ngIf="(selectedType === transactionTypes.Income) || (selectedType === transactionTypes.Transfer)"
-                    type="text" name="targetWallet" placeholder="Target wallet" formControlName="targetWallet">
+                    formControlName="targetWallet">
+                    
+                    <option [ngValue]="null" disabled selected hidden>Target wallet</option>
+
                     <option *ngFor="let wallet of wallets$ | async" [ngValue]="wallet">{{wallet.name}}
                     </option>
                 </select>

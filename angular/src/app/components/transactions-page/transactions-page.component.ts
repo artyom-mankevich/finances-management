@@ -1,9 +1,11 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
 import { TransactionFilters } from 'src/app/enums/transactionFilters';
 import { Transaction } from 'src/app/models/transaction';
 import { TransactionCategory } from 'src/app/models/transactionCategory';
 import { DataStorageService } from 'src/app/services/data-storage.service';
+import { DataService } from 'src/app/services/data.service';
 import { CategoryModalComponent } from '../category-modal/category-modal.component';
 import { TransactionModalComponent } from '../transaction-modal/transaction-modal.component';
 
@@ -16,8 +18,8 @@ export class TransactionsPageComponent implements OnInit {
   transactionFilters = TransactionFilters;
   transactionFiltersValues = Object.keys(this.transactionFilters);
   selectedFilter: TransactionFilters = TransactionFilters.All;
-  transactions: Transaction[] = []
-  categories: TransactionCategory[] = [];
+  transactions$: Observable<Transaction[]> = this.ds.getUserTransactions();
+  categories$: Observable<TransactionCategory[]> = this.ds.getUserCategories();
   maxCategories: number = 5;
   showAllCategories: boolean = false;
   showAllText: string = 'Show All';
@@ -25,36 +27,32 @@ export class TransactionsPageComponent implements OnInit {
   selectFilter(filter: TransactionFilters) {
     this.selectedFilter = filter;
   }
-  constructor(private dialog: MatDialog, private dss: DataStorageService) { 
-    for (let i = 0; i < 15; i++){
-      this.transactions.push({
-        id: null,
-        userId: '',
-        createdAt: Date.now(),
-        type: {
-          id: '',
-          income: true,
-          icon: 'arrow_upwards'},
-        category: { 
-          id: null,
-          userId: '', 
-          name: 'House',
-          icon: 'cottage',
-          color: dss.colors[Math.floor(Math.random() * dss.colors.length)]},
-        amount: 1000,
-        currency: 'USD',
-        sourceWallet: null,
-        targetWallet: null,
-        description: 'Renovation'
-      })
-      this.categories.push({
-        id: null,
-        userId: '',
-        name: Math.random().toString(36).slice(2, 7),
-        icon: 'cottage',
-        color:  dss.colors[Math.floor(Math.random() * dss.colors.length)]
-      })
-    }
+  constructor(private dialog: MatDialog, private dss: DataStorageService, private ds: DataService) { 
+    // for (let i = 0; i < 15; i++){
+    //   // this.transactions.push({
+    //   //   id: null,
+    //   //   userId: '',
+    //   //   createdAt: Date.now(),
+    //   //   category: { 
+    //   //     id: null,
+    //   //     userId: '', 
+    //   //     name: 'House',
+    //   //     icon: 'cottage',
+    //   //     color: dss.colors[Math.floor(Math.random() * dss.colors.length)]},
+    //   //   amount: 1000,
+    //   //   currency: 'USD',
+    //   //   sourceWallet: null,
+    //   //   targetWallet: null,
+    //   //   description: 'Renovation'
+    //   // })
+    //   // this.categories.push({
+    //   //   id: null,
+    //   //   userId: '',
+    //   //   name: Math.random().toString(36).slice(2, 7),
+    //   //   icon: 'cottage',
+    //   //   color:  dss.colors[Math.floor(Math.random() * dss.colors.length)]
+    //   // })
+    // }
   }
   ngOnInit(): void {
   }
@@ -74,7 +72,7 @@ export class TransactionsPageComponent implements OnInit {
       this.showAllText = 'Show All'
     }
     else {
-      this.maxCategories = this.categories.length;
+      this.maxCategories = Infinity
       this.showAllText = 'Hide'
 
     }

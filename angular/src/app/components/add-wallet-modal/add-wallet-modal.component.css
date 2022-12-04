@@ -112,6 +112,10 @@ input:focus {
     --moz-appearance: textfield;
 }
 
+input[type=number] {
+    -moz-appearance:textfield;
+}
+
 @media only screen and (max-width: 750px) {
     .wallet-builder {
         flex-direction: column-reverse;
