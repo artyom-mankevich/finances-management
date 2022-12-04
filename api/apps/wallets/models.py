@@ -96,13 +96,24 @@ class Transaction(models.Model):
 
     @transaction.atomic
     def save(self, *args, **kwargs):
+        update = Transaction.objects.filter(pk=self.pk).exists()
+
+        source_amount = self.source_amount
+        target_amount = self.target_amount
+        if update:
+            old_obj = Transaction.objects.select_for_update().get(pk=self.pk)
+            if old_obj.source_amount != source_amount:
+                source_amount = source_amount - old_obj.source_amount
+            if old_obj.target_amount != target_amount:
+                target_amount = target_amount - old_obj.target_amount
+
         if self.source_wallet and not self.target_wallet:
-            self.source_wallet.withdraw(self.source_amount)
+            self.source_wallet.withdraw(source_amount)
         elif self.target_wallet and not self.source_wallet:
-            self.target_wallet.deposit(self.target_amount)
+            self.target_wallet.deposit(target_amount)
         elif self.source_wallet and self.target_wallet:
-            self.source_wallet.withdraw(self.source_amount)
-            self.target_wallet.deposit(self.target_amount)
+            self.source_wallet.withdraw(source_amount)
+            self.target_wallet.deposit(target_amount)
 
         super().save(*args, **kwargs)
 
