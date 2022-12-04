@@ -8,7 +8,8 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import AnalyticsPage from "../screens/Analytics";
 import InvestmentsPage from "../screens/Investments";
 import DebtsPage from "../screens/Debts";
-import CryptoPage from "../screens/Crypto";
+import CryptoPage from "../screens/Crypto"
+import LandingPage from "../screens/Landing";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import * as React from "react";
 
@@ -37,6 +38,13 @@ export default function SidebarMenu(Drawer) {
                 pressOpacity: 0.5,
             }}
             drawerContent={(props) => <CustomSidebarMenu {...props} pressColor={"#f6f8ff"}/>}>
+            <Drawer.Screen name='Landing' component={LandingPage}
+                           options={{
+                               drawerIcon: ({focused, size}) => (
+                                   <MaterialIcons name="streetview" size={size} color={focused ? '#ffffff' : '#363636'} />
+                               ),
+                           }}
+            />
             <Drawer.Screen name='Overview' component={OverviewPage}
                            options={{
                                drawerIcon: ({focused, size}) => (
@@ -61,7 +69,7 @@ export default function SidebarMenu(Drawer) {
             <Drawer.Screen name='Analytics' component={AnalyticsPage}
                            options={{
                                drawerIcon: ({focused, size}) => (
-                                   <Ionicons name="analytics" size={size} color={focused ? '#ffffff' : '#363636'} />
+                                   <FontAwesome name="bar-chart-o" size={size} color={focused ? '#ffffff' : '#363636'} />
                                ),
                            }}
             />
