@@ -1,6 +1,6 @@
 import uuid
 
-from django.db import models
+from django.db import models, transaction
 
 from decorations.models import Color
 from news.models import NewsFilter
@@ -16,12 +16,16 @@ class Stock(models.Model):
     description = models.CharField(max_length=256, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    @transaction.atomic
     def save(self, *args, **kwargs):
         update = Stock.objects.filter(id=self.id).exists()
 
         if not update:
-            news_filter, created = NewsFilter.objects.get_or_create(user_id=self.user_id)
-            news_filter.tickers.append(self.ticker)
-            news_filter.save()
+            NewsFilter.add_ticker(self.user_id, self.ticker)
+        else:
+            obj_old = Stock.objects.select_for_update().get(id=self.id)
+
+            if obj_old.ticker != self.ticker:
+                NewsFilter.update_ticker(self.user_id, obj_old.ticker, self.ticker)
 
         super().save(*args, **kwargs)
