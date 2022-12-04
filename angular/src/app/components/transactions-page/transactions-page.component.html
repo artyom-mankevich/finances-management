@@ -15,4 +15,7 @@
     <div class="transaction-wrapper" *ngFor="let transaction of transactions$ | async">
         <app-transaction [transaction]="transaction" ></app-transaction>
     </div>
+    <div *ngIf="ds.moreTransactions" class="show-more-button-wrapper" (click)="getMoreTransactions()">
+        <button class="category show-all-hide-button">Show more</button>
+    </div>
 </div>

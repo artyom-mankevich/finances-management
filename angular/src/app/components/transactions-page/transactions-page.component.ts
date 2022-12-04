@@ -2,7 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { TransactionFilters } from 'src/app/enums/transactionFilters';
-import { Transaction } from 'src/app/models/transaction';
+import { Transaction, TransactionRequest } from 'src/app/models/transaction';
 import { TransactionCategory } from 'src/app/models/transactionCategory';
 import { DataStorageService } from 'src/app/services/data-storage.service';
 import { DataService } from 'src/app/services/data.service';
@@ -17,25 +17,24 @@ import { TransactionModalComponent } from '../transaction-modal/transaction-moda
 export class TransactionsPageComponent implements OnInit {
   transactionFilters = TransactionFilters;
   transactionFiltersValues = Object.keys(this.transactionFilters);
-  selectedFilter: TransactionFilters = TransactionFilters.All;
-  transactions$: Observable<Transaction[]> = this.ds.getUserTransactions();
+  selectedFilter: TransactionFilters = this.ds.transactionFilter;
+  transactions$: Observable<Transaction[]> = this.ds.getUserTransactions(this.selectedFilter);
   categories$: Observable<TransactionCategory[]> = this.ds.getUserCategories();
   maxCategories: number = 5;
   showAllCategories: boolean = false;
   showAllText: string = 'Show All';
-  
+
   selectFilter(filter: TransactionFilters) {
     this.selectedFilter = filter;
+    this.transactions$ = this.ds.getUserTransactions(this.selectedFilter);
   }
-  constructor(private dialog: MatDialog, private dss: DataStorageService, private ds: DataService) { 
+  constructor(private dialog: MatDialog, public ds: DataService) {
   }
-  ngOnInit(): void {
-    console.log(this.transactions$);
-  }
+  ngOnInit(): void { }
 
   openCategoryModal(category?: TransactionCategory) {
     if (category) {
-      this.dialog.open(CategoryModalComponent, { data: { category: { ...category } }});
+      this.dialog.open(CategoryModalComponent, { data: { category: { ...category } } });
       return;
     }
     this.dialog.open(CategoryModalComponent);
@@ -54,9 +53,13 @@ export class TransactionsPageComponent implements OnInit {
     }
     this.showAllCategories = !this.showAllCategories;
   }
+
+  getMoreTransactions() {
+    this.ds.getMoreTransactions();
+  }
   
   openModal() {
-    this.dialog.open(TransactionModalComponent, {panelClass: 'transaction-dialog'});
+    this.dialog.open(TransactionModalComponent, { panelClass: 'transaction-dialog' });
   }
 
 }

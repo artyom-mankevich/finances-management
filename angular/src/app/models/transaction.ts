@@ -6,13 +6,12 @@ export interface Transaction {
     id: string | null,
     userId: string,
     createdAt: number,
-    category: TransactionCategory,
-    sourceAmount?: number | null,
-    targetAmount?: number | null,
-    currency: string,
+    category: TransactionCategory | null,
+    sourceAmount: number | null,
+    targetAmount: number | null,
     sourceWallet: Wallet | null,
     targetWallet: Wallet | null,
-    description?: string
+    description: string | null
 }
 
 export interface TransactionRequest {
@@ -23,10 +22,11 @@ export interface TransactionRequest {
 }
 
 export interface PostTransaction {
-    sourceAmount?: number | null,
-    targetAmount?: number | null, 
-    sourceWallet?: string | null,
-    targetWallet?: string | null,
-    description?: string,
-    category: string
+    id: string | null,
+    sourceAmount: number | null,
+    targetAmount: number | null, 
+    sourceWallet: string | null,
+    targetWallet: string | null,
+    description: string | null,
+    category: string | null
 }

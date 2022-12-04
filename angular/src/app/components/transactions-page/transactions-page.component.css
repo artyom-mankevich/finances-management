@@ -25,6 +25,13 @@
     transition-duration: 200ms;
 }
 
+.show-more-button-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .category:hover {
     transform: scale(1.05);
     cursor: pointer;

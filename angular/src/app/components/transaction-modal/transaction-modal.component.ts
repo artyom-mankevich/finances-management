@@ -4,7 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { TransactionModalModes } from 'src/app/enums/transactionModalModes';
 import { TransactionTypes } from 'src/app/enums/transactionTypes';
-import { Transaction } from 'src/app/models/transaction';
+import { PostTransaction, Transaction } from 'src/app/models/transaction';
 import { TransactionCategory } from 'src/app/models/transactionCategory';
 import { Wallet } from 'src/app/models/wallet';
 import { DataStorageService } from 'src/app/services/data-storage.service';
@@ -22,23 +22,17 @@ export class TransactionModalComponent implements OnInit {
   selectedType: TransactionTypes = TransactionTypes.Income;
   wallets$: Observable<Wallet[]> = this.ds.getUserWallets();
   categories$: Observable<TransactionCategory[]> = this.ds.getUserCategories();
+  color: string = '#7A3EF8'
   transaction: Transaction = {
     id: null,
     userId: '',
     createdAt: Date.now(),
-    category: {
-      id: null,
-      userId: '',
-      name: 'House',
-      icon: 'cottage',
-      color: '#7A3EF8'
-    },
     sourceAmount: null,
     targetAmount: null,
-    currency: 'USD',
     sourceWallet: null,
     targetWallet: null,
-    description: 'Description'
+    description: '',
+    category: null
   }
 
   form: FormGroup;
@@ -54,8 +48,9 @@ export class TransactionModalComponent implements OnInit {
 
     if (this.data) {
       this.modalMode = TransactionModalModes.Update;
-      this.transaction = data.transaction;
-      this.updateFormValues();
+      this.transaction.id = data.transaction.id;
+      // this.transaction = data.transaction;
+      // this.updateFormValues();
     }
     this.form.controls['sourceAmount'].valueChanges.subscribe(x => {
       this.transaction.sourceAmount = x;
@@ -63,9 +58,14 @@ export class TransactionModalComponent implements OnInit {
         this.fillTargetAmount(x)
       }
     })
-    this.form.controls['category'].valueChanges.subscribe(val => this.transaction.category = val);
+    this.form.controls['category'].valueChanges.subscribe(val =>  { 
+      this.transaction.category = val;
+      if (val?.color) {
+        this.color = val?.color
+      }
+    });
     this.form.controls['targetAmount'].valueChanges.subscribe(val => this.transaction.targetAmount = val);
-    this.form.controls['sourceWallet'].valueChanges.subscribe(val =>  { console.log(val); this.transaction.sourceWallet = val })
+    this.form.controls['sourceWallet'].valueChanges.subscribe(val =>  this.transaction.sourceWallet = val )
     this.form.controls['targetWallet'].valueChanges.subscribe(val =>  this.transaction.targetWallet = val)
     this.form.controls['description'].valueChanges.subscribe(val =>  this.transaction.description = val)
     
@@ -73,20 +73,27 @@ export class TransactionModalComponent implements OnInit {
 
   updateFormValues(): void {
     this.form.patchValue({
-      amount: this.transaction.sourceAmount,
-      category: this.transaction.category.name,
+      sourceAmount: this.transaction.sourceAmount,
+      targetAmount: this.transaction.targetAmount,
+      category: this.transaction.category?.name,
       sourceWallet: this.transaction.sourceWallet?.name,
       targetWallet: this.transaction.targetWallet?.name,
       description: this.transaction.description
     })
+    if (this.transaction.category) {
+      this.color = this.transaction.category.color;
+    }
   }
 
   changeColor(color: string): void {
-    this.transaction.category.color = color;
+    if (this.transaction.category) {
+      this.transaction.category.color = color;
+    }
   }
 
   selectType(newType: TransactionTypes) {
     this.selectedType = newType;
+    this.form.reset();
   }
 
   fillTargetAmount(val: number) {
@@ -99,24 +106,26 @@ export class TransactionModalComponent implements OnInit {
         })
       })
     }
-  
-
   }
 
   modifyTransaction() {
+    let postTransaction: PostTransaction = {
+      sourceAmount: this.transaction.sourceAmount,
+      targetAmount: this.transaction.targetAmount,
+      sourceWallet: this.transaction.sourceWallet?.id ?? null,
+      targetWallet: this.transaction.targetWallet?.id ?? null,
+      description: this.transaction.description ?? null,
+      category: this.transaction.category?.id ?? null,
+      id: this.transaction.id
+    }
     if (this.modalMode === TransactionModalModes.Create) {
-      this.ds.createTransaction({
-        sourceAmount: this.transaction.sourceAmount,
-        targetAmount: this.transaction.targetAmount,
-        sourceWallet: this.transaction.sourceWallet?.id,
-        targetWallet: this.transaction.targetWallet?.id,
-        description: this.transaction.description,
-        category: this.transaction.category.id!
-      }).subscribe();
+      this.ds.createTransaction(postTransaction).subscribe();
+    }
+    else if (this.modalMode === TransactionModalModes.Update) {
+      this.ds.updateTransaction(postTransaction).subscribe();
     }
     this.dialogRef.close();
   }
   ngOnInit(): void {
   }
-
 }

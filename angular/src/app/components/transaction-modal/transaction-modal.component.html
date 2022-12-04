@@ -1,7 +1,7 @@
 <section class="transaction-builder">
     <section class="transaction-type-select">
         <button [ngClass]="{'unselected-transaction-type': transactionType.value !== selectedType  }"
-            [ngStyle]="{'background-color' : transaction.category.color }" class="transaction-type-button"
+            [ngStyle]="{'background-color' : color }" class="transaction-type-button"
             (click)="selectType(transactionType.value)" *ngFor="let transactionType of transactionTypes | keyvalue">{{
             transactionType.key }}</button>
     </section>
@@ -50,7 +50,7 @@
             </div>
             <input type="text" name="description" placeholder="Description (optional)" formControlName="description">
         </form>
-        <button (click)="modifyTransaction()" class="create-button" [style.backgroundColor]="transaction.category.color"
+        <button (click)="modifyTransaction()" class="create-button" [style.backgroundColor]="color"
             type="submit" [disabled]="!form.valid">{{ modalMode }}
         </button>
     </div>

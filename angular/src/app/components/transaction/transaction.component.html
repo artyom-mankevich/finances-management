@@ -20,12 +20,12 @@
                 <mat-icon fontIcon="material-icons-round" inline="true">edit</mat-icon>
             </button>
             <button class="mat-button transaction-edit">
-                <mat-icon fontIcon="material-icons-round" inline="true">close</mat-icon>
+                <mat-icon fontIcon="material-icons-round" inline="true" (click)="deleteTransaction()">close</mat-icon>
             </button>
         </div>
         <p class="transaction-date">{{ transaction.createdAt | date: 'dd LLLL yyyy' }}</p>
-        <p *ngIf="transaction.sourceAmount" class="transaction-amount">{{ (transaction.currency | currencySymbol ) + (transaction.sourceAmount | shortNumber) }}</p>
-        <p *ngIf="transaction.targetAmount" class="transaction-amount">{{ (transaction.currency | currencySymbol ) + (transaction.targetAmount | shortNumber) }}</p>
+        <p *ngIf="transaction.sourceAmount" class="transaction-amount">{{ (transaction.sourceWallet!.currency | currencySymbol ) + (transaction.sourceAmount | shortNumber) }}</p>
+        <p *ngIf="transaction.targetAmount" class="transaction-amount">{{ (transaction.targetWallet!.currency | currencySymbol ) + (transaction.targetAmount | shortNumber) }}</p>
    
     </div>
  
