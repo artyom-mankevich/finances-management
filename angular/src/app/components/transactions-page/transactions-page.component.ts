@@ -28,33 +28,9 @@ export class TransactionsPageComponent implements OnInit {
     this.selectedFilter = filter;
   }
   constructor(private dialog: MatDialog, private dss: DataStorageService, private ds: DataService) { 
-    // for (let i = 0; i < 15; i++){
-    //   // this.transactions.push({
-    //   //   id: null,
-    //   //   userId: '',
-    //   //   createdAt: Date.now(),
-    //   //   category: { 
-    //   //     id: null,
-    //   //     userId: '', 
-    //   //     name: 'House',
-    //   //     icon: 'cottage',
-    //   //     color: dss.colors[Math.floor(Math.random() * dss.colors.length)]},
-    //   //   amount: 1000,
-    //   //   currency: 'USD',
-    //   //   sourceWallet: null,
-    //   //   targetWallet: null,
-    //   //   description: 'Renovation'
-    //   // })
-    //   // this.categories.push({
-    //   //   id: null,
-    //   //   userId: '',
-    //   //   name: Math.random().toString(36).slice(2, 7),
-    //   //   icon: 'cottage',
-    //   //   color:  dss.colors[Math.floor(Math.random() * dss.colors.length)]
-    //   // })
-    // }
   }
   ngOnInit(): void {
+    console.log(this.transactions$);
   }
 
   openCategoryModal(category?: TransactionCategory) {

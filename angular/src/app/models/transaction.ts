@@ -7,7 +7,7 @@ export interface Transaction {
     userId: string,
     createdAt: number,
     category: TransactionCategory,
-    sourceAmount?: number,
+    sourceAmount?: number | null,
     targetAmount?: number | null,
     currency: string,
     sourceWallet: Wallet | null,
@@ -19,13 +19,14 @@ export interface TransactionRequest {
     count: number,
     next: string | null,
     previous: string | null,
-    result: Transaction[]
+    results: Transaction[]
 }
 
 export interface PostTransaction {
     sourceAmount?: number | null,
     targetAmount?: number | null, 
-    souceWallet?: string | null,
+    sourceWallet?: string | null,
     targetWallet?: string | null,
-    description?: string
+    description?: string,
+    category: string
 }

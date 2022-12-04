@@ -71,7 +71,7 @@ export class DataService {
   }
 
   getUserTransactions() {
-    this.http.get<TransactionRequest>(`${this.url}${ApiEndpoints.transactions}`).subscribe(tr => {console.log(tr); this._transactions.next(tr.result) });
+    this.http.get<TransactionRequest>(`${this.url}${ApiEndpoints.transactions}`).subscribe(tr => this._transactions.next(tr.results));
     return this._transactions.asObservable();
   }
 

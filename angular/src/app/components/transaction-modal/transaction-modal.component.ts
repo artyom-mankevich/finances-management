@@ -33,7 +33,7 @@ export class TransactionModalComponent implements OnInit {
       icon: 'cottage',
       color: '#7A3EF8'
     },
-    sourceAmount: 0,
+    sourceAmount: null,
     targetAmount: null,
     currency: 'USD',
     sourceWallet: null,
@@ -44,7 +44,7 @@ export class TransactionModalComponent implements OnInit {
   form: FormGroup;
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private fb: FormBuilder, public dss: DataStorageService, public ds: DataService, private ers: ExchangeRateService, private dialogRef: MatDialogRef<TransactionModalComponent>) {
     this.form = this.fb.group({
-      sourceAmount: [, Validators.required],
+      sourceAmount: [],
       targetAmount: [],
       category: [],
       sourceWallet: [],
@@ -63,8 +63,12 @@ export class TransactionModalComponent implements OnInit {
         this.fillTargetAmount(x)
       }
     })
-    this.form.controls['sourceWallet'].valueChanges.subscribe(val =>  this.transaction.sourceWallet = val)
+    this.form.controls['category'].valueChanges.subscribe(val => this.transaction.category = val);
+    this.form.controls['targetAmount'].valueChanges.subscribe(val => this.transaction.targetAmount = val);
+    this.form.controls['sourceWallet'].valueChanges.subscribe(val =>  { console.log(val); this.transaction.sourceWallet = val })
     this.form.controls['targetWallet'].valueChanges.subscribe(val =>  this.transaction.targetWallet = val)
+    this.form.controls['description'].valueChanges.subscribe(val =>  this.transaction.description = val)
+    
   }
 
   updateFormValues(): void {
@@ -104,15 +108,15 @@ export class TransactionModalComponent implements OnInit {
       this.ds.createTransaction({
         sourceAmount: this.transaction.sourceAmount,
         targetAmount: this.transaction.targetAmount,
-        souceWallet: this.transaction.sourceWallet?.id,
+        sourceWallet: this.transaction.sourceWallet?.id,
         targetWallet: this.transaction.targetWallet?.id,
-        description: this.transaction.description
+        description: this.transaction.description,
+        category: this.transaction.category.id!
       }).subscribe();
     }
     this.dialogRef.close();
   }
   ngOnInit(): void {
-    console.log(this.transaction);
   }
 
 }

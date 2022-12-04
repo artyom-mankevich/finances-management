@@ -8,7 +8,7 @@
         </div>
         <div>
             <p class="transaction-description">{{ transaction.description }}</p>
-            <div [ngStyle]="{'color': transaction.category.color}" class="transaction-description-icon">
+            <div *ngIf="transaction.category" [ngStyle]="{'color': transaction.category.color}" class="transaction-description-icon">
                 <mat-icon fontIcon="material-icons-round" >{{ transaction.category.icon }}</mat-icon>
                 <p class="transaction-category">{{ transaction.category.name }}</p>
             </div>
@@ -25,6 +25,8 @@
         </div>
         <p class="transaction-date">{{ transaction.createdAt | date: 'dd LLLL yyyy' }}</p>
         <p *ngIf="transaction.sourceAmount" class="transaction-amount">{{ (transaction.currency | currencySymbol ) + (transaction.sourceAmount | shortNumber) }}</p>
+        <p *ngIf="transaction.targetAmount" class="transaction-amount">{{ (transaction.currency | currencySymbol ) + (transaction.targetAmount | shortNumber) }}</p>
+   
     </div>
  
 </section>
