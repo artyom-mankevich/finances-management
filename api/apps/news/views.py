@@ -7,6 +7,7 @@ from news.serializers import NewsFilterSerializer, NewsIndustrySerializer
 
 class NewsFilterViewSet(GenericViewSet, RetrieveUpdateAPIView):
     serializer_class = NewsFilterSerializer
+    lookup_value_regex = "[^/]+"
 
     def get_queryset(self):
         return NewsFilter.objects.filter(user_id=self.request.user)

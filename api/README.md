@@ -40,3 +40,9 @@ docker exec -i trpo_api_1 python manage.py init_icons
 ```bash
 docker exec -i trpo_api_1 python manage.py init_currencies
 ```
+
+### NewsIndustry
+
+```bash
+docker exec -i trpo_api_1 python manage.py init_news_industries
+```
