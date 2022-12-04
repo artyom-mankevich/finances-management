@@ -32,6 +32,6 @@ class Stock(models.Model):
 
     @transaction.atomic
     def delete(self, *args, **kwargs):
-        if Stock.objects.filter(ticker=self.ticker).count() == 1:
+        if Stock.objects.filter(ticker=self.ticker, user_id=self.user_id).count() == 1:
             NewsFilter.remove_ticker(self.user_id, self.ticker)
         super().delete(*args, **kwargs)
