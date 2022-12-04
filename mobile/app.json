@@ -6,6 +6,15 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "scheme": "com.trpo",
+    "plugins": [
+      [
+        "react-native-auth0",
+        {
+          "domain": "https://dev-16fr5mnt2b0eess4.us.auth0.com"
+        }
+      ]
+    ],
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -21,6 +30,7 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.trpo",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
@@ -28,6 +38,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "21087310-f784-4487-9b7f-24734a063507"
+      }
     }
   }
 }

@@ -44,7 +44,7 @@ class ExtendedWalletSerializer(WalletSerializer):
 
     def get_last_updated(self, obj: Wallet) -> float | None:
         if obj.last_updated:
-            return obj.last_updated.timestamp()
+            return obj.last_updated.timestamp() * 1000
 
         return None
 
@@ -59,7 +59,7 @@ class DebtSerializer(serializers.ModelSerializer):
     expires_at = serializers.SerializerMethodField()
 
     def get_expires_at(self, obj: Debt) -> float:
-        return datetime.combine(obj.expires_at, datetime.min.time()).timestamp()
+        return datetime.combine(obj.expires_at, datetime.min.time()).timestamp() * 1000
 
 
 class TransactionCategorySerializer(serializers.ModelSerializer):
@@ -102,7 +102,7 @@ class TransactionSerializer(serializers.ModelSerializer):
     target_wallet = serializers.SerializerMethodField()
 
     def get_created_at(self, obj: Transaction) -> float:
-        return datetime.combine(obj.created_at, datetime.min.time()).timestamp()
+        return datetime.combine(obj.created_at, datetime.min.time()).timestamp() * 1000
 
     def get_category(self, obj):
         if obj.category:

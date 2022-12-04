@@ -1,43 +1,18 @@
-import {
-    CommonActions,
-    DrawerActions,
-    DrawerNavigationState,
-    ParamListBase,
-    useLinkBuilder,
-} from '@react-navigation/native';
 import * as React from 'react';
+import { DrawerItem } from '@react-navigation/drawer';
+import {CommonActions, DrawerActions, useLinkBuilder} from "@react-navigation/native";
 
-import type { DrawerDescriptorMap, DrawerNavigationHelpers } from '@react-navigation/drawer/lib/typescript/src/types';
-import {DrawerItem} from '@react-navigation/drawer';
 
-type Props = {
-    state: DrawerNavigationState<ParamListBase>;
-    navigation: DrawerNavigationHelpers;
-    descriptors: DrawerDescriptorMap;
-};
-
-/**
- * Component that renders the navigation list in the drawer.
- */
-export default function DrawerItemList({
-                                           state,
-                                           navigation,
-                                           descriptors,
-                                       }: Props) {
+export default function CustomDrawerItemList({state, descriptors, navigation}) {
+    const focusedRoute = state.routes[state.index];
     const buildLink = useLinkBuilder();
 
-    const focusedRoute = state.routes[state.index];
     const focusedDescriptor = descriptors[focusedRoute.key];
     const focusedOptions = focusedDescriptor.options;
 
-    const {
-        drawerActiveTintColor,
-        drawerInactiveTintColor,
-        drawerActiveBackgroundColor,
-        drawerInactiveBackgroundColor,
-    } = focusedOptions;
+    const { drawerActiveTintColor, drawerInactiveTintColor, drawerActiveBackgroundColor, drawerInactiveBackgroundColor,} = focusedOptions;
 
-    return state.routes.map((route, i) => {
+    return (state.routes.map((route, i) => {
         const focused = i === state.index;
 
         const onPress = () => {
@@ -66,7 +41,6 @@ export default function DrawerItemList({
             drawerAllowFontScaling,
         } = descriptors[route.key].options;
 
-        // @ts-ignore
         return (
             <DrawerItem
                 key={route.key}
@@ -88,7 +62,8 @@ export default function DrawerItemList({
                 style={drawerItemStyle}
                 to={buildLink(route.name, route.params)}
                 pressColor={'#3e68d1'}
-                onPress={onPress}></DrawerItem>
+                onPress={onPress}
+            />
         );
-    }) as React.ReactNode as React.ReactElement;
+    }))
 }
