@@ -120,20 +120,14 @@ class TransactionSerializer(serializers.ModelSerializer):
         return None
 
     def create(self, validated_data):
-        if self.initial_data.get("category"):
-            validated_data["category"] = TransactionCategory.objects.get(
-                pk=self.initial_data["category"]
-            )
-        if self.initial_data.get("source_wallet"):
-            validated_data["source_wallet"] = Wallet.objects.get(
-                pk=self.initial_data["source_wallet"]
-            )
-        if self.initial_data.get("target_wallet"):
-            validated_data["target_wallet"] = Wallet.objects.get(
-                pk=self.initial_data["target_wallet"]
-            )
+        self._set_validated_data_from_initial(validated_data)
 
         return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        self._set_validated_data_from_initial(validated_data)
+
+        return super().update(instance, validated_data)
 
     def validate(self, data):
         if not (
@@ -286,3 +280,19 @@ class TransactionSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {"category": "Category should not be specified during transfer"}
             )
+
+    def _set_validated_data_from_initial(self, validated_data):
+        if self.initial_data.get("category"):
+            validated_data["category"] = TransactionCategory.objects.get(
+                pk=self.initial_data["category"]
+            )
+        if self.initial_data.get("source_wallet"):
+            validated_data["source_wallet"] = Wallet.objects.get(
+                pk=self.initial_data["source_wallet"]
+            )
+        if self.initial_data.get("target_wallet"):
+            validated_data["target_wallet"] = Wallet.objects.get(
+                pk=self.initial_data["target_wallet"]
+            )
+
+        return validated_data
