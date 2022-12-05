@@ -198,6 +198,9 @@ class TransactionSerializer(serializers.ModelSerializer):
     def validate_category(self, value):
         user_id = str(self.context["request"].user)
 
+        if value is None:
+            return None
+
         if not value.user_id == user_id:
             raise exceptions.PermissionDenied(
                 "You do not have permission to perform this action."
