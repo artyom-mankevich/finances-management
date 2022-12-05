@@ -49,8 +49,7 @@ export class TransactionModalComponent implements OnInit {
 
     if (this.data) {
       this.modalMode = TransactionModalModes.Update;
-      this.transaction.id = data.transaction.id;
-      this.transaction = data.transaction;
+      this.transaction = this.data.transaction;
       this.selectedType = this.getTransactionType(this.transaction);
       this.updateFormValues();
     }
@@ -61,7 +60,9 @@ export class TransactionModalComponent implements OnInit {
       }
     })
     this.form.controls['category'].valueChanges.subscribe(val => {
-      this.transaction.category = val;
+      if (val) {
+        this.transaction.category = val;
+      }
       if (val?.color) {
         this.color = val?.color
       }
@@ -87,7 +88,7 @@ export class TransactionModalComponent implements OnInit {
     this.form.patchValue({
       sourceAmount: this.transaction.sourceAmount,
       targetAmount: this.transaction.targetAmount,
-      category: this.transaction.category?.name,
+      category: this.transaction.category,
       sourceWallet: this.transaction.sourceWallet,
       targetWallet: this.transaction.targetWallet,
       description: this.transaction.description

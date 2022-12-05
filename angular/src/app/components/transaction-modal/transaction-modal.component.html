@@ -1,12 +1,13 @@
 <section class="transaction-builder">
     <section class="transaction-type-select">
-        <ng-container *ngIf="transactionModalModes.Create === modalMode" >
-            <button  [ngClass]="{'unselected-transaction-type': transactionType.value !== selectedType  }"
-            [ngStyle]="{'background-color' : color }" class="transaction-type-button"
-            (click)="selectType(transactionType.value)" *ngFor="let transactionType of transactionTypes | keyvalue">{{
-            transactionType.key }}</button>
+        <ng-container *ngIf="transactionModalModes.Create === modalMode">
+            <button [ngClass]="{'unselected-transaction-type': transactionType.value !== selectedType  }"
+                [ngStyle]="{'background-color' : color }" class="transaction-type-button"
+                (click)="selectType(transactionType.value)"
+                *ngFor="let transactionType of transactionTypes | keyvalue">{{
+                transactionType.key }}</button>
         </ng-container>
-     
+
         <button *ngIf="transactionModalModes.Update === modalMode" [ngStyle]="{'background-color' : color }"
             class="transaction-type-button" (click)="selectType(selectedType)">{{
             selectedType }}</button>
@@ -15,12 +16,12 @@
         <form class="transaction-input" [formGroup]="form">
             <label for="">Amount</label>
             <div class="one-line-inputs-wrapper">
-                <input *ngIf="selectedType !== transactionTypes.Income" class="one-line-input" type="number" min="0.00000001"
-                    placeholder="Source Amount" formControlName="sourceAmount">
+                <input *ngIf="selectedType !== transactionTypes.Income" class="one-line-input" type="number"
+                    min="0.00000001" placeholder="Source Amount" formControlName="sourceAmount">
                 <mat-icon fontIcon="material-icons-round" *ngIf="(selectedType === transactionTypes.Transfer)">east
                 </mat-icon>
-                <input class="one-line-input" *ngIf="selectedType !== transactionTypes.Expense" type="number" min="0.00000001"
-                    placeholder="Target Amount" formControlName="targetAmount">
+                <input class="one-line-input" *ngIf="selectedType !== transactionTypes.Expense" type="number"
+                    min="0.00000001" placeholder="Target Amount" formControlName="targetAmount">
 
             </div>
             <label for="description">Info</label>
@@ -39,9 +40,11 @@
                     *ngIf="(selectedType === transactionTypes.Expense) || (selectedType === transactionTypes.Transfer)"
                     formControlName="sourceWallet">
                     <option [ngValue]="null" disabled selected hidden>Source wallet</option>
+                    <ng-container *ngFor="let wallet of wallets$ | async">
+                        <option *ngIf="wallet !== transaction.targetWallet" [ngValue]="wallet">{{wallet.name}}
+                        </option>
+                    </ng-container>
 
-                    <option *ngFor="let wallet of wallets$ | async" [ngValue]="wallet">{{wallet.name}}
-                    </option>
                 </select>
                 <mat-icon fontIcon="material-icons-round" *ngIf="(selectedType !== transactionTypes.Expense)">east
                 </mat-icon>
@@ -50,9 +53,11 @@
                     formControlName="targetWallet">
 
                     <option [ngValue]="null" disabled selected hidden>Target wallet</option>
+                    <ng-container *ngFor="let wallet of wallets$ | async">
+                        <option *ngIf="wallet !== transaction.sourceWallet" [ngValue]="wallet">{{wallet.name}}
+                        </option>
+                    </ng-container>
 
-                    <option *ngFor="let wallet of wallets$ | async" [ngValue]="wallet">{{wallet.name}}
-                    </option>
                 </select>
             </div>
             <input type="text" name="description" placeholder="Description (optional)" formControlName="description">
