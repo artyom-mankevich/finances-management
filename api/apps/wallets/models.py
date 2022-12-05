@@ -122,7 +122,7 @@ class Transaction(models.Model):
     def create_balance_transaction(cls, wallet_new, wallet_old):
         other_category, created = TransactionCategory.objects.get_or_create(
             name="Other", user_id=wallet_new.user_id, defaults={
-                "icon": None,
+                "icon": Icon.objects.get(code="paid"),
                 "color": Color.objects.get(
                     pk=choice(Color.objects.values_list("pk", flat=True))
                 ),
