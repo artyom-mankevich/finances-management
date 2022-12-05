@@ -169,3 +169,4 @@ class TransactionCategory(models.Model):
     name = models.CharField(max_length=128)
     icon = models.ForeignKey(Icon, on_delete=models.SET_NULL, null=True)
     color = models.ForeignKey(Color, on_delete=models.SET_NULL, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
