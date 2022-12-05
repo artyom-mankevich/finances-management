@@ -71,17 +71,17 @@ export class TransactionModalComponent implements OnInit {
     this.form.controls['targetAmount'].valueChanges.subscribe(val => this.transaction.targetAmount = val);
     this.form.controls['sourceWallet'].valueChanges.subscribe(val => {
       this.transaction.sourceWallet = val;
-      if (this.transaction.sourceWallet?.id === this.transaction.targetWallet?.id) {
+      if (val && this.transaction.sourceWallet?.id === this.transaction.targetWallet?.id) {
         this.transaction.targetWallet = null;
         this.updateFormValues();
       }
-      if (this.selectedType === TransactionTypes.Transfer && this.transaction.sourceAmount) {
+      if ( this.selectedType === TransactionTypes.Transfer && this.transaction.sourceAmount) {
         this.fillTargetAmount(this.transaction.sourceAmount);
       }
     })
     this.form.controls['targetWallet'].valueChanges.subscribe(val => {
       this.transaction.targetWallet = val
-      if (this.transaction.sourceWallet?.id === this.transaction.targetWallet?.id) {
+      if (val && this.transaction.sourceWallet?.id === this.transaction.targetWallet?.id) {
         this.transaction.sourceWallet = null;
         this.updateFormValues();
       }

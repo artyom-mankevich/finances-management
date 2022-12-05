@@ -63,7 +63,10 @@ export class DataService {
   }
 
   updateWallet(wallet: Wallet) {
-    return this.http.patch(`${this.url}${ApiEndpoints.wallets}${wallet.id}/`, wallet).pipe(tap(() => this._getUserWallets()));
+    return this.http.patch(`${this.url}${ApiEndpoints.wallets}${wallet.id}/`, wallet).pipe(tap(() => {
+      this._getUserWallets();
+      this.getUserTransactions(this.transactionFilter, true);
+     }));
   }
 
   getUserCategories(): Observable<TransactionCategory[]> {
