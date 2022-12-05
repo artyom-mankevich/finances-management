@@ -81,13 +81,13 @@ class Transaction(models.Model):
     target_amount = models.DecimalField(max_digits=30, decimal_places=10, null=True)
     source_wallet = models.ForeignKey(
         Wallet,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         null=True,
         related_name="source_wallet_transactions"
     )
     target_wallet = models.ForeignKey(
         Wallet,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         null=True,
         related_name="target_wallet_transactions"
     )
@@ -102,15 +102,9 @@ class Transaction(models.Model):
         target_amount = self.target_amount
         if update:
             old_obj = Transaction.objects.select_for_update().get(pk=self.pk)
-            if old_obj.source_amount != source_amount:
-                source_amount = source_amount - old_obj.source_amount
-            else:
-                source_amount = 0
-
-            if old_obj.target_amount != target_amount:
-                target_amount = target_amount - old_obj.target_amount
-            else:
-                target_amount = 0
+            source_amount, target_amount = self._get_update_source_and_target_amount(
+                old_obj, source_amount, target_amount
+            )
 
         if self.source_wallet and not self.target_wallet:
             self.source_wallet.withdraw(source_amount)
@@ -121,6 +115,18 @@ class Transaction(models.Model):
             self.target_wallet.deposit(target_amount)
 
         super().save(*args, **kwargs)
+
+    @staticmethod
+    def _get_update_source_and_target_amount(old_obj, source_amount, target_amount):
+        if old_obj.source_amount != source_amount:
+            source_amount = source_amount - old_obj.source_amount
+        else:
+            source_amount = 0
+        if old_obj.target_amount != target_amount:
+            target_amount = target_amount - old_obj.target_amount
+        else:
+            target_amount = 0
+        return source_amount, target_amount
 
     @transaction.atomic
     def delete(self, *args, **kwargs):
