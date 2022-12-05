@@ -104,8 +104,13 @@ class Transaction(models.Model):
             old_obj = Transaction.objects.select_for_update().get(pk=self.pk)
             if old_obj.source_amount != source_amount:
                 source_amount = source_amount - old_obj.source_amount
+            else:
+                source_amount = 0
+
             if old_obj.target_amount != target_amount:
                 target_amount = target_amount - old_obj.target_amount
+            else:
+                target_amount = 0
 
         if self.source_wallet and not self.target_wallet:
             self.source_wallet.withdraw(source_amount)

@@ -124,6 +124,10 @@ class TransactionSerializer(serializers.ModelSerializer):
     def get_created_at(self, obj: Transaction) -> float:
         return datetime.combine(obj.created_at, datetime.min.time()).timestamp() * 1000
 
+    def update(self, instance, validated_data):
+        self._reject_type_change(instance, validated_data)
+        return super().update(instance, validated_data)
+
     def validate(self, data):
         if not (
             self.initial_data.get("source_wallet")
@@ -154,19 +158,22 @@ class TransactionSerializer(serializers.ModelSerializer):
         return data
 
     def validate_source_amount(self, value):
-        if value <= 0:
+        if value is not None and value <= 0:
             raise serializers.ValidationError("Source amount must be greater than 0")
 
         return value
 
     def validate_target_amount(self, value):
-        if value <= 0:
+        if value is not None and value <= 0:
             raise serializers.ValidationError("Target amount must be greater than 0")
 
         return value
 
     def validate_source_wallet(self, value):
         user_id = str(self.context["request"].user)
+
+        if value is None:
+            return None
 
         if not value.user_id == user_id:
             raise exceptions.PermissionDenied(
@@ -177,6 +184,9 @@ class TransactionSerializer(serializers.ModelSerializer):
 
     def validate_target_wallet(self, value):
         user_id = str(self.context["request"].user)
+
+        if value is None:
+            return None
 
         if not value.user_id == user_id:
             raise exceptions.PermissionDenied(
@@ -274,4 +284,29 @@ class TransactionSerializer(serializers.ModelSerializer):
         ):
             raise serializers.ValidationError(
                 {"category": "Category should not be specified during transfer"}
+            )
+
+    def _reject_type_change(self, instance, validated_data):
+        type_changed = (
+            (
+                instance.source_wallet is None
+                and validated_data.get("source_wallet") is not None
+            ) or (
+                instance.source_wallet is not None
+                and validated_data.get("source_wallet") is None
+            ) or (
+                instance.target_wallet is None
+                and validated_data.get("target_wallet") is not None
+            ) or (
+                instance.target_wallet is not None
+                and validated_data.get("target_wallet") is None
+            )
+        )
+
+        if type_changed:
+            raise exceptions.ValidationError(
+                {
+                    "source_wallet": "Transaction type cannot be changed after creation",
+                    "target_wallet": "Transaction type cannot be changed after creation"
+                }
             )
