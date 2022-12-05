@@ -19,6 +19,24 @@
     width: max-content;
 }
 
+.transaction-amount-wrapper {
+    width: 200px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.transfer-wallets-names {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    color: var(--text-gray);
+}
+
+.wallet-name {
+    margin: 0px;
+}
+
 .transaction-amount,
 .transaction-description {
     font-weight: bold;
@@ -27,6 +45,7 @@
 
 .transaction-date {
     color: var(--text-gray);
+    width: 150px;
 }
 
 .mat-button {
@@ -54,9 +73,8 @@
 
 .transaction-menu {
     display: flex;
-    justify-content: space-around;
+    justify-content: flex-end;
     align-items: center;
-    width: 300px;
 }
 
 .transaction-edit-menu {

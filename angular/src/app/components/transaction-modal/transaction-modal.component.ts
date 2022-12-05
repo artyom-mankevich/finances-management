@@ -60,7 +60,7 @@ export class TransactionModalComponent implements OnInit {
         this.fillTargetAmount(x)
       }
     })
-    this.form.controls['category'].valueChanges.subscribe(val =>  { 
+    this.form.controls['category'].valueChanges.subscribe(val => {
       this.transaction.category = val;
       if (val?.color) {
         this.color = val?.color
@@ -68,10 +68,19 @@ export class TransactionModalComponent implements OnInit {
     });
     this.selectType(this.selectedType);
     this.form.controls['targetAmount'].valueChanges.subscribe(val => this.transaction.targetAmount = val);
-    this.form.controls['sourceWallet'].valueChanges.subscribe(val =>  this.transaction.sourceWallet = val )
-    this.form.controls['targetWallet'].valueChanges.subscribe(val =>  this.transaction.targetWallet = val)
-    this.form.controls['description'].valueChanges.subscribe(val =>  this.transaction.description = val)
-    
+    this.form.controls['sourceWallet'].valueChanges.subscribe(val => {
+      this.transaction.sourceWallet = val;
+      if (this.selectedType === TransactionTypes.Transfer && this.transaction.sourceAmount) {
+        this.fillTargetAmount(this.transaction.sourceAmount);
+      }
+    })
+    this.form.controls['targetWallet'].valueChanges.subscribe(val => {
+      this.transaction.targetWallet = val
+      if (this.selectedType === TransactionTypes.Transfer && this.transaction.sourceAmount) {
+        this.fillTargetAmount(this.transaction.sourceAmount);
+      }
+    })
+    this.form.controls['description'].valueChanges.subscribe(val => this.transaction.description = val);
   }
 
   updateFormValues(): void {
@@ -121,10 +130,10 @@ export class TransactionModalComponent implements OnInit {
     }
     for (const key in this.form.controls) {
       this.form.controls[key].updateValueAndValidity();
-    }  
+    }
   }
 
-  fillTargetAmount(val: number) {
+  private fillTargetAmount(val: number) {
     if (this.transaction.sourceWallet?.currency && this.transaction.targetWallet?.currency) {
       this.ers.getExchange(val, this.transaction.sourceWallet?.currency, this.transaction.targetWallet?.currency).subscribe(result => {
         val = Number.parseFloat(JSON.parse(JSON.stringify(result))['result']);
@@ -135,6 +144,7 @@ export class TransactionModalComponent implements OnInit {
       })
     }
   }
+
   private getTransactionType(transaction: Transaction): TransactionTypes {
     if (transaction.sourceWallet && !transaction.targetWallet) return TransactionTypes.Expense;
     if (!transaction.sourceWallet && transaction.targetWallet) return TransactionTypes.Income;
@@ -159,6 +169,7 @@ export class TransactionModalComponent implements OnInit {
     }
     this.dialogRef.close();
   }
+
   ngOnInit(): void {
   }
 }

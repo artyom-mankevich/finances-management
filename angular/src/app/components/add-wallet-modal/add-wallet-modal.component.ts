@@ -31,6 +31,7 @@ export class AddWalletModalComponent implements OnInit {
 
   form: FormGroup;
 
+  walletModalModes = WalletModalModes;
   modalMode: WalletModalModes = WalletModalModes.Create;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private fb: FormBuilder, private ds: DataService, private dialogRef: MatDialogRef<AddWalletModalComponent>, public dss: DataStorageService, private cv: CurrencyValidator) {
@@ -117,6 +118,12 @@ export class AddWalletModalComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  deleteWallet() {
+    if (this.wallet.id) {
+      this.ds.deleteWallet(this.wallet.id).subscribe(() => this.dialogRef.close()); 
+    }
+  }
+  
   changeBackgroundColor(color: string): void {
     this.wallet.color = color;
   }

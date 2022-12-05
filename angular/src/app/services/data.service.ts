@@ -44,7 +44,9 @@ export class DataService {
   }
 
   getAvailableIcons(): Observable<Icon[]> {
-    this.http.get<Icon[]>(`${this.url}${ApiEndpoints.icons}`).subscribe(icons => this._icons.next(icons))
+    if (this._icons.value.length === 0) {
+      this.http.get<Icon[]>(`${this.url}${ApiEndpoints.icons}`).subscribe(icons => this._icons.next(icons))
+    }
     return this._icons.asObservable();
   }
 
@@ -89,14 +91,14 @@ export class DataService {
     }));
   }
 
-  getUserTransactions(filter: TransactionFilters ) {
-    if (this._transactions.value.length === 0 || filter !== this.transactionFilter) {
+  getUserTransactions(filter: TransactionFilters, force: boolean = false) {
+    if (this._transactions.value.length === 0 || filter !== this.transactionFilter || force) {
       this.transactionFilter = filter;
       let httpParams: HttpParams = new HttpParams();
-      if (this.transactionFilter !== TransactionFilters.All){
+      if (this.transactionFilter !== TransactionFilters.All) {
         httpParams = httpParams.append('type', filter.toLowerCase());
       }
-      this.http.get<TransactionRequest>(`${this.url}${ApiEndpoints.transactions}`, {params: httpParams}).subscribe(tr => {
+      this.http.get<TransactionRequest>(`${this.url}${ApiEndpoints.transactions}`, { params: httpParams }).subscribe(tr => {
         this._transactions.next(tr.results);
         this.moreTransactions = tr.next ? true : false;
         this._transactionsRequest?.next(tr);
@@ -117,7 +119,7 @@ export class DataService {
   }
 
   createTransaction(transaction: PostTransaction) {
-    return this.http.post<Transaction>(`${this.url}${ApiEndpoints.transactions}`, transaction).pipe(tap((transaction: Transaction) =>  { 
+    return this.http.post<Transaction>(`${this.url}${ApiEndpoints.transactions}`, transaction).pipe(tap((transaction: Transaction) => {
       if (this.getTransactionType(transaction).toString() === this.transactionFilter || this.transactionFilter === TransactionFilters.All) {
         this._transactions.next([transaction, ...this._transactions.value]);
       }
@@ -137,6 +139,12 @@ export class DataService {
     return this._wallets.asObservable();
   }
 
+  deleteWallet(walletId: string) {
+    return this.http.delete(`${this.url}${ApiEndpoints.wallets}${walletId}/`).pipe(tap(() => {
+      this.getUserWallets();
+      this.getUserTransactions(this.transactionFilter, true);
+    }))
+  }
   getTransactionsRequest() {
     return this._transactionsRequest.asObservable();
   }

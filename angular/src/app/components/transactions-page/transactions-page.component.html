@@ -3,7 +3,7 @@
     <section class="categories">
         <button class="category category-add-button" (click)="openCategoryModal()" >+</button>
         <div [style.backgroundColor]="category.color" class="category" (click)="openCategoryModal(category)" *ngFor="let category of categories$ | async  | slice:0:maxCategories">{{ category.name }}</div>
-        <button class="category show-all-hide-button" (click)="showAllCateogires()">{{ showAllText }}</button>
+        <button *ngIf="showAllCategoriesButton" class="category show-all-hide-button" (click)="showAllCateogires()">{{ showAllText }}</button>
     </section>
     <h2>Transactions</h2>
     <section class="transactions-menu">

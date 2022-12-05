@@ -12,6 +12,11 @@
                 <mat-icon fontIcon="material-icons-round" >{{ transaction.category.icon }}</mat-icon>
                 <p class="transaction-category">{{ transaction.category.name }}</p>
             </div>
+            <div class="transfer-wallets-names" *ngIf="transactionType === transactionTypes.Transfer">
+                <p class="wallet-name">{{ transaction.sourceWallet?.name }}</p>
+                <mat-icon fontIcon="material-icons-round" >east</mat-icon>
+                <p class="wallet-name">{{ transaction.targetWallet?.name }}</p>
+            </div>
         </div>
     </div>
     <div class="transaction-menu">
@@ -24,10 +29,13 @@
             </button>
         </div>
         <p class="transaction-date">{{ transaction.createdAt | date: 'dd LLLL yyyy' }}</p>
-        <p *ngIf="transaction.sourceAmount" class="transaction-amount">{{ (transaction.sourceWallet!.currency | currencySymbol ) + (transaction.sourceAmount | shortNumber) }}</p>
-        <mat-icon fontIcon="material-icons-round"  *ngIf="transactionType === transactionTypes.Transfer">east</mat-icon>
-        <p *ngIf="transaction.targetAmount" class="transaction-amount">{{ (transaction.targetWallet!.currency | currencySymbol ) + (transaction.targetAmount | shortNumber) }}</p>
-   
+
+        <div class="transaction-amount-wrapper">
+            <p *ngIf="transaction.sourceAmount" class="transaction-amount">{{ (transaction.sourceWallet!.currency | currencySymbol ) + (transaction.sourceAmount | shortNumber) }}</p>
+            <mat-icon fontIcon="material-icons-round"  *ngIf="transactionType === transactionTypes.Transfer">east</mat-icon>
+            <p *ngIf="transaction.targetAmount" class="transaction-amount">{{ (transaction.targetWallet!.currency | currencySymbol ) + (transaction.targetAmount | shortNumber) }}</p>
+        </div>
+        
     </div>
  
 </section>

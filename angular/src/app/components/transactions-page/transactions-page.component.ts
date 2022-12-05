@@ -1,10 +1,9 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { TransactionFilters } from 'src/app/enums/transactionFilters';
-import { Transaction, TransactionRequest } from 'src/app/models/transaction';
+import { Transaction } from 'src/app/models/transaction';
 import { TransactionCategory } from 'src/app/models/transactionCategory';
-import { DataStorageService } from 'src/app/services/data-storage.service';
 import { DataService } from 'src/app/services/data.service';
 import { CategoryModalComponent } from '../category-modal/category-modal.component';
 import { TransactionModalComponent } from '../transaction-modal/transaction-modal.component';
@@ -19,17 +18,19 @@ export class TransactionsPageComponent implements OnInit {
   transactionFiltersValues = Object.keys(this.transactionFilters);
   selectedFilter: TransactionFilters = this.ds.transactionFilter;
   transactions$: Observable<Transaction[]> = this.ds.getUserTransactions(this.selectedFilter);
-  categories$: Observable<TransactionCategory[]> = this.ds.getUserCategories();
+  categories$: Observable<TransactionCategory[]> = this.ds.getUserCategories().pipe(tap(val => {
+    this.showAllCategoriesButton = val.length > this.maxCategories;
+  }));;
   maxCategories: number = 5;
   showAllCategories: boolean = false;
   showAllText: string = 'Show All';
-
+  showAllCategoriesButton = false;
+  
   selectFilter(filter: TransactionFilters) {
     this.selectedFilter = filter;
     this.transactions$ = this.ds.getUserTransactions(this.selectedFilter);
   }
-  constructor(private dialog: MatDialog, public ds: DataService) {
-  }
+  constructor(private dialog: MatDialog, public ds: DataService) { }
   ngOnInit(): void { }
 
   openCategoryModal(category?: TransactionCategory) {

@@ -18,6 +18,11 @@ html {
 
 }
 
+button {
+    font-family: 'Roboto', sans-serif;
+    vertical-align: middle;
+}
+
 .mat-dialog-container {
     border-radius: 15px !important;
 }

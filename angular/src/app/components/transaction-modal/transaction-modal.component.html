@@ -15,11 +15,11 @@
         <form class="transaction-input" [formGroup]="form">
             <label for="">Amount</label>
             <div class="one-line-inputs-wrapper">
-                <input *ngIf="selectedType !== transactionTypes.Income" class="one-line-input" type="number"
+                <input *ngIf="selectedType !== transactionTypes.Income" class="one-line-input" type="number" min="0.00000001"
                     placeholder="Source Amount" formControlName="sourceAmount">
                 <mat-icon fontIcon="material-icons-round" *ngIf="(selectedType === transactionTypes.Transfer)">east
                 </mat-icon>
-                <input class="one-line-input" *ngIf="selectedType !== transactionTypes.Expense" type="number"
+                <input class="one-line-input" *ngIf="selectedType !== transactionTypes.Expense" type="number" min="0.00000001"
                     placeholder="Target Amount" formControlName="targetAmount">
 
             </div>
