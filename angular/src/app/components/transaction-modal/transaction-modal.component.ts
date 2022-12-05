@@ -84,6 +84,13 @@ export class TransactionModalComponent implements OnInit {
     this.form.controls['description'].valueChanges.subscribe(val => this.transaction.description = val);
   }
 
+  compare(val1: any, val2: any) {
+    if (val1?.id && val2?.id) {
+      return val1.id === val2.id
+    }
+    return false;
+  }
+
   updateFormValues(): void {
     this.form.patchValue({
       sourceAmount: this.transaction.sourceAmount,

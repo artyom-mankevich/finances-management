@@ -27,16 +27,18 @@
             <label for="description">Info</label>
             <div class="one-line-inputs-wrapper"
                 [ngClass]="{'reversed-wrapper' : selectedType === transactionTypes.Expense}">
-                <select class="one-line-input" type="text" name="category" placeholder="Category"
+                <select  [compareWith]="compare"  class="one-line-input" type="text" name="category" placeholder="Category"
                     *ngIf="(selectedType === transactionTypes.Expense) || (selectedType === transactionTypes.Income)"
                     formControlName="category">
                     <option [ngValue]="null" disabled selected hidden>Category</option>
-                    <option *ngFor="let category of categories$ | async" [ngValue]="category">{{category.name}}
+
+                    <option [attr.selected]="category.id === transaction.category?.id ? true : null"
+                        *ngFor="let category of categories$ | async" [ngValue]="category">{{category.name}}
                     </option>
                 </select>
                 <mat-icon fontIcon="material-icons-round" *ngIf="(selectedType === transactionTypes.Expense)">east
                 </mat-icon>
-                <select class="one-line-input"
+                <select [compareWith]="compare" class="one-line-input"
                     *ngIf="(selectedType === transactionTypes.Expense) || (selectedType === transactionTypes.Transfer)"
                     formControlName="sourceWallet">
                     <option [ngValue]="null" disabled selected hidden>Source wallet</option>
@@ -48,7 +50,7 @@
                 </select>
                 <mat-icon fontIcon="material-icons-round" *ngIf="(selectedType !== transactionTypes.Expense)">east
                 </mat-icon>
-                <select class="one-line-input"
+                <select [compareWith]="compare" class="one-line-input"
                     *ngIf="(selectedType === transactionTypes.Income) || (selectedType === transactionTypes.Transfer)"
                     formControlName="targetWallet">
 

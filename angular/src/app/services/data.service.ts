@@ -21,7 +21,7 @@ export class DataService {
   private _icons: BehaviorSubject<Icon[]>;
   private _transactions: BehaviorSubject<Transaction[]>;
   private _transactionsRequest: BehaviorSubject<TransactionRequest | undefined>;
-
+  
   transactionFilter: TransactionFilters = TransactionFilters.All;
   moreTransactions: boolean = false;
   constructor(private http: HttpClient) {
@@ -145,7 +145,12 @@ export class DataService {
       this.getUserTransactions(this.transactionFilter, true);
     }))
   }
+
   getTransactionsRequest() {
     return this._transactionsRequest.asObservable();
+  }
+
+  getNumberOfCategories() {
+    return this._categories.value.length;
   }
 }

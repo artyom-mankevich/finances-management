@@ -18,8 +18,8 @@ export class TransactionsPageComponent implements OnInit {
   transactionFiltersValues = Object.keys(this.transactionFilters);
   selectedFilter: TransactionFilters = this.ds.transactionFilter;
   transactions$: Observable<Transaction[]> = this.ds.getUserTransactions(this.selectedFilter);
-  categories$: Observable<TransactionCategory[]> = this.ds.getUserCategories().pipe(tap(val => {
-    this.showAllCategoriesButton = val.length > this.maxCategories;
+  categories$: Observable<TransactionCategory[]> = this.ds.getUserCategories().pipe(tap(()=> {
+    this.showAllCategoriesButton = this.ds.getNumberOfCategories() > this.maxCategories;
   }));;
   maxCategories: number = 5;
   showAllCategories: boolean = false;
