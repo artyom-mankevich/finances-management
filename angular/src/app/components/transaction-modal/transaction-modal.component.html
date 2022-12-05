@@ -1,15 +1,22 @@
 <section class="transaction-builder">
     <section class="transaction-type-select">
-        <button [ngClass]="{'unselected-transaction-type': transactionType.value !== selectedType  }"
+        <ng-container *ngIf="transactionModalModes.Create === modalMode" >
+            <button  [ngClass]="{'unselected-transaction-type': transactionType.value !== selectedType  }"
             [ngStyle]="{'background-color' : color }" class="transaction-type-button"
             (click)="selectType(transactionType.value)" *ngFor="let transactionType of transactionTypes | keyvalue">{{
             transactionType.key }}</button>
+        </ng-container>
+     
+        <button *ngIf="transactionModalModes.Update === modalMode" [ngStyle]="{'background-color' : color }"
+            class="transaction-type-button" (click)="selectType(selectedType)">{{
+            selectedType }}</button>
     </section>
     <div class="data-input">
         <form class="transaction-input" [formGroup]="form">
             <label for="">Amount</label>
             <div class="one-line-inputs-wrapper">
-                <input *ngIf="selectedType !== transactionTypes.Income" class="one-line-input" type="number" placeholder="Source Amount" formControlName="sourceAmount">
+                <input *ngIf="selectedType !== transactionTypes.Income" class="one-line-input" type="number"
+                    placeholder="Source Amount" formControlName="sourceAmount">
                 <mat-icon fontIcon="material-icons-round" *ngIf="(selectedType === transactionTypes.Transfer)">east
                 </mat-icon>
                 <input class="one-line-input" *ngIf="selectedType !== transactionTypes.Expense" type="number"
@@ -41,7 +48,7 @@
                 <select class="one-line-input"
                     *ngIf="(selectedType === transactionTypes.Income) || (selectedType === transactionTypes.Transfer)"
                     formControlName="targetWallet">
-                    
+
                     <option [ngValue]="null" disabled selected hidden>Target wallet</option>
 
                     <option *ngFor="let wallet of wallets$ | async" [ngValue]="wallet">{{wallet.name}}
@@ -50,8 +57,8 @@
             </div>
             <input type="text" name="description" placeholder="Description (optional)" formControlName="description">
         </form>
-        <button (click)="modifyTransaction()" class="create-button" [style.backgroundColor]="color"
-            type="submit" [disabled]="!form.valid">{{ modalMode }}
+        <button (click)="modifyTransaction()" class="create-button" [style.backgroundColor]="color" type="submit"
+            [disabled]="!form.valid">{{ modalMode }}
         </button>
     </div>
 </section>

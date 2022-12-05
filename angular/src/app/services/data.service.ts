@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable, tap } from 'rxjs';
 import { ApiEndpoints, environment } from 'src/environments/environment';
 import { TransactionFilters } from '../enums/transactionFilters';
+import { TransactionTypes } from '../enums/transactionTypes';
 import { Color } from '../models/color';
 import { Currency } from '../models/currency';
 import { Icon } from '../models/icon';
@@ -30,6 +31,12 @@ export class DataService {
     this._transactions = new BehaviorSubject<Transaction[]>([]);
     this._transactionsRequest = new BehaviorSubject<TransactionRequest | undefined>(undefined);
     this.getAvailableIcons();
+  }
+
+  private getTransactionType(transaction: Transaction): TransactionTypes {
+    if (transaction.sourceWallet && !transaction.targetWallet) return TransactionTypes.Expense;
+    if (!transaction.sourceWallet && transaction.targetWallet) return TransactionTypes.Income;
+    return TransactionTypes.Transfer;
   }
 
   private _getUserWallets(): void {
@@ -110,7 +117,11 @@ export class DataService {
   }
 
   createTransaction(transaction: PostTransaction) {
-    return this.http.post<Transaction>(`${this.url}${ApiEndpoints.transactions}`, transaction).pipe(tap((transaction: Transaction) => this._transactions.next([transaction, ...this._transactions.value])));
+    return this.http.post<Transaction>(`${this.url}${ApiEndpoints.transactions}`, transaction).pipe(tap((transaction: Transaction) =>  { 
+      if (this.getTransactionType(transaction).toString() === this.transactionFilter || this.transactionFilter === TransactionFilters.All) {
+        this._transactions.next([transaction, ...this._transactions.value]);
+      }
+    }));
   }
 
   updateTransaction(transaction: PostTransaction) {

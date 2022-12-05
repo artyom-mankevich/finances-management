@@ -18,6 +18,7 @@ import { ExchangeRateService } from 'src/app/services/exchange-rate.service';
 })
 export class TransactionModalComponent implements OnInit {
   modalMode: TransactionModalModes = TransactionModalModes.Create;
+  transactionModalModes = TransactionModalModes;
   transactionTypes = TransactionTypes;
   selectedType: TransactionTypes = TransactionTypes.Income;
   wallets$: Observable<Wallet[]> = this.ds.getUserWallets();
@@ -49,8 +50,9 @@ export class TransactionModalComponent implements OnInit {
     if (this.data) {
       this.modalMode = TransactionModalModes.Update;
       this.transaction.id = data.transaction.id;
-      // this.transaction = data.transaction;
-      // this.updateFormValues();
+      this.transaction = data.transaction;
+      this.selectedType = this.getTransactionType(this.transaction);
+      this.updateFormValues();
     }
     this.form.controls['sourceAmount'].valueChanges.subscribe(x => {
       this.transaction.sourceAmount = x;
@@ -64,6 +66,7 @@ export class TransactionModalComponent implements OnInit {
         this.color = val?.color
       }
     });
+    this.selectType(this.selectedType);
     this.form.controls['targetAmount'].valueChanges.subscribe(val => this.transaction.targetAmount = val);
     this.form.controls['sourceWallet'].valueChanges.subscribe(val =>  this.transaction.sourceWallet = val )
     this.form.controls['targetWallet'].valueChanges.subscribe(val =>  this.transaction.targetWallet = val)
@@ -76,8 +79,8 @@ export class TransactionModalComponent implements OnInit {
       sourceAmount: this.transaction.sourceAmount,
       targetAmount: this.transaction.targetAmount,
       category: this.transaction.category?.name,
-      sourceWallet: this.transaction.sourceWallet?.name,
-      targetWallet: this.transaction.targetWallet?.name,
+      sourceWallet: this.transaction.sourceWallet,
+      targetWallet: this.transaction.targetWallet,
       description: this.transaction.description
     })
     if (this.transaction.category) {
@@ -92,8 +95,33 @@ export class TransactionModalComponent implements OnInit {
   }
 
   selectType(newType: TransactionTypes) {
+    if (newType !== this.selectedType) {
+      this.form.reset();
+    }
     this.selectedType = newType;
-    this.form.reset();
+    for (const key in this.form.controls) {
+      this.form.controls[key].removeValidators(Validators.required);
+      this.form.controls[key].updateValueAndValidity();
+    }
+    if (this.selectedType === TransactionTypes.Transfer) {
+      this.form.controls['sourceAmount'].setValidators([Validators.required])
+      this.form.controls['targetAmount'].setValidators([Validators.required])
+      this.form.controls['sourceWallet'].setValidators([Validators.required])
+      this.form.controls['targetWallet'].setValidators([Validators.required])
+    }
+    if (this.selectedType === TransactionTypes.Income) {
+      this.form.controls['targetAmount'].setValidators([Validators.required])
+      this.form.controls['category'].setValidators([Validators.required])
+      this.form.controls['targetWallet'].setValidators([Validators.required])
+    }
+    if (this.selectedType === TransactionTypes.Expense) {
+      this.form.controls['sourceAmount'].setValidators([Validators.required])
+      this.form.controls['category'].setValidators([Validators.required])
+      this.form.controls['targetWallet'].setValidators([Validators.required])
+    }
+    for (const key in this.form.controls) {
+      this.form.controls[key].updateValueAndValidity();
+    }  
   }
 
   fillTargetAmount(val: number) {
@@ -106,6 +134,11 @@ export class TransactionModalComponent implements OnInit {
         })
       })
     }
+  }
+  private getTransactionType(transaction: Transaction): TransactionTypes {
+    if (transaction.sourceWallet && !transaction.targetWallet) return TransactionTypes.Expense;
+    if (!transaction.sourceWallet && transaction.targetWallet) return TransactionTypes.Income;
+    return TransactionTypes.Transfer;
   }
 
   modifyTransaction() {
