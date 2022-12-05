@@ -104,8 +104,13 @@ class Transaction(models.Model):
             old_obj = Transaction.objects.select_for_update().get(pk=self.pk)
             if old_obj.source_amount != source_amount:
                 source_amount = source_amount - old_obj.source_amount
+            else:
+                source_amount = 0
+
             if old_obj.target_amount != target_amount:
                 target_amount = target_amount - old_obj.target_amount
+            else:
+                target_amount = 0
 
         if self.source_wallet and not self.target_wallet:
             self.source_wallet.withdraw(source_amount)
@@ -116,6 +121,18 @@ class Transaction(models.Model):
             self.target_wallet.deposit(target_amount)
 
         super().save(*args, **kwargs)
+
+    @transaction.atomic
+    def delete(self, *args, **kwargs):
+        if self.source_wallet and not self.target_wallet:
+            self.source_wallet.deposit(self.source_amount)
+        elif self.target_wallet and not self.source_wallet:
+            self.target_wallet.withdraw(self.target_amount)
+        elif self.source_wallet and self.target_wallet:
+            self.source_wallet.deposit(self.source_amount)
+            self.target_wallet.withdraw(self.target_amount)
+
+        super().delete(*args, **kwargs)
 
     @classmethod
     @transaction.atomic
