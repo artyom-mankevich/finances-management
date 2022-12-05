@@ -22,15 +22,17 @@
 .transaction-amount-wrapper {
     width: 200px;
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
+    gap: 5px;
 }
 
 .transfer-wallets-names {
     display: flex;
     justify-content: left;
     align-items: center;
-    color: var(--text-gray);
+    color: black;
+    gap: 5px;
 }
 
 .wallet-name {
