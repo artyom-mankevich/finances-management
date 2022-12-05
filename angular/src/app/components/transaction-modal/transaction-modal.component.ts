@@ -85,6 +85,9 @@ export class TransactionModalComponent implements OnInit {
   }
 
   compare(val1: any, val2: any) {
+    if (!val1 && !val2) {
+      return true;
+    }
     if (val1?.id && val2?.id) {
       return val1.id === val2.id
     }
