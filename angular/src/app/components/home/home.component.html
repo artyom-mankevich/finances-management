@@ -5,5 +5,7 @@
             <h1 *ngIf="auth.user$ | async as user">Welcome back, <b>{{ user.name }}</b></h1>
         </header>
         <app-wallets-page  *ngIf="currentPage === pages.Wallets" @fadeIn></app-wallets-page>
+        <app-transactions-page  *ngIf="currentPage === pages.Transactions" @fadeIn></app-transactions-page>
+        
     </main>
 </div>

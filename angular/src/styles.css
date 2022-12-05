@@ -7,6 +7,9 @@
     --text-gray: #7D848F;
     --light-gray: #F1F2F2;
     --purple: #7A3EF8;
+    --transaction-type-background: #F8F9FD;
+    --transaction-expense: #F29912;
+    --transaction-income: #2BD1D4;
 }
 html {
     font-family: 'Roboto', sans-serif;
@@ -15,8 +18,17 @@ html {
 
 }
 
+button {
+    font-family: 'Roboto', sans-serif;
+    vertical-align: middle;
+}
+
 .mat-dialog-container {
     border-radius: 15px !important;
+}
+
+.transaction-dialog .mat-dialog-container {
+    padding: 0px;
 }
 
 body {

@@ -1,0 +1,41 @@
+<section class="transaction-wrapper">
+    <div class="transaction-main-info">
+        <div class="transaction-type-icon">
+            <mat-icon  fontIcon="material-icons-round" *ngIf="transactionType == transactionTypes.Income">arrow_upwards</mat-icon>
+            <mat-icon  fontIcon="material-icons-round" *ngIf="transactionType == transactionTypes.Expense">arrow_downwards</mat-icon>
+            <mat-icon  fontIcon="material-icons-round" *ngIf="transactionType == transactionTypes.Transfer">sync</mat-icon>
+
+        </div>
+        <div>
+            <p class="transaction-description">{{ transaction.description }}</p>
+            <div *ngIf="transaction.category" [ngStyle]="{'color': transaction.category.color}" class="transaction-description-icon">
+                <mat-icon fontIcon="material-icons-round" >{{ transaction.category.icon }}</mat-icon>
+                <p class="transaction-category">{{ transaction.category.name }}</p>
+            </div>
+            <div class="transfer-wallets-names" *ngIf="transactionType === transactionTypes.Transfer">
+                <p class="wallet-name">{{ transaction.sourceWallet?.name }}</p>
+                <mat-icon fontIcon="material-icons-round" >east</mat-icon>
+                <p class="wallet-name">{{ transaction.targetWallet?.name }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="transaction-menu">
+        <div class="transaction-edit-menu">
+            <button class="mat-button transaction-edit" (click)="openTransactionModal()"> 
+                <mat-icon fontIcon="material-icons-round" inline="true">edit</mat-icon>
+            </button>
+            <button class="mat-button transaction-edit">
+                <mat-icon fontIcon="material-icons-round" inline="true" (click)="deleteTransaction()">close</mat-icon>
+            </button>
+        </div>
+        <p class="transaction-date">{{ transaction.createdAt | date: 'dd LLLL yyyy' }}</p>
+
+        <div class="transaction-amount-wrapper">
+            <p *ngIf="transaction.sourceAmount" class="transaction-amount">{{ (transaction.sourceWallet!.currency | currencySymbol ) + (transaction.sourceAmount | shortNumber) }}</p>
+            <mat-icon fontIcon="material-icons-round"  *ngIf="transactionType === transactionTypes.Transfer">east</mat-icon>
+            <p *ngIf="transaction.targetAmount" class="transaction-amount">{{ (transaction.targetWallet!.currency | currencySymbol ) + (transaction.targetAmount | shortNumber) }}</p>
+        </div>
+        
+    </div>
+ 
+</section>

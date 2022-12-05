@@ -9,7 +9,7 @@ import { ApiEndpoints, environment } from 'src/environments/environment';
 import { HomeComponent } from './components/home/home.component';
 import { LoaderSpinnerComponent } from './components/loader-spinner/loader-spinner.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule, HTTP_INTERCEPTORS } from  '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { SidemenuComponent } from './components/sidemenu/sidemenu.component';
 import { WalletsPageComponent } from './components/wallets-page/wallets-page.component';
@@ -19,6 +19,11 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { AddWalletModalComponent } from './components/add-wallet-modal/add-wallet-modal.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CurrencySymbolPipe } from './pipes/currency-symbol.pipe';
+import { TransactionsPageComponent } from './components/transactions-page/transactions-page.component';
+import { TransactionComponent } from './components/transaction/transaction.component';
+import { TransactionModalComponent } from './components/transaction-modal/transaction-modal.component';
+import { MatIconModule } from '@angular/material/icon';
+import { CategoryModalComponent } from './components/category-modal/category-modal.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +36,11 @@ import { CurrencySymbolPipe } from './pipes/currency-symbol.pipe';
     WalletComponent,
     ShortNumberPipe,
     AddWalletModalComponent,
-    CurrencySymbolPipe
+    CurrencySymbolPipe,
+    TransactionsPageComponent,
+    TransactionComponent,
+    TransactionModalComponent,
+    CategoryModalComponent
   ],
   imports: [
     BrowserModule,
@@ -49,6 +58,7 @@ import { CurrencySymbolPipe } from './pipes/currency-symbol.pipe';
     HttpClientModule,
     MatDialogModule,
     ReactiveFormsModule,
+    MatIconModule
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS,

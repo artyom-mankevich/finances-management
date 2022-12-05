@@ -1,0 +1,25 @@
+<section class="category-builder">
+    <form class="category-input" [formGroup]="form">
+        <label for="">Name</label>
+        <input type="text" placeholder="Name" formControlName="name">
+    </form>
+    <label for="">Icon</label>
+    <div class="available-icons">
+        <mat-icon *ngFor="let icon of icons$ | async" (click)="selectIcon(icon.code)" [ngClass]="{ 'unselected-icon' : category.icon !== icon.code}"
+            fontIcon="material-icons-round" [style.color]="category.color">{{ icon.code }}</mat-icon>
+    </div>
+    <label for="">Color</label>
+    <div class="colors" id="colors">
+        <div *ngFor="let color of dss.colors" class="color" [style.backgroundColor]="color"
+            (click)="changeColor(color)">
+            <div *ngIf="color === category.color" class="selected-color"></div>
+        </div>
+    </div>
+    <div class="action-buttons">
+        <button (click)="modifyCategory()" class="create-button" [style.backgroundColor]="category.color" type="submit"
+            [disabled]="!form.valid">{{ modalMode }}
+        </button>
+        <button *ngIf="modalMode === transactionModalModes.Update" (click)="deleteCategory()" class="delete-button">Delete
+    </button>
+    </div>
+</section>

@@ -77,4 +77,6 @@ class TransactionCategoryViewSet(viewsets.ModelViewSet, SetUserIdFromTokenOnCrea
     serializer_class = TransactionCategorySerializer
 
     def get_queryset(self):
-        return TransactionCategory.objects.filter(user_id=self.request.user)
+        return TransactionCategory.objects.filter(user_id=self.request.user).order_by(
+            "-created_at"
+        )
