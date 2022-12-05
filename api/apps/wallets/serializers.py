@@ -185,6 +185,16 @@ class TransactionSerializer(serializers.ModelSerializer):
 
         return value
 
+    def validate_category(self, value):
+        user_id = str(self.context["request"].user)
+
+        if not value.user_id == user_id:
+            raise exceptions.PermissionDenied(
+                "You do not have permission to perform this action."
+            )
+
+        return value
+
     def _validate_expense(self):
         if (
             self.initial_data.get("source_wallet")
