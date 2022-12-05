@@ -15,9 +15,11 @@
             <div *ngIf="color === category.color" class="selected-color"></div>
         </div>
     </div>
-    <div>
+    <div class="action-buttons">
         <button (click)="modifyCategory()" class="create-button" [style.backgroundColor]="category.color" type="submit"
             [disabled]="!form.valid">{{ modalMode }}
         </button>
+        <button *ngIf="modalMode === transactionModalModes.Update" (click)="deleteCategory()" class="delete-button">Delete
+    </button>
     </div>
 </section>

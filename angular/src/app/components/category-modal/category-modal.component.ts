@@ -1,7 +1,7 @@
 import { Component, Inject, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
+import { Observable, pipe, tap } from 'rxjs';
 import { TransactionModalModes } from 'src/app/enums/transactionModalModes';
 import { Icon } from 'src/app/models/icon';
 import { TransactionCategory } from 'src/app/models/transactionCategory';
@@ -15,7 +15,7 @@ import { WhiteSpaceValidator } from 'src/app/validators/whitespace.validator';
   styleUrls: ['./category-modal.component.css']
 })
 export class CategoryModalComponent implements OnInit {
-
+  transactionModalModes = TransactionModalModes;
   modalMode: TransactionModalModes = TransactionModalModes.Create;
   form: FormGroup;
   icons$: Observable<Icon[]> = this.ds.getAvailableIcons();
@@ -68,9 +68,10 @@ export class CategoryModalComponent implements OnInit {
   }
 
   deleteCategory() {
-
+    if (this.category.id){
+      this.ds.deleteCategory(this.category.id).subscribe(() => this.dialogRef.close());
+    }
   }
-
   ngOnInit(): void {
   }
 

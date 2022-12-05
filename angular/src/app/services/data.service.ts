@@ -153,4 +153,11 @@ export class DataService {
   getNumberOfCategories() {
     return this._categories.value.length;
   }
+
+  deleteCategory(categoryId: string) {
+    return this.http.delete(`${this.url}${ApiEndpoints.transactionCategories}${categoryId}/`).pipe(tap(() => { 
+      this.getUserCategories();
+      this.getUserTransactions(this.transactionFilter, true);
+    }))
+  }
 }
