@@ -22,4 +22,4 @@ class ChartSettingsViewSet(GenericViewSet, RetrieveUpdateAPIView):
 
 class SetUserIdFromTokenOnCreateMixin(CreateModelMixin):
     def perform_create(self, serializer):
-        serializer.save(user_id=self.request.user)
+        serializer.save(user_id=str(self.request.user))

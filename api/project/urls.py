@@ -7,7 +7,7 @@ from accounts.views import AccountSettingsViewSet, ChartSettingsViewSet
 from crypto.views import EthKeysViewSet
 from decorations.views import IconViewSet, ColorViewSet
 from investments.views import StockViewSet
-from news.views import NewsFilterViewSet, NewsIndustryViewSet
+from news.views import NewsFilterViewSet, NewsLanguageViewSet, NewsAPIView
 from project import settings
 from wallets.views import (
     WalletViewSet,
@@ -40,7 +40,7 @@ router.register(r"colors", ColorViewSet, basename="colors")
 router.register(r"stocks", StockViewSet, basename="stocks")
 
 router.register(r"news-filters", NewsFilterViewSet, basename="news-filters")
-router.register(r"news-industries", NewsIndustryViewSet, basename="news-industries")
+router.register(r"news-languages", NewsLanguageViewSet, basename="news-languages")
 
 router.register(r"currencies", CurrencyViewSet, basename="currencies")
 router.register(r"wallets", WalletViewSet, basename="wallets")
@@ -54,6 +54,7 @@ router.register(
 
 urlpatterns = [
     path("v2/", include(router.urls)),
+    path("v2/news/", NewsAPIView.as_view(), name="news"),
 ]
 
 if settings.DEBUG:

@@ -5,12 +5,13 @@ from django.db import models, transaction
 
 
 class NewsFilter(models.Model):
-    user_id = models.CharField(max_length=64, unique=True, primary_key=True)
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    user_id = models.CharField(max_length=64, unique=True, db_index=True)
     tickers = ArrayField(models.CharField(max_length=10), default=list)
-    industries = models.ManyToManyField(
-        "NewsIndustry",
+    languages = models.ManyToManyField(
+        "NewsLanguage",
         blank=True,
-        db_table="news_filter_industries",
+        db_table="news_filter_languages",
     )
 
     @classmethod
@@ -41,6 +42,5 @@ class NewsFilter(models.Model):
         news_filter.save()
 
 
-class NewsIndustry(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=32, unique=True, blank=False)
+class NewsLanguage(models.Model):
+    code = models.CharField(max_length=5, unique=True, primary_key=True)

@@ -177,6 +177,14 @@ LOGGING = {
     "loggers": loggers,
 }
 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.memcached.PyMemcacheCache",
+        "LOCATION": f"memcached:11211",
+        "TIMEOUT": 0
+    }
+}
+
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.IsAuthenticated",
@@ -221,3 +229,6 @@ JWT_AUTH = {
     "JWT_ISSUER": "https://dev-16fr5mnt2b0eess4.us.auth0.com/",
     "JWT_AUTH_HEADER_PREFIX": "Bearer",
 }
+
+MARKETAUX_API_KEY = os.environ["MARKETAUX_API_KEY"]
+MARKETAUX_API_URL = os.environ["MARKETAUX_API_URL"]
