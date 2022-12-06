@@ -1,7 +1,7 @@
 <section class="category-builder">
     <form class="category-input" [formGroup]="form">
         <label for="">Name</label>
-        <input type="text" placeholder="Name" formControlName="name">
+        <input class="main-input" type="text" placeholder="Name" formControlName="name">
     </form>
     <label for="">Icon</label>
     <div class="available-icons">
@@ -16,10 +16,10 @@
         </div>
     </div>
     <div class="action-buttons">
-        <button (click)="modifyCategory()" class="create-button" [style.backgroundColor]="category.color" type="submit"
+        <button (click)="modifyCategory()" class="modal-action-button" [style.backgroundColor]="category.color" type="submit"
             [disabled]="!form.valid">{{ modalMode }}
         </button>
-        <button *ngIf="modalMode === transactionModalModes.Update" (click)="deleteCategory()" class="delete-button">Delete
+        <button *ngIf="modalMode === transactionModalModes.Update" (click)="deleteCategory()" class="modal-action-button-inverted">Delete
     </button>
     </div>
 </section>

@@ -1,0 +1,46 @@
+
+.main-input {
+    text-indent: 15px;  
+}
+
+.main-input,
+.main-select {
+    flex-grow: 1;
+    height: 36px;
+    border-radius: 5px;
+    margin-top: 15px;
+    border: 1px solid var(--text-gray);
+    background-color: transparent;
+}
+
+.main-select {
+    height: 40px;
+    min-width: 100px;
+}
+
+.one-line {
+    margin: 0px;
+}
+
+label {
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+.main-input[type=number]::-webkit-inner-spin-button,
+.main-input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+.main-input[type=number] {
+    -moz-appearance:textfield;
+}
+
+.main-input:focus {
+    outline-color: var(--main-blue);
+    --webkit-appearance: none;
+    --moz-appearance: textfield;
+}
