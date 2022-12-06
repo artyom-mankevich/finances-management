@@ -7,6 +7,8 @@ import { TransactionTypes } from '../enums/transactionTypes';
 import { Color } from '../models/color';
 import { Currency } from '../models/currency';
 import { Icon } from '../models/icon';
+import { NewsFilter } from '../models/newsFilter';
+import { Stock } from '../models/stock';
 import { PostTransaction, Transaction, TransactionRequest } from '../models/transaction';
 import { TransactionCategory } from '../models/transactionCategory';
 import { Wallet } from '../models/wallet';
@@ -21,7 +23,7 @@ export class DataService {
   private _icons: BehaviorSubject<Icon[]>;
   private _transactions: BehaviorSubject<Transaction[]>;
   private _transactionsRequest: BehaviorSubject<TransactionRequest | undefined>;
-  
+  private _newsFilter: BehaviorSubject<NewsFilter | undefined>;
   transactionFilter: TransactionFilters = TransactionFilters.All;
   moreTransactions: boolean = false;
   constructor(private http: HttpClient) {
@@ -30,6 +32,8 @@ export class DataService {
     this._icons = new BehaviorSubject<Icon[]>([])
     this._transactions = new BehaviorSubject<Transaction[]>([]);
     this._transactionsRequest = new BehaviorSubject<TransactionRequest | undefined>(undefined);
+    this._newsFilter = new BehaviorSubject<NewsFilter | undefined>(undefined);
+
     this.getAvailableIcons();
   }
 
@@ -162,5 +166,21 @@ export class DataService {
       this.getUserCategories();
       this.getUserTransactions(this.transactionFilter, true);
     }))
+  }
+
+  createStock(stock: Stock) {
+    return this.http.post<Stock>(`${this.url}${ApiEndpoints.stocks}`, stock)
+  }
+
+  updateStock(stock: Stock) {
+    return this.http.put<Stock>(`${this.url}${ApiEndpoints.stocks}${stock.id}`, stock)
+  }
+
+  _getUserNewsFilter() {
+    this.http.get<NewsFilter>(`${this.url}${ApiEndpoints.newsFilter}`).subscribe(nf =>    {console.log(nf);    this._newsFilter.next(nf)});
+  }
+  getUserNewsFilter() {
+    this._getUserNewsFilter();
+    return this._newsFilter.asObservable();
   }
 }

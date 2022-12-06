@@ -1,6 +1,6 @@
 <div class="investments-page-wrapper">
     <div class="investments-top-menu">
-        <button class="add-button">Add news filter</button>
+        <button class="add-button" (click)="openNewsFilterDialog()">Add news filter</button>
         <button class="add-button" (click)="openStockDialog()">Add Stock</button>
     </div>
     <section class="content">
@@ -10,6 +10,12 @@
         </div>
         <section class="stocks">
             <app-stock [stock]="stock" *ngFor="let stock of stocks"></app-stock>
+            <div class="stocks-batch-buttons">
+                <button class="secondary-button" (click)="loadNextStocks()">Previous</button>
+                <button class="secondary-button" (click)="loadPreviousStocks()">Next</button>
+            </div>
+         
+
         </section>
     </section>
 </div>

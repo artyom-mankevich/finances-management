@@ -28,6 +28,7 @@ import { InvestmentsPageComponent } from './components/investments-page/investme
 import { StockComponent } from './components/stock/stock.component';
 import { NewsEntryComponent } from './components/news-entry/news-entry.component';
 import { StockModalComponent } from './components/stock-modal/stock-modal.component';
+import { NewsFiltersModalComponent } from './components/news-filters-modal/news-filters-modal.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { StockModalComponent } from './components/stock-modal/stock-modal.compon
     InvestmentsPageComponent,
     StockComponent,
     NewsEntryComponent,
-    StockModalComponent
+    StockModalComponent,
+    NewsFiltersModalComponent
   ],
   imports: [
     BrowserModule,

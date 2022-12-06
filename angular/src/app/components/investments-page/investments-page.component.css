@@ -33,6 +33,16 @@
     flex-grow: 1;
 }
 
+.secondary-button {
+    width: 100px;
+}
+.stocks-batch-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
 @media only screen and (max-width: 900px) {
     .content {
         flex-direction: column;

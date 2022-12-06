@@ -1,0 +1,20 @@
+@import url('../../common/styles/buttons.css');
+@import url('../../common/styles/inputs.css');
+
+
+.modal-action-button {
+    background-color: var(--purple);
+}
+
+.input-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-wrapper {
+    width: 200px;
+    height: 320px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}

@@ -17,3 +17,8 @@
 .modal-action-button {
     background-color: var(--purple);
 }
+
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+}

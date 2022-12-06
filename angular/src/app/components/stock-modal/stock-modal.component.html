@@ -1,9 +1,12 @@
 <div class="stock-modal-wrapper">
-    <form class="stock-input-form">
+    <form class="stock-input-form" [formGroup]="form">
         <label for="">Info</label>
-        <input class="main-input" type="text" placeholder="Ticker">
+        <input class="main-input" type="text" placeholder="Ticker" formControlName="ticker" maxlength="4">
         <label for="">Shares</label>
-        <input class="main-input" type="text" placeholder="Number of shares">
+        <input  class="main-input" type="number" min="1" placeholder="Number of shares" formControlName="amount">
     </form>
-    <button class="modal-action-button">Create</button>
+    <div class="action-buttons">
+        <button class="modal-action-button" [disabled]="!form.valid" (click)="modifyStock()">Create</button>
+        <button *ngIf="modalMode === modalModes.Update" class="modal-action-button-inverted" (click)="deleteStock()">Delete</button>
+    </div>
 </div>

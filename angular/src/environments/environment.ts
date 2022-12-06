@@ -16,7 +16,9 @@ export enum ApiEndpoints  {
   currencies = 'currencies/',
   transactionCategories = 'transaction-categories/',
   icons = 'icons/',
-  transactions = 'transactions/'
+  transactions = 'transactions/',
+  stocks = 'stocks/',
+  newsFilter = 'news-filters/'
 }
 
 /*

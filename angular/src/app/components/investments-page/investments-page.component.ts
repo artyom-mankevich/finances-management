@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { config } from 'process';
 import { Stock } from 'src/app/models/stock';
+import { NewsFiltersModalComponent } from '../news-filters-modal/news-filters-modal.component';
 import { StockModalComponent } from '../stock-modal/stock-modal.component';
 
 @Component({
@@ -14,7 +15,7 @@ export class InvestmentsPageComponent implements OnInit {
   stocks: Stock[] = []
 
   constructor(private dialog: MatDialog) {
-    for (let i = 0; i< 15; i++){
+    for (let i = 0; i < 15; i++) {
       this.stocks.push({
         id: null,
         userId: null,
@@ -23,14 +24,26 @@ export class InvestmentsPageComponent implements OnInit {
         price: 15000
       });
     }
-   }
+  }
 
-   openStockDialog() {
+  openStockDialog() {
     this.dialog.open(StockModalComponent, {
       width: '300px',
       height: '300px'
     });
-   }
+  }
+
+  openNewsFilterDialog() {
+    this.dialog.open(NewsFiltersModalComponent);
+  }
+
+  loadNextStocks() {
+
+  }
+
+  loadPreviousStocks() {
+    
+  }
 
 
   ngOnInit(): void {
