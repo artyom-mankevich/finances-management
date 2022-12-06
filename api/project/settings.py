@@ -177,6 +177,14 @@ LOGGING = {
     "loggers": loggers,
 }
 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.memcached.PyMemcacheCache",
+        "LOCATION": f"memcached:11211",
+        "TIMEOUT": 0
+    }
+}
+
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.IsAuthenticated",
