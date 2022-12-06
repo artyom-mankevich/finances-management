@@ -181,7 +181,13 @@ CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.memcached.PyMemcacheCache",
         "LOCATION": f"memcached:11211",
-        "TIMEOUT": 0
+        "TIMEOUT": 0,
+        "OPTIONS": {
+            "no_delay": True,
+            "ignore_exc": True,
+            "connect_timeout": 1,
+            "timeout": 1,
+        }
     }
 }
 
@@ -232,3 +238,5 @@ JWT_AUTH = {
 
 MARKETAUX_API_KEY = os.environ["MARKETAUX_API_KEY"]
 MARKETAUX_API_URL = os.environ["MARKETAUX_API_URL"]
+
+EXCHANGERATE_HOST = os.environ["EXCHANGERATE_HOST"]
