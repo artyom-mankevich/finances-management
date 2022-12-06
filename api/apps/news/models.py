@@ -1,13 +1,17 @@
 import uuid
 
-from django.contrib.postgres.fields import ArrayField
 from django.db import models, transaction
 
 
 class NewsFilter(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     user_id = models.CharField(max_length=64, unique=True, db_index=True)
-    tickers = ArrayField(models.CharField(max_length=10), default=list)
+    tickers = models.ManyToManyField(
+        "investments.Ticker",
+        related_name="news_filters",
+        blank=True,
+        db_table="news_filter_tickers"
+    )
     languages = models.ManyToManyField(
         "NewsLanguage",
         blank=True,
@@ -22,24 +26,14 @@ class NewsFilter(models.Model):
         else:
             news_filter = cls.objects.create(user_id=user_id)
 
-        if ticker not in news_filter.tickers:
-            news_filter.tickers.append(ticker)
-            news_filter.save()
-
-    @classmethod
-    @transaction.atomic
-    def update_ticker(cls, user_id, old_ticker, new_ticker):
-        news_filter = cls.objects.select_for_update().get(user_id=user_id)
-        news_filter.tickers.remove(old_ticker)
-        news_filter.tickers.append(new_ticker)
-        news_filter.save()
+        if not news_filter.tickers.filter(code=ticker.code).exists():
+            news_filter.tickers.add(ticker)
 
     @classmethod
     @transaction.atomic
     def remove_ticker(cls, user_id, ticker):
         news_filter = cls.objects.select_for_update().get(user_id=user_id)
         news_filter.tickers.remove(ticker)
-        news_filter.save()
 
 
 class NewsLanguage(models.Model):
