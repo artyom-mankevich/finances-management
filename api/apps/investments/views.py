@@ -10,7 +10,12 @@ class StockViewSet(viewsets.ModelViewSet, SetUserIdFromTokenOnCreateMixin):
     serializer_class = StockSerializer
 
     pagination_class = PageNumberPagination
-    pagination_class.page_size = 5
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.pagination_class.page_size = 5
 
     def get_queryset(self):
-        return Stock.objects.all().filter(user_id=self.request.user)
+        return Stock.objects.all().filter(user_id=self.request.user).order_by(
+            "-created_at"
+        )

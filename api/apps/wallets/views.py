@@ -65,7 +65,10 @@ class TransactionViewSet(viewsets.ModelViewSet, SetUserIdFromTokenOnCreateMixin)
     filterset_class = TransactionFilter
 
     pagination_class = PageNumberPagination
-    pagination_class.page_size = 15
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.pagination_class.page_size = 15
 
     def get_queryset(self) -> QuerySet[Transaction]:
         return Transaction.objects.filter(user_id=self.request.user).prefetch_related(
