@@ -24,6 +24,8 @@ import { TransactionComponent } from './components/transaction/transaction.compo
 import { TransactionModalComponent } from './components/transaction-modal/transaction-modal.component';
 import { MatIconModule } from '@angular/material/icon';
 import { CategoryModalComponent } from './components/category-modal/category-modal.component';
+import { InvestmentsPageComponent } from './components/investments-page/investments-page.component';
+import { StockComponent } from './components/stock/stock.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,9 @@ import { CategoryModalComponent } from './components/category-modal/category-mod
     TransactionsPageComponent,
     TransactionComponent,
     TransactionModalComponent,
-    CategoryModalComponent
+    CategoryModalComponent,
+    InvestmentsPageComponent,
+    StockComponent
   ],
   imports: [
     BrowserModule,
