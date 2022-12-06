@@ -30,8 +30,5 @@ class NewsAPIView(APIView):
             return Response(data=[])
 
         response = get_stocks_news(newsfilter, str(request.user))
-        stripped_response = [
-            {"title": news["title"], "url": news["url"]} for news in response["data"]
-        ]
 
-        return Response(stripped_response)
+        return Response(response)

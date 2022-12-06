@@ -4,6 +4,7 @@ from django.core.cache import cache
 
 from project import settings
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -38,6 +39,9 @@ def get_stocks_news(news_filter, user_id):
         logger.error(e)
         return {"data": []}
 
-    cache.set(cache_key, response, 60 * 60 * 1)
+    stripped_response = [
+        {"title": news["title"], "url": news["url"]} for news in response["data"]
+    ]
+    cache.set(cache_key, stripped_response, 60 * 60 * 1)
 
-    return response
+    return stripped_response
