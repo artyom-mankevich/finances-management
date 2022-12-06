@@ -1,0 +1,23 @@
+.news-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    gap: 5px;
+}
+
+.news-title {
+    margin: 0px;
+    font-size: 1.5rem;
+    color: var(--dark-text);
+}
+
+.news-url {
+    text-decoration: none;
+    color: var(--main-blue);
+    transition-duration: 200ms;
+}
+
+.news-url:hover {
+    margin-left: 5px;
+    filter: brightness(0.9);
+}

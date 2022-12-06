@@ -19,7 +19,8 @@ export enum ApiEndpoints  {
   transactions = 'transactions/',
   stocks = 'stocks/',
   newsFilter = 'news-filters/',
-  availableNewsLanguages = 'news-languages/'
+  availableNewsLanguages = 'news-languages/',
+  news = 'news/'
 }
 
 /*

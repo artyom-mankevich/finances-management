@@ -3,8 +3,6 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    max-width: 375px;
-    /* margin: 30px 0; */
     transition-duration: 200ms;
 }
 

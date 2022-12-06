@@ -6,9 +6,13 @@
     <section class="content">
         <div class="stocks-chart-news-wrapper">
             <section class="stocks-chart">Stocks Chart</section>
-            <section class="news">News</section>
+            <section class="news">
+                <h2>News</h2>
+                <app-news-entry class="news-entry" [news]="newsEntry" *ngFor="let newsEntry of news$ | async"></app-news-entry>
+            </section>
         </div>
         <section class="stocks">
+            <h2>Stocks</h2>
             <ng-container *ngIf="stocks$ | async as stocks">
                 <app-stock [stock]="stock" *ngFor="let stock of stocks.results"></app-stock>
                 <div class="stocks-batch-buttons">

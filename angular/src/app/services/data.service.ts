@@ -7,6 +7,7 @@ import { TransactionTypes } from '../enums/transactionTypes';
 import { Color } from '../models/color';
 import { Currency } from '../models/currency';
 import { Icon } from '../models/icon';
+import { News } from '../models/news';
 import { NewsFilter } from '../models/newsFilter';
 import { NewsLanguage } from '../models/newsLanguages';
 import { Stock, StockRequest } from '../models/stock';
@@ -27,6 +28,7 @@ export class DataService {
   private _newsLanguages: BehaviorSubject<NewsLanguage[]>;
   private _transactionsRequest: BehaviorSubject<TransactionRequest | undefined>;
   private _newsFilter: BehaviorSubject<NewsFilter | undefined>;
+  private _news: BehaviorSubject<News[]>;
   transactionFilter: TransactionFilters = TransactionFilters.All;
   moreTransactions: boolean = false;
   constructor(private http: HttpClient) {
@@ -38,6 +40,7 @@ export class DataService {
     this._newsFilter = new BehaviorSubject<NewsFilter | undefined>(undefined);
     this._stockRequest = new BehaviorSubject<StockRequest | undefined>(undefined);
     this._newsLanguages = new BehaviorSubject<NewsLanguage[]>([]);
+    this._news = new BehaviorSubject<News[]>([]);
     this.getAvailableIcons();
   }
 
@@ -230,5 +233,12 @@ export class DataService {
       this._getUserStocks(this._stockRequest.value.previous)
     }
     return this._stockRequest.asObservable();
+  }
+
+  getUserNews(): Observable<News[]> {
+    if (this._news.value.length === 0) {
+      this.http.get<News[]>(`${this.url}${ApiEndpoints.news}`).subscribe(news => this._news.next(news));
+    }
+    return this._news.asObservable();
   }
 }

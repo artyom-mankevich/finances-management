@@ -10,6 +10,7 @@
     --transaction-type-background: #F8F9FD;
     --transaction-expense: #F29912;
     --transaction-income: #2BD1D4;
+    --dark-text: #444444;
 }
 html {
     font-family: 'Roboto', sans-serif;
