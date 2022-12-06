@@ -1,7 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TransactionModalModes } from 'src/app/enums/transactionModalModes';
 import { Stock } from 'src/app/models/stock';
 import { DataService } from 'src/app/services/data.service';
@@ -23,7 +22,7 @@ export class StockModalComponent implements OnInit {
   form: FormGroup;
   modalModes = TransactionModalModes;
   modalMode: TransactionModalModes = TransactionModalModes.Create;
-  constructor(private fb: FormBuilder, @Inject(MAT_DIALOG_DATA) public data: any, private ds: DataService) {
+  constructor(private fb: FormBuilder, @Inject(MAT_DIALOG_DATA) public data: any, private ds: DataService, private dialogRef: MatDialogRef<StockModalComponent>) {
     this.form = this.fb.group({
       ticker: [null, Validators.required],
       amount: [null, Validators.required]
@@ -38,21 +37,18 @@ export class StockModalComponent implements OnInit {
     }
   }
 
-  modifyStock(): void{
+  modifyStock(): void {
     this.stock.amount = this.form.controls['amount'].value;
     this.stock.ticker = this.form.controls['ticker'].value;
 
     if (this.modalMode === TransactionModalModes.Create) {
-      this.ds.createStock(this.stock).subscribe();
+      this.ds.createStock(this.stock).subscribe(() => this.dialogRef.close());
     }
     else {
-      this.ds.updateStock(this.stock).subscribe();
+      this.ds.updateStock(this.stock).subscribe(() => this.dialogRef.close());
     }
   }
 
-  deleteStock(): void {
-
-  }
   ngOnInit(): void {
   }
 

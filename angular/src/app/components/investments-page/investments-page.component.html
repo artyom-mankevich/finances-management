@@ -9,13 +9,13 @@
             <section class="news">News</section>
         </div>
         <section class="stocks">
-            <app-stock [stock]="stock" *ngFor="let stock of stocks"></app-stock>
-            <div class="stocks-batch-buttons">
-                <button class="secondary-button" (click)="loadNextStocks()">Previous</button>
-                <button class="secondary-button" (click)="loadPreviousStocks()">Next</button>
-            </div>
-         
-
+            <ng-container *ngIf="stocks$ | async as stocks">
+                <app-stock [stock]="stock" *ngFor="let stock of stocks.results"></app-stock>
+                <div class="stocks-batch-buttons">
+                    <button *ngIf="stocks.previous" class="secondary-button" (click)="loadPreviousStocks()">Previous</button>
+                    <button *ngIf="stocks.next" class="secondary-button" (click)="loadNextStocks()">Next</button>
+                </div>
+            </ng-container>
         </section>
     </section>
 </div>

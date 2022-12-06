@@ -8,7 +8,8 @@ import { Color } from '../models/color';
 import { Currency } from '../models/currency';
 import { Icon } from '../models/icon';
 import { NewsFilter } from '../models/newsFilter';
-import { Stock } from '../models/stock';
+import { NewsLanguage } from '../models/newsLanguages';
+import { Stock, StockRequest } from '../models/stock';
 import { PostTransaction, Transaction, TransactionRequest } from '../models/transaction';
 import { TransactionCategory } from '../models/transactionCategory';
 import { Wallet } from '../models/wallet';
@@ -22,6 +23,8 @@ export class DataService {
   private _categories: BehaviorSubject<TransactionCategory[]>;
   private _icons: BehaviorSubject<Icon[]>;
   private _transactions: BehaviorSubject<Transaction[]>;
+  private _stockRequest: BehaviorSubject<StockRequest | undefined>;
+  private _newsLanguages: BehaviorSubject<NewsLanguage[]>;
   private _transactionsRequest: BehaviorSubject<TransactionRequest | undefined>;
   private _newsFilter: BehaviorSubject<NewsFilter | undefined>;
   transactionFilter: TransactionFilters = TransactionFilters.All;
@@ -33,7 +36,8 @@ export class DataService {
     this._transactions = new BehaviorSubject<Transaction[]>([]);
     this._transactionsRequest = new BehaviorSubject<TransactionRequest | undefined>(undefined);
     this._newsFilter = new BehaviorSubject<NewsFilter | undefined>(undefined);
-
+    this._stockRequest = new BehaviorSubject<StockRequest | undefined>(undefined);
+    this._newsLanguages = new BehaviorSubject<NewsLanguage[]>([]);
     this.getAvailableIcons();
   }
 
@@ -168,19 +172,63 @@ export class DataService {
     }))
   }
 
-  createStock(stock: Stock) {
-    return this.http.post<Stock>(`${this.url}${ApiEndpoints.stocks}`, stock)
+  createStock(stock: Stock): Observable<Stock> {
+    return this.http.post<Stock>(`${this.url}${ApiEndpoints.stocks}`, stock).pipe(tap(() => this.getUserStocks(true)));
   }
 
   updateStock(stock: Stock) {
-    return this.http.put<Stock>(`${this.url}${ApiEndpoints.stocks}${stock.id}`, stock)
+    return this.http.put<Stock>(`${this.url}${ApiEndpoints.stocks}${stock.id}/`, stock).pipe(tap((stock: Stock) => {
+      let stockResults = this._stockRequest.value?.results.map((st: Stock) => {
+        if (st.id === stock.id) st = stock;
+        return st;
+      })
+      let val = this._stockRequest.value;
+      if (val?.results && stockResults){
+        val.results = stockResults;
+        this._stockRequest.next(val);
+      }
+    }))
+  }
+
+  deleteStock(stockId: string) {
+    return this.http.delete(`${this.url}${ApiEndpoints.stocks}${stockId}/`).pipe(tap(() => this.getUserStocks(true)));
   }
 
   _getUserNewsFilter() {
-    this.http.get<NewsFilter>(`${this.url}${ApiEndpoints.newsFilter}`).subscribe(nf =>    {console.log(nf);    this._newsFilter.next(nf)});
+    this.http.get<NewsFilter>(`${this.url}${ApiEndpoints.newsFilter}`).subscribe(nf => this._newsFilter.next(nf));
+  }
+
+  getAvailableNewsLanguages(): Observable<NewsLanguage[]> {
+    this.http.get<NewsLanguage[]>(`${this.url}${ApiEndpoints.availableNewsLanguages}`).subscribe(result => this._newsLanguages.next(result));
+    return this._newsLanguages.asObservable();
   }
   getUserNewsFilter() {
     this._getUserNewsFilter();
     return this._newsFilter.asObservable();
+  }
+
+  _getUserStocks(url: string) {
+    this.http.get<StockRequest>(url).subscribe(result => this._stockRequest.next(result));
+  }
+
+  getUserStocks(force: boolean = false): Observable<StockRequest | undefined> {
+    if (!this._stockRequest.value || force) {
+      this._getUserStocks(`${this.url}${ApiEndpoints.stocks}`);
+    }
+    return this._stockRequest.asObservable();
+  }
+
+  getUserStocksNext(): Observable<StockRequest | undefined> {
+    if (this._stockRequest.value && this._stockRequest.value.next){
+      this._getUserStocks(this._stockRequest.value.next)
+    }
+    return this._stockRequest.asObservable();
+  }
+
+  getUserStocksPrevious(): Observable<StockRequest | undefined> {
+    if (this._stockRequest.value && this._stockRequest.value.previous){
+      this._getUserStocks(this._stockRequest.value.previous)
+    }
+    return this._stockRequest.asObservable();
   }
 }

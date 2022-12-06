@@ -1,11 +1,9 @@
 <div class="modal-wrapper">
-    <form  class="input-form">
+    <form class="input-form">
         <label for="">Language</label>
         <select class="main-select">
             <option selected hidden>Language</option>
-            <ng-container *ngIf="newsFilter$ | async as nf">
-                <option *ngFor="let language of nf.languages" [value]="language">{{ language }}</option>
-            </ng-container>
+            <option *ngFor="let language of newsLanguges$ | async" [value]="language">{{ language.code }}</option>
         </select>
     </form>
     <button class="modal-action-button">Update</button>

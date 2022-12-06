@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { config } from 'process';
-import { Stock } from 'src/app/models/stock';
+import { Observable } from 'rxjs';
+import { StockRequest } from 'src/app/models/stock';
+import { DataService } from 'src/app/services/data.service';
 import { NewsFiltersModalComponent } from '../news-filters-modal/news-filters-modal.component';
 import { StockModalComponent } from '../stock-modal/stock-modal.component';
 
@@ -12,19 +13,9 @@ import { StockModalComponent } from '../stock-modal/stock-modal.component';
 })
 export class InvestmentsPageComponent implements OnInit {
 
-  stocks: Stock[] = []
+  stocks$: Observable<StockRequest | undefined> = this.ds.getUserStocks();
 
-  constructor(private dialog: MatDialog) {
-    for (let i = 0; i < 15; i++) {
-      this.stocks.push({
-        id: null,
-        userId: null,
-        amount: 1500,
-        ticker: 'AAPL',
-        price: 15000
-      });
-    }
-  }
+  constructor(private dialog: MatDialog, private ds: DataService) { }
 
   openStockDialog() {
     this.dialog.open(StockModalComponent, {
@@ -38,13 +29,12 @@ export class InvestmentsPageComponent implements OnInit {
   }
 
   loadNextStocks() {
-
+    this.ds.getUserStocksNext();
   }
 
   loadPreviousStocks() {
-    
+    this.ds.getUserStocksPrevious();
   }
-
 
   ngOnInit(): void {
   }

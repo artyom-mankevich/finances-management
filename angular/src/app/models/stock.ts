@@ -5,3 +5,11 @@ export interface Stock {
     ticker: string,
     price: number | null
 }
+
+
+export interface StockRequest {
+    count: number, 
+    next: string | null,
+    previous: string | null,
+    results: Stock[]
+}

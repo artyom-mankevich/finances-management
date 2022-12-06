@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Stock } from 'src/app/models/stock';
+import { DataService } from 'src/app/services/data.service';
 import { StockModalComponent } from '../stock-modal/stock-modal.component';
 
 @Component({
@@ -13,7 +14,7 @@ export class StockComponent implements OnInit {
   @Input()
   stock!: Stock;
   
-  constructor(private dialog: MatDialog) { }
+  constructor(private dialog: MatDialog, private ds: DataService) { }
 
   editStock() {
     this.dialog.open(StockModalComponent, {
@@ -24,7 +25,11 @@ export class StockComponent implements OnInit {
       height:'300px'
     })
   }
-  deleteStock() { }
+  deleteStock(): void {
+    if (this.stock.id) {
+      this.ds.deleteStock(this.stock.id).subscribe();
+    }
+  }
   ngOnInit(): void {
   }
 
