@@ -1,5 +1,5 @@
 @import url('../../common/styles/buttons.css');
-
+@import url('../../common/styles/inputs.css');
 .colors {
     display: flex;
     flex-direction: row;
@@ -60,26 +60,6 @@ mat-icon:hover {
     color: var(--text-gray) !important;
     transition-duration: 100ms;
 
-}
-
-input {
-    flex-grow: 1;
-    height: 36px;
-    border-radius: 5px;
-    border: 1px solid var(--text-gray);
-    margin-top: 15px;
-    text-indent: 15px;
-}
-
-label {
-    margin-top: 15px;
-    font-weight: bold;
-}
-
-input:focus {
-    outline-color: var(--main-blue);
-    --webkit-appearance: none;
-    --moz-appearance: textfield;
 }
 
 .action-buttons {

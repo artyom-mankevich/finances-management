@@ -16,18 +16,18 @@
         <form class="transaction-input" [formGroup]="form">
             <label for="">Amount</label>
             <div class="one-line-inputs-wrapper">
-                <input *ngIf="selectedType !== transactionTypes.Income" class="one-line-input" type="number"
+                <input *ngIf="selectedType !== transactionTypes.Income" class="main-input one-line" type="number"
                     min="0.00000001" placeholder="Source Amount" formControlName="sourceAmount">
                 <mat-icon fontIcon="material-icons-round" *ngIf="(selectedType === transactionTypes.Transfer)">east
                 </mat-icon>
-                <input class="one-line-input" *ngIf="selectedType !== transactionTypes.Expense" type="number"
+                <input class="main-input one-line" *ngIf="selectedType !== transactionTypes.Expense" type="number"
                     min="0.00000001" placeholder="Target Amount" formControlName="targetAmount">
 
             </div>
             <label for="description">Info</label>
             <div class="one-line-inputs-wrapper"
                 [ngClass]="{'reversed-wrapper' : selectedType === transactionTypes.Expense}">
-                <select  [compareWith]="compare"  class="one-line-input" type="text" name="category" placeholder="Category"
+                <select  [compareWith]="compare"  class="main-select one-line" type="text" name="category" placeholder="Category"
                     *ngIf="(selectedType === transactionTypes.Expense) || (selectedType === transactionTypes.Income)"
                     formControlName="category">
                     <option [ngValue]="null" disabled selected hidden>Category</option>
@@ -38,7 +38,7 @@
                 </select>
                 <mat-icon fontIcon="material-icons-round" *ngIf="(selectedType === transactionTypes.Expense)">east
                 </mat-icon>
-                <select [compareWith]="compare" class="one-line-input"
+                <select [compareWith]="compare" class="main-select one-line"
                     *ngIf="(selectedType === transactionTypes.Expense) || (selectedType === transactionTypes.Transfer)"
                     formControlName="sourceWallet">
                     <option [ngValue]="null" disabled selected hidden>Source wallet</option>
@@ -50,7 +50,7 @@
                 </select>
                 <mat-icon fontIcon="material-icons-round" *ngIf="(selectedType !== transactionTypes.Expense)">east
                 </mat-icon>
-                <select [compareWith]="compare" class="one-line-input"
+                <select [compareWith]="compare" class="main-select one-line"
                     *ngIf="(selectedType === transactionTypes.Income) || (selectedType === transactionTypes.Transfer)"
                     formControlName="targetWallet">
 
@@ -62,7 +62,7 @@
 
                 </select>
             </div>
-            <input type="text" name="description" placeholder="Description (optional)" formControlName="description">
+            <input class="main-input" type="text" name="description" placeholder="Description (optional)" formControlName="description">
         </form>
         <button (click)="modifyTransaction()" class="modal-action-button create-button" [style.backgroundColor]="color" type="submit"
             [disabled]="!form.valid">{{ modalMode }}

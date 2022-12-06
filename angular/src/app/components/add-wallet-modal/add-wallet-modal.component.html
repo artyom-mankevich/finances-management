@@ -1,15 +1,15 @@
 <section class="wallet-builder">
     <form class="wallet-input" action="" [formGroup]="form">
         <label for="">Info</label>
-        <input type="text" placeholder="Name" formControlName="name" maxlength="50">
-        <input list="currencies" placeholder="Currency" formControlName="currency">
+        <input class="main-input" type="text" placeholder="Name" formControlName="name" maxlength="50">
+        <input class="main-input" list="currencies" placeholder="Currency" formControlName="currency">
         <datalist name="currencies" id="currencies">
             <option *ngFor="let currency of dss.currencies" value="{{currency.code}}">{{currency.name}}
             </option>
         </datalist>
         <label for="balance-input">Balances</label>
-        <input id="balance-input" type="number" placeholder="Balance" formControlName="balance" maxlength="20">
-        <input class="goal-input" type="number" placeholder="Goal (optional)" formControlName="goal">
+        <input class="main-input" id="balance-input" type="number" placeholder="Balance" formControlName="balance" maxlength="20">
+        <input class="goal-input main-input" type="number" placeholder="Goal (optional)" formControlName="goal">
         <label for="colors">Color</label>
         <div class="colors" id="colors">
             <div *ngFor="let color of dss.colors" class="color" [style.backgroundColor]="color"

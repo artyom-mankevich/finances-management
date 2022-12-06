@@ -1,5 +1,5 @@
 @import url('../../common/styles/buttons.css');
-
+@import url('../../common/styles/inputs.css');
 
 .wallet-input {
     display: flex;
@@ -56,45 +56,10 @@
     color: black;
 }
 
-.goal-input {
-    justify-self: end;
-}
-
 .create-button {
     margin-top: 25px;
 }
 
-input {
-    width: 200px;
-    height: 36px;
-    border-radius: 5px;
-    border: 1px solid var(--text-gray);
-    margin-top: 15px;
-    text-indent: 15px;
-}
-
-label {
-    margin-top: 15px;
-    font-weight: bold;
-}
-
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    margin: 0;
-}
-
-input:focus {
-    outline-color: var(--main-blue);
-    --webkit-appearance: none;
-    --moz-appearance: textfield;
-}
-
-input[type=number] {
-    -moz-appearance:textfield;
-}
 
 @media only screen and (max-width: 750px) {
     .wallet-builder {
@@ -104,10 +69,6 @@ input[type=number] {
     .wallet-input {
         margin: 0;
         justify-content: center;
-    }
-
-    input {
-        width: 100%;
     }
 
     .create-button {

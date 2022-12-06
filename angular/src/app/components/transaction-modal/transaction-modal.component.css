@@ -1,4 +1,6 @@
 @import url('../../common/styles/buttons.css');
+@import url('../../common/styles/inputs.css');
+
 .transaction-builder {
     display: flex;
     flex-direction: column;
@@ -27,6 +29,7 @@
 .reversed-wrapper {
     flex-direction: row-reverse;
 }
+
 .data-input {
     padding: 0px 20px 20px 20px;
 }
@@ -49,51 +52,4 @@
     justify-content: space-between;
     align-items: center;
     margin-top: 15px;
-
-}
-
-.one-line-input {
-    margin: 0;
-}
-
-input {
-    text-indent: 15px;  
-}
-
-input,
-select {
-    flex-grow: 1;
-    height: 36px;
-    border-radius: 5px;
-    border: 1px solid var(--text-gray);
-    margin-top: 15px;
-    background-color: transparent;
-}
-
-select {
-    width: 100px;
-    height: 40px;
-}
-
-label {
-    margin-top: 15px;
-    font-weight: bold;
-}
-
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    margin: 0;
-}
-
-input[type=number] {
-    -moz-appearance:textfield;
-}
-
-input:focus {
-    outline-color: var(--main-blue);
-    --webkit-appearance: none;
-    --moz-appearance: textfield;
 }
