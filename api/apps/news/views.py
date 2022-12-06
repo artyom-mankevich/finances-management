@@ -1,5 +1,5 @@
-from rest_framework.generics import RetrieveUpdateAPIView
-from rest_framework.mixins import ListModelMixin
+from rest_framework.generics import get_object_or_404
+from rest_framework.mixins import ListModelMixin, UpdateModelMixin
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
@@ -9,9 +9,12 @@ from news.serializers import NewsFilterSerializer, NewsLanguageSerializer
 from news.utils import get_stocks_news
 
 
-class NewsFilterViewSet(GenericViewSet, RetrieveUpdateAPIView):
+class NewsFilterViewSet(GenericViewSet, UpdateModelMixin, ListModelMixin):
     serializer_class = NewsFilterSerializer
-    lookup_value_regex = "[^/]+"
+
+    def get_object(self):
+        obj = get_object_or_404(self.get_queryset(), user_id=self.request.user)
+        return obj
 
     def get_queryset(self):
         return NewsFilter.objects.filter(user_id=self.request.user)

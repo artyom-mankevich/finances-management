@@ -1,9 +1,12 @@
+import uuid
+
 from django.contrib.postgres.fields import ArrayField
 from django.db import models, transaction
 
 
 class NewsFilter(models.Model):
-    user_id = models.CharField(max_length=64, unique=True, primary_key=True)
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    user_id = models.CharField(max_length=64, unique=True, db_index=True)
     tickers = ArrayField(models.CharField(max_length=10), default=list)
     languages = models.ManyToManyField(
         "NewsLanguage",

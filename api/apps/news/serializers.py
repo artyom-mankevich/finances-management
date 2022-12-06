@@ -6,7 +6,7 @@ from news.models import NewsFilter, NewsLanguage
 class NewsFilterSerializer(serializers.ModelSerializer):
     class Meta:
         model = NewsFilter
-        read_only_fields = ("user_id",)
+        read_only_fields = ("id", "user_id",)
         fields = read_only_fields + (
             "tickers",
             "languages",
