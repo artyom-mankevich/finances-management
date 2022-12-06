@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 def get_stocks_news(news_filter, user_id):
     api_url = settings.MARKETAUX_API_URL
     api_token = settings.MARKETAUX_API_KEY
-    symbols = ",".join([ticker for ticker in news_filter.tickers])
+    symbols = ",".join([ticker.code for ticker in news_filter.tickers.all()])
     languages = ",".join([language.code for language in news_filter.languages.all()])
     if not languages:
         languages = "en"
