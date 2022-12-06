@@ -10,7 +10,7 @@ class StockViewSet(viewsets.ModelViewSet, SetUserIdFromTokenOnCreateMixin):
     serializer_class = StockSerializer
 
     pagination_class = PageNumberPagination
-    pagination_class.page_size = 10
+    pagination_class.page_size = 5
 
     def get_queryset(self):
         return Stock.objects.all().filter(user_id=self.request.user)
