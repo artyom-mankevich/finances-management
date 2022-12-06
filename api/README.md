@@ -41,8 +41,8 @@ docker exec -i trpo_api_1 python manage.py init_icons
 docker exec -i trpo_api_1 python manage.py init_currencies
 ```
 
-### NewsIndustry
+### NewsLanguage
 
 ```bash
-docker exec -i trpo_api_1 python manage.py init_news_industries
+docker exec -i trpo_api_1 python manage.py init_news_languages
 ```
