@@ -31,6 +31,15 @@ class StockSerializer(serializers.ModelSerializer):
     def get_created_at(self, obj):
         return obj.created_at.timestamp() * 1000
 
+    def validate_amount(self, value):
+        if value is None:
+            raise serializers.ValidationError("Amount cannot be null")
+
+        if value <= 0:
+            raise serializers.ValidationError("Amount must be greater than zero")
+
+        return value
+
     def validate_ticker(self, value):
         if value is None:
             raise serializers.ValidationError("Ticker cannot be null")

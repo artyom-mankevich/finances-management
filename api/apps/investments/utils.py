@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 import requests
 import yfinance as yf
 from django.core.cache import cache
@@ -7,7 +9,7 @@ from project import settings
 
 def set_stock_prices(response):
     for stock in response:
-        stock["price"] = get_stock_price(stock["ticker"])
+        stock["price"] = get_stock_price(stock["ticker"]) * stock["amount"]
 
 
 def get_stock_price(ticker):
@@ -25,7 +27,7 @@ def get_stock_price(ticker):
         if ticker.info.get("currentPrice"):
             price = ticker.info["currentPrice"]
             currency = ticker.info["currency"]
-            cache.set(cache_key, {"price": price, "currency": currency}, 60 * 5 * 3)
+            cache.set(cache_key, {"price": price, "currency": currency}, 60 * 10)
 
     return convert_currency(price, currency)
 
@@ -46,7 +48,8 @@ def convert_currency(amount, currency):
     ).json()
 
     if response.get("success"):
-        cache.set(cache_key, response["result"], 60 * 60 * 24)
-        return response["result"]
+        result = Decimal(response["result"])
+        cache.set(cache_key, result, 60 * 60 * 24)
+        return result
 
     return None
