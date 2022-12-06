@@ -1,8 +1,9 @@
-.transaction-filter-button,
-.add-transaction-button {
+@import url('../../common/styles/buttons.css');
+
+
+.transaction-filter-button{
     height: 46px;
     color: var(--text-gray);
-    margin: 10px 10px 10px 10px;
     background-color: white;
     border: 2px solid var(--text-gray);
     border-radius: 8px;
@@ -21,7 +22,6 @@
     border-radius: 8px;
     width: max-content;
     font-size: 1rem;
-    margin: 10px 10px 10px  10px;
     transition-duration: 200ms;
 }
 
@@ -58,10 +58,11 @@
 .categories {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
+    gap: 20px;
 }
 
-.transaction-filter-button:hover,
-.add-transaction-button:hover {
+.transaction-filter-button:hover {
     cursor: pointer;
     background-color: var(--main-blue);
     color: white;
@@ -69,15 +70,13 @@
     transform: scale(1.05);
 }
 
-.transaction-filter-button:active,
-.add-transaction-button:active {
-    filter: grayscale(0.15);
+.filters-wrapper {
+    display: flex;
+    gap: 10px;
 }
 
-.add-transaction-button {
-    background-color: var(--main-blue);
-    border-color: var(--main-blue);
-    color: white;
+.transaction-filter-button:active {
+    filter: grayscale(0.15);
 }
 
 .selected-filter {
@@ -89,6 +88,7 @@
 .transactions-menu {
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 .transactions-page-wrapper { 

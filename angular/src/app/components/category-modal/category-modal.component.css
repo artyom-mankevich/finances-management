@@ -1,3 +1,5 @@
+@import url('../../common/styles/buttons.css');
+@import url('../../common/styles/inputs.css');
 .colors {
     display: flex;
     flex-direction: row;
@@ -35,20 +37,6 @@
     flex-direction: column;
 }
 
-.create-button {
-    width: 140px;
-    height: 45px;
-    border: none;
-    color: white;
-    font-size: 1rem;
-    font-weight: bold;
-    border-radius: 50px;
-    margin-top: 25px;
-    transition-duration: 200ms;
-    cursor: pointer;
-    background-color: red;
-}
-
 mat-icon {
     color: var(--text-gray);
     margin: 5px;
@@ -74,53 +62,9 @@ mat-icon:hover {
 
 }
 
-input {
-    flex-grow: 1;
-    height: 36px;
-    border-radius: 5px;
-    border: 1px solid var(--text-gray);
-    margin-top: 15px;
-    text-indent: 15px;
-}
-
-label {
-    margin-top: 15px;
-    font-weight: bold;
-}
-
-input:focus {
-    outline-color: var(--main-blue);
-    --webkit-appearance: none;
-    --moz-appearance: textfield;
-}
-
 .action-buttons {
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
-
-.delete-button {
-    width: 140px;
-    height: 45px;
-    border: 3px solid black;
-    color: black;
-    background-color: white;
-    font-size: 1rem;
-    font-weight: bold;
-    border-radius: 50px;
     margin-top: 25px;
-    transition-duration: 200ms;
-    cursor: pointer;
-}
-
-.delete-button:hover {
-    color: white;
-    background-color: black;
-}
-
-.create-button:disabled,
-.create-button[disabled] {
-    background: var(--text-gray) !important;
-    cursor: default;
 }

@@ -1,0 +1,80 @@
+.add-button {
+    height: 46px;
+    border: 2px solid var(--main-blue);
+    border-radius: 8px;
+    font-size: 1.25rem;
+    line-height: 46px;
+    padding: 0 20px 0 20px;
+    transition-duration: 200ms;
+    overflow: hidden;
+    background-color: var(--main-blue);
+    color: white;
+    cursor: pointer;
+}
+
+.add-button:hover {
+    transform: scale(1.05);
+}
+
+.add-button.add-button:active {
+    filter: grayscale(0.15);
+}
+
+.secondary-button {
+    border: 3px solid var(--main-blue);
+    background-color: white;
+    color: var(--main-blue);
+    transition-duration: 200ms;
+    height: 46px;
+    line-height: 46px;
+    padding: 0 20px;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.secondary-button:hover {
+    background-color: var(--main-blue);
+    color: white;
+}    
+
+.modal-action-button,
+.modal-action-button-inverted {
+    width: 140px;
+    height: 45px;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    background-color: black;
+    font-weight: bold;
+    border-radius: 50px;
+    transition-duration: 200ms;
+    cursor: pointer;
+}
+
+.modal-action-button-inverted {
+    background-color: white;
+    border: 3px solid black;
+    color: black;
+}
+
+.modal-action-button-inverted:hover {
+    background-color: black;
+    color: white;
+}
+
+.modal-action-button:hover,
+.modal-action-button-inverted:hover {
+    transform: scale(1.03);
+}
+
+.modal-action-button:active,
+.modal-action-button:active {
+    filter: grayscale(0.15);
+}
+
+.modal-action-button:disabled,
+.modal-action-button[disabled] {
+    background: var(--text-gray) !important;
+    cursor: default;
+}

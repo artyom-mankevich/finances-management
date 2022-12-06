@@ -1,15 +1,15 @@
 <section class="wallet-builder">
     <form class="wallet-input" action="" [formGroup]="form">
         <label for="">Info</label>
-        <input type="text" placeholder="Name" formControlName="name" maxlength="50">
-        <input list="currencies" placeholder="Currency" formControlName="currency">
+        <input class="main-input" type="text" placeholder="Name" formControlName="name" maxlength="50">
+        <input class="main-input" list="currencies" placeholder="Currency" formControlName="currency">
         <datalist name="currencies" id="currencies">
             <option *ngFor="let currency of dss.currencies" value="{{currency.code}}">{{currency.name}}
             </option>
         </datalist>
         <label for="balance-input">Balances</label>
-        <input id="balance-input" type="number" placeholder="Balance" formControlName="balance" maxlength="20">
-        <input class="goal-input" type="number" placeholder="Goal (optional)" formControlName="goal">
+        <input class="main-input" id="balance-input" type="number" placeholder="Balance" formControlName="balance" maxlength="20">
+        <input class="goal-input main-input" type="number" placeholder="Goal (optional)" formControlName="goal">
         <label for="colors">Color</label>
         <div class="colors" id="colors">
             <div *ngFor="let color of dss.colors" class="color" [style.backgroundColor]="color"
@@ -17,7 +17,7 @@
                 <div *ngIf="color === wallet.color" class="selected-color"></div>
             </div>
         </div>
-        <button (click)="modifyWallet()" class="create-button" [style.backgroundColor]="wallet.color" type="submit"
+        <button (click)="modifyWallet()" class="create-button modal-action-button" [style.backgroundColor]="wallet.color" type="submit"
             [disabled]="!form.valid">{{ modalMode }}</button>
     </form>
     <div class="wallet-preview">
@@ -26,6 +26,6 @@
             <app-wallet [wallet]="wallet" [displayOnly]="true" class="wallet"></app-wallet>
             <p class="wallet-tip"> <b>Tip:</b> You can always change your wallet appearance in settings.</p>
         </div>
-        <p *ngIf="modalMode === walletModalModes.Update" class="delete-wallet" (click)="deleteWallet()">Delete</p>
+        <button *ngIf="modalMode === walletModalModes.Update" class="modal-action-button-inverted" (click)="deleteWallet()">Delete</button>
     </div>
 </section>
