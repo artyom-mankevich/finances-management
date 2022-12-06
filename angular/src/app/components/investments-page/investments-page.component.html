@@ -1,8 +1,15 @@
 <div class="investments-page-wrapper">
     <div class="investments-top-menu">
-        <button class="add-button">Add Stock</button>
+        <button class="add-button">Add news filter</button>
+        <button class="add-button" (click)="openStockDialog()">Add Stock</button>
     </div>
-    <section class="stocks-chart"></section>
-    <section class="stocks"></section>
-    <section class="news"></section>
+    <section class="content">
+        <div class="stocks-chart-news-wrapper">
+            <section class="stocks-chart">Stocks Chart</section>
+            <section class="news">News</section>
+        </div>
+        <section class="stocks">
+            <app-stock [stock]="stock" *ngFor="let stock of stocks"></app-stock>
+        </section>
+    </section>
 </div>

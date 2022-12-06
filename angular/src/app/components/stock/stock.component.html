@@ -1,1 +1,13 @@
-<p>stock works!</p>
+<section class="stock-wrapper">
+    <div class="stock-info">
+        <p class="stock-ticker">{{ stock.ticker }}</p>
+        <p class="shares-amount">{{ stock.amount }}</p>
+    </div>
+    <section class="stock-modify-value">
+        <div class="stock-modify-buttons">
+            <mat-icon class="stock-modify-button" fontIcon="material-icons-round" (click)="editStock()">edit</mat-icon>
+            <mat-icon class="stock-modify-button" fontIcon="material-icons-round" (click)="deleteStock()">close</mat-icon>
+        </div>
+        <p *ngIf="stock.price" class="stock-value">{{ stock.price | shortNumber}}</p>
+    </section>
+</section>

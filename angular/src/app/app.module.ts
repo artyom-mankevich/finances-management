@@ -26,6 +26,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { CategoryModalComponent } from './components/category-modal/category-modal.component';
 import { InvestmentsPageComponent } from './components/investments-page/investments-page.component';
 import { StockComponent } from './components/stock/stock.component';
+import { NewsEntryComponent } from './components/news-entry/news-entry.component';
+import { StockModalComponent } from './components/stock-modal/stock-modal.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +46,9 @@ import { StockComponent } from './components/stock/stock.component';
     TransactionModalComponent,
     CategoryModalComponent,
     InvestmentsPageComponent,
-    StockComponent
+    StockComponent,
+    NewsEntryComponent,
+    StockModalComponent
   ],
   imports: [
     BrowserModule,

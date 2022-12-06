@@ -3,9 +3,44 @@
 .investments-page-wrapper {
     width: 90%;
     margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
 }
 
 .investments-top-menu {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+}
+
+.stocks {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    flex-grow: 1;
+    max-width: 375px;
+
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+}
+
+.stocks-chart-news-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+@media only screen and (max-width: 900px) {
+    .content {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .stocks {
+        width: 100%;
+    }
 }

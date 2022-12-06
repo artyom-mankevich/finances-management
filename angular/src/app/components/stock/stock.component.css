@@ -1,0 +1,73 @@
+.stock-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 375px;
+    /* margin: 30px 0; */
+    transition-duration: 200ms;
+}
+
+.stock-wrapper:hover {
+    transform: scale(1.03);
+}
+
+.stock-wrapper:hover .stock-modify-buttons {
+    visibility: visible;
+    opacity: 1;
+}
+.stock-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.stock-modify-buttons {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    color: var(--text-gray);
+    visibility: hidden;
+    transition-duration: 200ms;
+    opacity: 0;
+}
+
+.stock-modify-button {
+    cursor: pointer;
+    transition-duration: 200ms;
+    font-size: 24px;
+}
+
+.stock-modify-button:hover {
+    color: var(--main-blue);
+    transform: scale(1.05);
+}
+
+.stock-modify-value {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.stock-ticker {
+    font-weight: bold;
+    margin: 0;
+}
+
+.stock-value {
+    background-color: var(--main-blue);
+    width: 72px;
+    height: 44px;
+    line-height: 44px;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    text-justify: center;
+    margin: 0;
+}
+
+.shares-amount {
+    margin: 0;
+    color: var(--text-gray);
+}
