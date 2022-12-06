@@ -37,3 +37,44 @@
     background-color: var(--main-blue);
     color: white;
 }    
+
+.modal-action-button,
+.modal-action-button-inverted {
+    width: 140px;
+    height: 45px;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    background-color: black;
+    font-weight: bold;
+    border-radius: 50px;
+    transition-duration: 200ms;
+    cursor: pointer;
+}
+
+.modal-action-button-inverted {
+    background-color: white;
+    border: 3px solid black;
+    color: black;
+}
+
+.modal-action-button-inverted:hover {
+    background-color: black;
+    color: white;
+}
+
+.modal-action-button:hover,
+.modal-action-button-inverted:hover {
+    transform: scale(1.03);
+}
+
+.modal-action-button:active,
+.modal-action-button:active {
+    filter: grayscale(0.15);
+}
+
+.modal-action-button:disabled,
+.modal-action-button[disabled] {
+    background: var(--text-gray) !important;
+    cursor: default;
+}

@@ -64,7 +64,7 @@
             </div>
             <input type="text" name="description" placeholder="Description (optional)" formControlName="description">
         </form>
-        <button (click)="modifyTransaction()" class="create-button" [style.backgroundColor]="color" type="submit"
+        <button (click)="modifyTransaction()" class="modal-action-button create-button" [style.backgroundColor]="color" type="submit"
             [disabled]="!form.valid">{{ modalMode }}
         </button>
     </div>

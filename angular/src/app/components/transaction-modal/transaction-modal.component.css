@@ -1,3 +1,4 @@
+@import url('../../common/styles/buttons.css');
 .transaction-builder {
     display: flex;
     flex-direction: column;
@@ -7,34 +8,9 @@
     flex-direction: column;
 }
 
-
 .create-button {
-    width: 140px;
-    height: 45px;
-    border: none;
-    color: white;
-    font-size: 1rem;
-    font-weight: bold;
-    border-radius: 50px;
-    transition-duration: 200ms;
-    cursor: pointer;
     margin: 25px auto 0 auto;
 }
-
-.create-button:hover {
-    transform: scale(1.03);
-}
-
-.create-button:active {
-    filter: grayscale(0.15);
-}
-
-.create-button:disabled,
-.create-button[disabled] {
-    background: var(--text-gray) !important;
-    cursor: default;
-}
-
 
 .transaction-type-button {
     color: white;

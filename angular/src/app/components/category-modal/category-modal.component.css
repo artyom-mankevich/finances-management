@@ -1,3 +1,5 @@
+@import url('../../common/styles/buttons.css');
+
 .colors {
     display: flex;
     flex-direction: row;
@@ -33,20 +35,6 @@
 .category-builder {
     display: flex;
     flex-direction: column;
-}
-
-.create-button {
-    width: 140px;
-    height: 45px;
-    border: none;
-    color: white;
-    font-size: 1rem;
-    font-weight: bold;
-    border-radius: 50px;
-    margin-top: 25px;
-    transition-duration: 200ms;
-    cursor: pointer;
-    background-color: red;
 }
 
 mat-icon {
@@ -98,29 +86,5 @@ input:focus {
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
-
-.delete-button {
-    width: 140px;
-    height: 45px;
-    border: 3px solid black;
-    color: black;
-    background-color: white;
-    font-size: 1rem;
-    font-weight: bold;
-    border-radius: 50px;
     margin-top: 25px;
-    transition-duration: 200ms;
-    cursor: pointer;
-}
-
-.delete-button:hover {
-    color: white;
-    background-color: black;
-}
-
-.create-button:disabled,
-.create-button[disabled] {
-    background: var(--text-gray) !important;
-    cursor: default;
 }
