@@ -39,6 +39,7 @@ export class StocksChartComponent implements OnInit {
   }
 
   chartOptions: ChartOptions = {
+    responsive: true,
     scales: {
       y: {
         grid: {
@@ -77,6 +78,11 @@ export class StocksChartComponent implements OnInit {
     this.selectedOption = newOption;
   }
   ngOnInit(): void {
+  }
+
+  // function to preserve original order of ChartDateOptions after keyvalue pipe
+  sortNull() {
+    return 0;
   }
 
 }

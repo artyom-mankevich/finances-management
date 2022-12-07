@@ -24,6 +24,10 @@
 }
 
 .chart-wrapper {
-    /* width: 100%; */
-    /* flex-grow: 1; */
+    width: 100% !important;
+    overflow: auto;
+}
+
+canvas {
+    width: 100% !important;
 }

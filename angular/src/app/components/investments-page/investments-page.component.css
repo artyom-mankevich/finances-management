@@ -18,15 +18,16 @@
     flex-direction: column;
     flex-grow: 1;
     gap: 30px;
-    /* width: 375px; */
     min-width: 375px;
 }
 
 .content {
-    /* width: 100%; */
+    width: 100%;
     display: flex;
     gap: 30px;
     justify-content: space-between;
+    flex-direction: row;   
+    flex: 1 1;
 }
 
 .stocks-chart-news-wrapper {
@@ -39,8 +40,9 @@
     width: 150px;
 }
 .stocks-chart {
-    flex-grow: 1;
+    width: 100%;
 }
+
 .stocks-batch-buttons {
     display: flex;
     justify-content: center;
@@ -60,10 +62,6 @@
     }
 
     .stocks {
-        width: 100%;
-    }
-
-    .stocks-chart-news-wrapper {
         width: 100%;
     }
 }

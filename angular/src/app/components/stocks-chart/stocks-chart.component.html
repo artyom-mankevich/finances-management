@@ -5,6 +5,6 @@
 
 <div class="available-options">
     <button (click)="selectOptions(dateOption.value)" class="chart-date-option secondary-button"
-        *ngFor="let dateOption of chartDateOptions | keyvalue "
+        *ngFor="let dateOption of chartDateOptions | keyvalue: sortNull "
         [ngClass]="{'selected-option' : dateOption.value === selectedOption}">{{ dateOption.value }}</button>
 </div>
