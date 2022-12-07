@@ -108,7 +108,10 @@ def get_period_interval(period: str) -> str:
         return "1mo"
 
 
-def get_stocks_chart_data(tickers: list[str], period: str, user_id: str) -> dict:
+def get_stocks_chart_data(
+    stocks: dict, period: str, user_id: str
+) -> dict:
+    tickers = list(stocks.keys())
     symbols = " ".join(tickers)
 
     today = datetime.date.today()
@@ -116,7 +119,9 @@ def get_stocks_chart_data(tickers: list[str], period: str, user_id: str) -> dict
     interval = get_period_interval(period)
 
     tickers_key = "_".join(tickers)
-    cache_key = f"stocks_chart_data_{tickers_key}_{period}_{start_date}_{end_date}_{interval}_{user_id}"
+    amounts_key = "_".join([str(val) for val in stocks.values()])
+    cache_key = f"stocks_chart_data_{tickers_key}_{amounts_key}_{period}_{start_date}" \
+                f"_{end_date}_{interval}_{user_id}"
     cached_value = cache.get(cache_key)
     if cached_value:
         return cached_value
@@ -124,15 +129,18 @@ def get_stocks_chart_data(tickers: list[str], period: str, user_id: str) -> dict
     cache_lifetime = 60 * 60 * 24
 
     historical_prices = get_historical_stocks_data(
-        symbols, period, start_date, end_date, interval
+        symbols, stocks, period, start_date, end_date, interval
     )
     result = {"data": historical_prices}
 
     if period in [Stock.CHART_PERIOD_7_DAYS, Stock.CHART_PERIOD_1_MONTH]:
-        today_prices = {
-            today.strftime("%d-%m-%Y"): sum(get_stock_prices(tickers).values())
+        today_prices = get_stock_prices(tickers)
+        for ticker in today_prices:
+            today_prices[ticker] = today_prices[ticker] * stocks[ticker]
+        today_sum = {
+            today.strftime("%d-%m-%Y"): sum(today_prices.values())
         }
-        result["data"] = {**historical_prices, **today_prices}
+        result["data"] = {**historical_prices, **today_sum}
         cache_lifetime = 60 * 10
 
     average_price = sum(result["data"].values()) / len(result["data"])
@@ -145,6 +153,7 @@ def get_stocks_chart_data(tickers: list[str], period: str, user_id: str) -> dict
 
 def get_historical_stocks_data(
     symbols: str,
+    stocks: dict,
     period: str,
     start_date: str = None,
     end_date: str = None,
@@ -159,13 +168,14 @@ def get_historical_stocks_data(
         if np.isnan(series[i]):
             continue
 
+        ticker = series.index[i][0]
         date = series.index[i][1].strftime("%d-%m-%Y")
         price = Decimal(str(series[i]))
 
         if date not in result:
-            result[date] = price
+            result[date] = price * stocks[ticker]
         else:
-            result[date] += price
+            result[date] += price * stocks[ticker]
 
     if period not in [Stock.CHART_PERIOD_7_DAYS, Stock.CHART_PERIOD_1_MONTH]:
         # remove today's data

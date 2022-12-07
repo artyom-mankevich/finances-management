@@ -38,5 +38,6 @@ class StockViewSet(viewsets.ModelViewSet, SetUserIdFromTokenOnCreateMixin):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        tickers = list(self.get_queryset().values_list("ticker", flat=True))
-        return Response(data=get_stocks_chart_data(tickers, period, str(request.user)))
+        stocks = list(self.get_queryset().values("ticker", "amount"))
+        stocks_dict = {stock["ticker"]: stock["amount"] for stock in stocks}
+        return Response(data=get_stocks_chart_data(stocks_dict, period, str(request.user)))
