@@ -36,11 +36,13 @@ python-dotenv==0.21.0
 pytz==2022.6
 PyYAML==6.0
 requests==2.28.1
+requests-futures==1.0.0
 ruamel.yaml==0.17.21
 ruamel.yaml.clib==0.2.7
 simplejson==3.17.6
 six==1.16.0
 sqlparse==0.4.3
+tqdm==4.64.1
 uritemplate==4.1.1
 urllib3==1.26.12
-yfinance==0.1.87
+yahooquery==2.2.15
