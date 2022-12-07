@@ -16,6 +16,7 @@ import config from "../auth0.config";
 import * as AuthSession from "expo-auth-session";
 import * as React from "react";
 import {fetchUserInfoAsync} from "expo-auth-session";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const useProxy = Platform.select({ web: false, default: true });
 
@@ -56,6 +57,7 @@ const CustomSidebarMenu = (props) => {
             return;
         }
         const accessToken = result.params.access_token;
+        await AsyncStorage.setItem('accessToken', accessToken);
 
         const userInfo = await fetchUserInfoAsync(
             {
