@@ -2,28 +2,22 @@ import {ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from "r
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import getSymbolFromCurrency from "currency-symbol-map";
 import { Picker } from '@react-native-picker/picker';
-
 import Wallet from "./Wallet";
-import {useEffect} from "react";
+import {NumberInputValidation, NameConstraint} from "./WalletValidation";
 
 export default function WalletInputs(props) {
-
-    useEffect(() => {
-        props.setLastUpdated(new Date().getTime());
-    }, []);
-
     const timeMillis = new Date().getTime();
 
 return (
     <View style={styles.container}>
-        <Wallet name={props.name} currency={props.currency} balance={props.balance} goal={props.goal} color={props.color} lastUpdated={props.lastUpdated} onPressUpdate={props.onPressUpdate}/>
+        <Wallet name={props.name} currency={props.currency} balance={props.balance} goal={props.goal} color={props.color} lastUpdated={props.lastUpdated} />
         <ScrollView style={{width: 500}}>
             <View style={{marginTop: 10}}>
                 <View style={styles.inputView}>
                     <TextInput
                         style={styles.inputText}
                         placeholder="Name"
-                        onChangeText={text => props.setName(text)}
+                        onChangeText={text => props.setName(NameConstraint(text))}
                         value={props.name}
                     />
                 </View>
@@ -45,7 +39,13 @@ return (
                                         <Picker.Item
                                             defaultValue={props.currency}
                                             label=
-                                                {getSymbolFromCurrency(item.code) ? (getSymbolFromCurrency(item.code) + "\t\t" + item.code + "\t\t" + item.name) :  (item.code + "\t\t" + item.name)}
+                                                {
+                                                    getSymbolFromCurrency(item.code) ?
+                                                        (
+                                                            getSymbolFromCurrency(item.code) + "\t\t" + item.code + "\t\t" + item.name
+                                                        ) :  (
+                                                            item.code + "\t\t" + item.name)
+                                                }
                                             value={item.code}
                                             key={item.code}
                                             onPress={(code) => props.setCurrency(code)}
@@ -58,17 +58,27 @@ return (
                 </View>
                 <View style={styles.inputView}>
                     <TextInput
+                        keyboardType={'number-pad'}
+                        maxLength={17}
                         style={styles.inputText}
                         placeholder="Balance"
-                        onChangeText={text => props.setBalance(text)}
+                        onChangeText={text =>
+                        {
+                            props.setBalance(NumberInputValidation(text));
+                        }}
                         value={props.balance}
                     />
                 </View>
                 <View style={styles.inputView}>
                     <TextInput
+                        keyboardType={'number-pad'}
+                        maxLength={17}
                         style={styles.inputText}
                         placeholder="Goal"
-                        onChangeText={text => props.setGoal(text)}
+                        onChangeText={text =>
+                        {
+                            props.setGoal(NumberInputValidation(text));
+                        }}
                         value={props.goal}
                     />
                 </View>
@@ -78,7 +88,13 @@ return (
                             return (
                                 <TouchableOpacity
                                     key={key}
-                                    style={{backgroundColor: color, width: 40, height: 40, borderRadius: 40, margin: 5}}
+                                    style={{
+                                        backgroundColor: color,
+                                        width: 40,
+                                        height: 40,
+                                        borderRadius: 40,
+                                        margin: 5
+                                    }}
                                     onPress={() => props.setColor(color)}
                                 />
                             )
@@ -92,8 +108,10 @@ return (
             <TouchableOpacity style={styles.cancelBtn} onPress={props.onCancel} key={timeMillis}>
                 <MaterialIcons name="arrow-back" size={40} color='#4d4d4d' />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.createWalletBtn} onPress={props.onSubmit} key={timeMillis+1}>
-                <Text style={{fontSize: 22}}>Create</Text>
+            <TouchableOpacity style={[styles.createWalletBtn,
+                            {backgroundColor: !props.name.length ? '#b4b4b4' : props.color}]}
+                            disabled={!props.name.length} onPress={props.onSubmit} key={timeMillis+1}>
+                <Text style={{fontSize: 22}}>{props.onBtnText}</Text>
                 <MaterialIcons name="arrow-forward-ios" size={30} color='#000' />
             </TouchableOpacity>
         </View>
@@ -104,7 +122,7 @@ return (
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'rgba(255,255,255,0.9)',
+        backgroundColor: '#D7D7D7E5',
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 30,
@@ -134,7 +152,6 @@ const styles = StyleSheet.create({
     createWalletBtn: {
         width: '80%',
         height: 40,
-        backgroundColor: '#b4b4b4',
         flexDirection: 'row',
         borderBottomRightRadius: 30,
         textAlign: 'center',
