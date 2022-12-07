@@ -29,6 +29,18 @@ class StockViewSet(viewsets.ModelViewSet, SetUserIdFromTokenOnCreateMixin):
 
         return response
 
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        set_stock_prices([response.data])
+
+        return response
+
+    def update(self, request, *args, **kwargs):
+        response = super().update(request, *args, **kwargs)
+        set_stock_prices([response.data])
+
+        return response
+
     @action(detail=False, methods=["get"], url_path="chart-data", url_name="chart-data")
     def chart_data(self, request, *args, **kwargs):
         period = request.query_params.get("period", Stock.CHART_PERIOD_7_DAYS)

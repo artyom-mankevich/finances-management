@@ -15,7 +15,10 @@ def set_stock_prices(response):
     tickers = [stock["ticker"] for stock in response]
     stock_prices = get_stock_prices(tickers)
     for stock in response:
-        stock["price"] = stock_prices[stock["ticker"]] * stock["amount"]
+        if stock_prices[stock["ticker"]] is not None:
+            stock["price"] = stock_prices[stock["ticker"]] * stock["amount"]
+        else:
+            stock["price"] = None
 
 
 def get_stock_prices(tickers: list) -> dict:
@@ -31,7 +34,12 @@ def get_stock_prices(tickers: list) -> dict:
 
 
 def set_tickers_data_from_api(data: dict, tickers_to_fetch: list[str]):
-    yq_tickers = yq.Ticker(" ".join(tickers_to_fetch), asynchronous=True).financial_data
+    yq_tickers = yq.Ticker(
+        " ".join(tickers_to_fetch), asynchronous=True, validate=True
+    ).financial_data
+    if not yq_tickers:
+        return
+
     for ticker in tickers_to_fetch:
         price = yq_tickers[ticker].get("currentPrice")
         currency = yq_tickers[ticker].get("financialCurrency")
