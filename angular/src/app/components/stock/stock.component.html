@@ -8,6 +8,6 @@
             <mat-icon class="stock-modify-button" fontIcon="material-icons-round" (click)="editStock()">edit</mat-icon>
             <mat-icon class="stock-modify-button" fontIcon="material-icons-round" (click)="deleteStock()">close</mat-icon>
         </div>
-        <p *ngIf="stock.price" class="stock-value">{{ stock.price | shortNumber}}</p>
+        <p *ngIf="stock.price" class="stock-value">${{ + stock.price | shortNumber}}</p>
     </section>
 </section>

@@ -29,6 +29,8 @@ import { StockComponent } from './components/stock/stock.component';
 import { NewsEntryComponent } from './components/news-entry/news-entry.component';
 import { StockModalComponent } from './components/stock-modal/stock-modal.component';
 import { NewsFiltersModalComponent } from './components/news-filters-modal/news-filters-modal.component';
+import { NgChartsModule } from 'ng2-charts';
+import { StocksChartComponent } from './components/stocks-chart/stocks-chart.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +52,8 @@ import { NewsFiltersModalComponent } from './components/news-filters-modal/news-
     StockComponent,
     NewsEntryComponent,
     StockModalComponent,
-    NewsFiltersModalComponent
+    NewsFiltersModalComponent,
+    StocksChartComponent
   ],
   imports: [
     BrowserModule,
@@ -68,7 +71,8 @@ import { NewsFiltersModalComponent } from './components/news-filters-modal/news-
     HttpClientModule,
     MatDialogModule,
     ReactiveFormsModule,
-    MatIconModule
+    MatIconModule,
+    NgChartsModule
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS,

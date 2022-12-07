@@ -42,11 +42,12 @@ export class StockModalComponent implements OnInit {
     this.stock.ticker = this.form.controls['ticker'].value;
 
     if (this.modalMode === TransactionModalModes.Create) {
-      this.ds.createStock(this.stock).subscribe(() => this.dialogRef.close());
+      this.ds.createStock(this.stock).subscribe();
     }
     else {
-      this.ds.updateStock(this.stock).subscribe(() => this.dialogRef.close());
+      this.ds.updateStock(this.stock).subscribe();
     }
+    this.dialogRef.close();
   }
 
   ngOnInit(): void {

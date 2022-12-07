@@ -5,7 +5,10 @@
     </div>
     <section class="content">
         <div class="stocks-chart-news-wrapper">
-            <section class="stocks-chart">Stocks Chart</section>
+            <section class="stocks-chart">
+                <h2>Stocks</h2>
+                <app-stocks-chart></app-stocks-chart>
+            </section>
             <section class="news">
                 <h2>News</h2>
                 <app-news-entry class="news-entry" [news]="newsEntry" *ngFor="let newsEntry of news$ | async"></app-news-entry>
