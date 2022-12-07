@@ -27,7 +27,7 @@ export default function Wallet(props) {
                     <View style={styles.walletUpdateBtn}>
                         <TouchableOpacity
                             style={styles.walletUpdateBtnTouchableOpacity}
-                            onPress={props.onPressUpdate}
+                            onPress={() => console.log("Update Wallet")}
                             key={props.name}
                         >
                             <View style={styles.walletUpdateCircle}>
@@ -111,10 +111,8 @@ const styles = StyleSheet.create({
         height: 100,
         justifyContent: 'center',
         alignItems: 'center',
-
     },
     walletUpdateGear: {
         bottom: 50,
-
     }
 });
