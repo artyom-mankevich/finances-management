@@ -208,6 +208,7 @@ export class DataService {
     return this.http.delete(`${this.url}${ApiEndpoints.stocks}${stockId}/`).pipe(tap(() => {
       this.getUserStocks(true);
       this.getUserNews(true);
+      this.getUserStockChart(this.stockChartPeriod,true);
      }));
   }
 
