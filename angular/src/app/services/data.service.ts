@@ -32,7 +32,7 @@ export class DataService {
   private _newsFilter: BehaviorSubject<NewsFilter | undefined>;
   private _news: BehaviorSubject<News[]>;
   private _stockChartData: BehaviorSubject<StockChartData | undefined>;
-  private stockChartPeriod: ChartDateOptions = ChartDateOptions.Week;
+  stockChartPeriod: ChartDateOptions = ChartDateOptions.Week;
   transactionFilter: TransactionFilters = TransactionFilters.All;
   moreTransactions: boolean = false;
   constructor(private http: HttpClient) {
@@ -181,11 +181,15 @@ export class DataService {
   }
 
   createStock(stock: Stock): Observable<Stock> {
-    return this.http.post<Stock>(`${this.url}${ApiEndpoints.stocks}`, stock).pipe(tap(() => this.getUserStocks(true)));
+    return this.http.post<Stock>(`${this.url}${ApiEndpoints.stocks}`, stock).pipe(tap(() => {
+      this.getUserStocks(true);
+      this.getUserStockChart(this.stockChartPeriod, true);
+    }));
   }
 
   updateStock(stock: Stock) {
     return this.http.put<Stock>(`${this.url}${ApiEndpoints.stocks}${stock.id}/`, stock).pipe(tap((stock: Stock) => {
+      this.getUserStockChart(this.stockChartPeriod, true);
       let stockResults = this._stockRequest.value?.results.map((st: Stock) => {
         if (st.id === stock.id) st = stock;
         return st;
@@ -247,15 +251,15 @@ export class DataService {
     return this._news.asObservable();
   }
 
-  getUserStockChart(period: ChartDateOptions) {
-    if (!this._stockChartData.value || period !== this.stockChartPeriod) {
+  getUserStockChart(period: ChartDateOptions, force: boolean = false) {
+    if (!this._stockChartData.value || period !== this.stockChartPeriod || force) {
       this.stockChartPeriod = period;
       let httpParams: HttpParams = new HttpParams().set('period', '7d');
       if (this.stockChartPeriod === ChartDateOptions.Month) httpParams = httpParams.set('period', '1mo');
       if (this.stockChartPeriod === ChartDateOptions.ThreeMonths) httpParams = httpParams.set('period', '3mo');
       if (this.stockChartPeriod === ChartDateOptions.Year) httpParams = httpParams.set('period', '1y');
 
-      this.http.get<StockChartData>(`${this.url}${ApiEndpoints.stockChartData}`, { params: httpParams }).pipe(map(response => ({ averagePrice: response.averagePrice, data: new Map(Object.entries(response.data)) }))).subscribe(val => this._stockChartData.next(val));
+      this.http.get<StockChartData>(`${this.url}${ApiEndpoints.stockChartData}`, { params: httpParams }).subscribe(val => this._stockChartData.next(val));
     }
     return this._stockChartData.asObservable();
   }
@@ -272,7 +276,7 @@ export class DataService {
   removeLanguageFilter(code: string) {
     let filter: NewsFilter | undefined = this._newsFilter.value;
     if (filter && filter.languages) {
-      filter.languages =filter.languages.filter(val => {
+      filter.languages = filter.languages.filter(val => {
         return val !== code;
       })
       this._newsFilter.next(filter);

@@ -13,7 +13,7 @@ export class StocksChartComponent implements OnInit {
   @ViewChild( BaseChartDirective ) chart: BaseChartDirective | undefined;
 
   chartDateOptions = ChartDateOptions;
-  selectedOption: ChartDateOptions = ChartDateOptions.Week;
+  selectedOption: ChartDateOptions = this.ds.stockChartPeriod;
   chartData: ChartDataset[] = [
     {
       label: 'Value',
@@ -68,13 +68,11 @@ export class StocksChartComponent implements OnInit {
 
     this.ds.getUserStockChart(this.selectedOption).subscribe(x => {
       if (x?.data){
-        this.chartData[0].data = new Array(...x?.data).map(pairs => pairs[1])
+        this.chartData[0].data = x.data.values;
         this.chartLabels.labels.length = 0;
-        for (let label of x.data.keys()) {
+        for (let label of x.data.dates) {
           this.chartLabels.labels.push(label);
         }
-        // let a = new Array(...x?.data).map(pairs => pairs[0]);
-        // this.chartLabels.labels.push[...a]; 
         this.chart?.update();
 
       }

@@ -1,4 +1,7 @@
 export interface StockChartData {
-    data: Map<string, number>
+    data: {
+        dates: [string],
+        values: [number]
+    }
     averagePrice: number
 }
