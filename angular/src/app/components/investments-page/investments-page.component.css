@@ -21,6 +21,19 @@
     min-width: 375px;
 }
 
+.dark-blue {
+  background-color: var(--dark-blue);  
+}
+
+.dark-blue-border {
+    border-color: var(--dark-blue);
+    color: var(--dark-blue);
+}
+
+.dark-blue-border:hover {
+    background-color: var(--dark-blue);
+}
+
 .content {
     width: 100%;
     display: flex;
@@ -62,6 +75,10 @@
     }
 
     .stocks {
+        width: 100%;
+    }
+
+    .stocks-chart-news-wrapper {
         width: 100%;
     }
 }

@@ -1,12 +1,11 @@
 <div class="investments-page-wrapper">
     <div class="investments-top-menu">
         <button class="add-button" (click)="openNewsFilterDialog()">Add news filter</button>
-        <button class="add-button" (click)="openStockDialog()">Add Stock</button>
+        <button class="add-button dark-blue" (click)="openStockDialog()">Add Stock</button>
     </div>
     <section class="content">
         <div class="stocks-chart-news-wrapper">
             <section class="stocks-chart">
-                <h2>Stocks</h2>
                 <app-stocks-chart></app-stocks-chart>
             </section>
             <section class="news">
@@ -15,12 +14,11 @@
             </section>
         </div>
         <section class="stocks">
-            <h2>Stocks</h2>
             <ng-container *ngIf="stocks$ | async as stocks">
                 <app-stock [stock]="stock" *ngFor="let stock of stocks.results"></app-stock>
                 <div class="stocks-batch-buttons">
-                    <button *ngIf="stocks.previous" class="secondary-button" (click)="loadPreviousStocks()">Previous</button>
-                    <button *ngIf="stocks.next" class="secondary-button" (click)="loadNextStocks()">Next</button>
+                    <button *ngIf="stocks.previous" class="secondary-button dark-blue-border" (click)="loadPreviousStocks()">Previous</button>
+                    <button *ngIf="stocks.next" class="secondary-button dark-blue-border" (click)="loadNextStocks()">Next</button>
                 </div>
             </ng-container>
         </section>
