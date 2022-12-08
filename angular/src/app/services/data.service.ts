@@ -240,8 +240,8 @@ export class DataService {
     return this._stockRequest.asObservable();
   }
 
-  getUserNews(): Observable<News[]> {
-    if (this._news.value.length === 0) {
+  getUserNews(force: boolean = false): Observable<News[]> {
+    if (this._news.value.length === 0 || force) {
       this.http.get<News[]>(`${this.url}${ApiEndpoints.news}`).subscribe(news => this._news.next(news));
     }
     return this._news.asObservable();
@@ -258,5 +258,28 @@ export class DataService {
       this.http.get<StockChartData>(`${this.url}${ApiEndpoints.stockChartData}`, { params: httpParams }).pipe(map(response => ({ averagePrice: response.averagePrice, data: new Map(Object.entries(response.data)) }))).subscribe(val => this._stockChartData.next(val));
     }
     return this._stockChartData.asObservable();
+  }
+
+  addLanguageFilter(code: string) {
+    let filter: NewsFilter | undefined = this._newsFilter.value;
+    if (filter && !filter?.languages) {
+      filter.languages = []
+    }
+    filter?.languages.push(code);
+    this._newsFilter.next(filter);
+  }
+
+  removeLanguageFilter(code: string) {
+    let filter: NewsFilter | undefined = this._newsFilter.value;
+    if (filter && filter.languages) {
+      filter.languages =filter.languages.filter(val => {
+        return val !== code;
+      })
+      this._newsFilter.next(filter);
+    }
+  }
+
+  updateNewsFilter() {
+    return this.http.put(`${this.url}${ApiEndpoints.newsFilter}${this._newsFilter.value?.id}/`, this._newsFilter.value).pipe(tap(() => this.getUserNews(true)));
   }
 }

@@ -6,15 +6,42 @@
     background-color: var(--purple);
 }
 
-.input-form {
-    display: flex;
-    flex-direction: column;
-}
-
 .modal-wrapper {
-    width: 200px;
-    height: 320px;
+    width: 360px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    gap: 10px;
+}
+
+.selected-language {
+    background-color: var(--main-blue);
+    color: white;
+}
+
+h2 {
+    margin: 0;
+}
+
+.language-block {
+    width: max-content;
+    flex-grow: 1;
+    max-width: 50%;
+    border-radius: 8px;
+    height: 34px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 34px;
+    cursor: pointer;
+    padding: 0 10px;
+    border-width: 1px;
+    align-items: center;
+    justify-content: center;
+}
+
+.blocks-container {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    gap: 10px;
 }

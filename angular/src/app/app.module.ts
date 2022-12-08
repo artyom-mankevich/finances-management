@@ -31,6 +31,7 @@ import { StockModalComponent } from './components/stock-modal/stock-modal.compon
 import { NewsFiltersModalComponent } from './components/news-filters-modal/news-filters-modal.component';
 import { NgChartsModule } from 'ng2-charts';
 import { StocksChartComponent } from './components/stocks-chart/stocks-chart.component';
+import { LanguageNamePipe } from './pipes/language-name.pipe';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import { StocksChartComponent } from './components/stocks-chart/stocks-chart.com
     NewsEntryComponent,
     StockModalComponent,
     NewsFiltersModalComponent,
-    StocksChartComponent
+    StocksChartComponent,
+    LanguageNamePipe
   ],
   imports: [
     BrowserModule,

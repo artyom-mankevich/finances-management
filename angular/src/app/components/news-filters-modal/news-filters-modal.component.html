@@ -1,10 +1,15 @@
 <div class="modal-wrapper">
-    <form class="input-form">
-        <label for="">Language</label>
-        <select class="main-select">
-            <option selected hidden>Language</option>
-            <option *ngFor="let language of newsLanguges$ | async" [value]="language">{{ language.code }}</option>
-        </select>
-    </form>
-    <button class="modal-action-button">Update</button>
+    <ng-container *ngIf="newsFilter$ | async as newsFilter">
+        <h2>Selected Languages</h2>
+        <div class="blocks-container">
+            <div (click)="removeLanguage(language)" class="language-block secondary-button selected-language" *ngFor="let language of newsFilter.languages">{{ language | languageName}}</div>
+        </div>
+        <h2>Supported languages</h2>
+        <div class="blocks-container">
+            <ng-container *ngFor="let language of newsLanguges$ | async">
+                <div class="language-block secondary-button"(click)="addLanguage(language.code)" *ngIf="!filterPresent(language, newsFilter)">{{ language.code | languageName}}</div>
+            </ng-container>
+        </div>
+    </ng-container>
+    <button [disabled]="updateDisabled" class="modal-action-button" (click)="updateNewsFilter()">Update</button>
 </div>
