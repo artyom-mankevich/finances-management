@@ -2,6 +2,7 @@ node_modules/
 .idea/
 .expo/
 dist/
+components/ngrok.config.js
 npm-debug.*
 *.jks
 *.p8
