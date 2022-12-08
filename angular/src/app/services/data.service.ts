@@ -182,6 +182,7 @@ export class DataService {
 
   createStock(stock: Stock): Observable<Stock> {
     return this.http.post<Stock>(`${this.url}${ApiEndpoints.stocks}`, stock).pipe(tap(() => {
+      this.getUserNews(true);
       this.getUserStocks(true);
       this.getUserStockChart(this.stockChartPeriod, true);
     }));
@@ -190,6 +191,7 @@ export class DataService {
   updateStock(stock: Stock) {
     return this.http.put<Stock>(`${this.url}${ApiEndpoints.stocks}${stock.id}/`, stock).pipe(tap((stock: Stock) => {
       this.getUserStockChart(this.stockChartPeriod, true);
+      this.getUserNews(true);
       let stockResults = this._stockRequest.value?.results.map((st: Stock) => {
         if (st.id === stock.id) st = stock;
         return st;
@@ -203,7 +205,10 @@ export class DataService {
   }
 
   deleteStock(stockId: string) {
-    return this.http.delete(`${this.url}${ApiEndpoints.stocks}${stockId}/`).pipe(tap(() => this.getUserStocks(true)));
+    return this.http.delete(`${this.url}${ApiEndpoints.stocks}${stockId}/`).pipe(tap(() => {
+      this.getUserStocks(true);
+      this.getUserNews(true);
+     }));
   }
 
   _getUserNewsFilter() {

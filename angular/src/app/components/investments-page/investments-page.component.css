@@ -6,6 +6,7 @@
     display: flex;
     flex-direction: column;
     gap: 30px;
+    padding-bottom: 30px;
 }
 
 .investments-top-menu {
@@ -80,5 +81,11 @@
 
     .stocks-chart-news-wrapper {
         width: 100%;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    .investments-page-wrapper {
+        padding-top: 30px;
     }
 }
