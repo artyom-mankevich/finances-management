@@ -1,0 +1,11 @@
+<div class="stock-modal-wrapper">
+    <form class="stock-input-form" [formGroup]="form">
+        <label for="">Info</label>
+        <input class="main-input" type="text" placeholder="Ticker" formControlName="ticker" maxlength="4">
+        <label for="">Shares</label>
+        <input class="main-input" type="number" min="1" placeholder="Number of shares" formControlName="amount">
+    </form>
+    <div class="action-buttons">
+        <button class="modal-action-button" [disabled]="!form.valid" (click)="modifyStock()">{{ modalMode }}</button>
+    </div>
+</div>

@@ -1,9 +1,15 @@
 export interface Stock {
     id: string | null,
-    userId: string,
+    userId: string | null,
     amount: number,
     ticker: string,
-    color: string,
-    description: string,
-    currency: string
+    price: number | null
+}
+
+
+export interface StockRequest {
+    count: number, 
+    next: string | null,
+    previous: string | null,
+    results: Stock[]
 }

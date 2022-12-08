@@ -24,6 +24,14 @@ import { TransactionComponent } from './components/transaction/transaction.compo
 import { TransactionModalComponent } from './components/transaction-modal/transaction-modal.component';
 import { MatIconModule } from '@angular/material/icon';
 import { CategoryModalComponent } from './components/category-modal/category-modal.component';
+import { InvestmentsPageComponent } from './components/investments-page/investments-page.component';
+import { StockComponent } from './components/stock/stock.component';
+import { NewsEntryComponent } from './components/news-entry/news-entry.component';
+import { StockModalComponent } from './components/stock-modal/stock-modal.component';
+import { NewsFiltersModalComponent } from './components/news-filters-modal/news-filters-modal.component';
+import { NgChartsModule } from 'ng2-charts';
+import { StocksChartComponent } from './components/stocks-chart/stocks-chart.component';
+import { LanguageNamePipe } from './pipes/language-name.pipe';
 
 @NgModule({
   declarations: [
@@ -40,7 +48,14 @@ import { CategoryModalComponent } from './components/category-modal/category-mod
     TransactionsPageComponent,
     TransactionComponent,
     TransactionModalComponent,
-    CategoryModalComponent
+    CategoryModalComponent,
+    InvestmentsPageComponent,
+    StockComponent,
+    NewsEntryComponent,
+    StockModalComponent,
+    NewsFiltersModalComponent,
+    StocksChartComponent,
+    LanguageNamePipe
   ],
   imports: [
     BrowserModule,
@@ -58,7 +73,8 @@ import { CategoryModalComponent } from './components/category-modal/category-mod
     HttpClientModule,
     MatDialogModule,
     ReactiveFormsModule,
-    MatIconModule
+    MatIconModule,
+    NgChartsModule
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS,

@@ -1,5 +1,6 @@
 export interface NewsFilter {
-    userId: string,
+    id: string | null,
+    userId: string | null,
     tickers: string[],
-    industries: string[]
+    languages: string[]
 }

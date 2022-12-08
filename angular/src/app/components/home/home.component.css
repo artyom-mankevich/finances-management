@@ -8,6 +8,7 @@ main {
     height: 100%;
     flex-grow: 1;
     margin-left: min(calc(20vw + 3px), 323px);
+    /* max-width: calc(100% - 20vw); */
 }
 
 header {
@@ -36,5 +37,9 @@ h1 b {
 @media only screen and (max-width: 900px) {
     main {
         margin-left: min(20vw, 60px);
+    }
+
+    header {
+        display: none;
     }
 }
