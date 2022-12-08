@@ -119,7 +119,7 @@ def get_period_interval(period: str) -> str:
 def get_stocks_chart_data(
     stocks: dict, period: str, user_id: str
 ) -> dict:
-    tickers = list(stocks.keys())
+    tickers = yq.Ticker(list(stocks.keys()), validate=True, asynchronous=True).symbols
     symbols = " ".join(tickers)
 
     today = datetime.date.today()
@@ -139,6 +139,9 @@ def get_stocks_chart_data(
     historical_prices = get_historical_stocks_data(
         symbols, stocks, period, start_date, end_date, interval
     )
+    if not historical_prices:
+        return {}
+
     result = {"data": historical_prices}
 
     if period in [Stock.CHART_PERIOD_7_DAYS, Stock.CHART_PERIOD_1_MONTH]:
@@ -171,9 +174,15 @@ def get_historical_stocks_data(
     end_date: str = None,
     interval: str = "1d"
 ) -> dict[str, Decimal]:
-    series = yq.Ticker(symbols=symbols, asynchronous=True, validate=True).history(
+    ticker = yq.Ticker(symbols=symbols, asynchronous=True, validate=True)
+
+    if not ticker.symbols:
+        return {}
+
+    series = ticker.history(
         period=period, start=start_date, end=end_date, interval=interval
-    )["close"]
+    )
+    series = series["close"]
 
     result = {}
     for i in range(len(series)):
