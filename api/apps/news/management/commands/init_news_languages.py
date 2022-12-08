@@ -34,7 +34,6 @@ class Command(BaseCommand):
             "ja",
             "ko",
             "lt",
-            "multi",
             "nl",
             "no",
             "pl",
