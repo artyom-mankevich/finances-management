@@ -1,3 +1,4 @@
+from django.db.models import Sum
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
@@ -25,7 +26,8 @@ class StockViewSet(viewsets.ModelViewSet, SetUserIdFromTokenOnCreateMixin):
 
     def list(self, request, *args, **kwargs):
         response = super().list(request, *args, **kwargs)
-        set_stock_prices(response.data["results"])
+        if response.data["results"]:
+            set_stock_prices(response.data["results"])
 
         return response
 
@@ -50,6 +52,15 @@ class StockViewSet(viewsets.ModelViewSet, SetUserIdFromTokenOnCreateMixin):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        stocks = list(self.get_queryset().values("ticker", "amount"))
-        stocks_dict = {stock["ticker"]: stock["amount"] for stock in stocks}
-        return Response(data=get_stocks_chart_data(stocks_dict, period, str(request.user)))
+        stocks = (
+            Stock.objects.filter(user_id=self.request.user)
+            .values("ticker")
+            .annotate(amount=Sum("amount"))
+        )
+        if stocks:
+            stocks_dict = {stock["ticker"]: stock["amount"] for stock in stocks}
+            return Response(
+                data=get_stocks_chart_data(stocks_dict, period, str(request.user))
+            )
+
+        return Response(data={})
