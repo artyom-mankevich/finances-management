@@ -47,12 +47,24 @@ export class DataService {
     this._news = new BehaviorSubject<News[]>([]);
     this._stockChartData = new BehaviorSubject<StockChartData | undefined>(undefined);
     this.getAvailableIcons();
+    this._prefetchData();
   }
 
   private getTransactionType(transaction: Transaction): TransactionTypes {
     if (transaction.sourceWallet && !transaction.targetWallet) return TransactionTypes.Expense;
     if (!transaction.sourceWallet && transaction.targetWallet) return TransactionTypes.Income;
     return TransactionTypes.Transfer;
+  }
+
+  private _prefetchData() {
+    this.getUserWallets();
+    this.getUserCategories();
+    this.getUserTransactions(this.transactionFilter);
+    this.getUserNews();
+    this.getUserStocks();
+    this.getUserNewsFilter()
+    this.getAvailableNewsLanguages();
+    this.getUserStockChart(this.stockChartPeriod);
   }
 
   private _getUserWallets(): void {
