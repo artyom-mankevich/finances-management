@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable, tap } from 'rxjs';
 import { ApiEndpoints, environment } from 'src/environments/environment';
+import { ChartDateOptions } from '../enums/chartDateOptions';
 import { TransactionFilters } from '../enums/transactionFilters';
 import { TransactionTypes } from '../enums/transactionTypes';
 import { Color } from '../models/color';
@@ -11,6 +12,7 @@ import { News } from '../models/news';
 import { NewsFilter } from '../models/newsFilter';
 import { NewsLanguage } from '../models/newsLanguages';
 import { Stock, StockRequest } from '../models/stock';
+import { StockChartData } from '../models/stockChartData';
 import { PostTransaction, Transaction, TransactionRequest } from '../models/transaction';
 import { TransactionCategory } from '../models/transactionCategory';
 import { Wallet } from '../models/wallet';
@@ -29,6 +31,8 @@ export class DataService {
   private _transactionsRequest: BehaviorSubject<TransactionRequest | undefined>;
   private _newsFilter: BehaviorSubject<NewsFilter | undefined>;
   private _news: BehaviorSubject<News[]>;
+  private _stockChartData: BehaviorSubject<StockChartData | undefined>;
+  private stockChartPeriod: ChartDateOptions = ChartDateOptions.Week;
   transactionFilter: TransactionFilters = TransactionFilters.All;
   moreTransactions: boolean = false;
   constructor(private http: HttpClient) {
@@ -41,6 +45,7 @@ export class DataService {
     this._stockRequest = new BehaviorSubject<StockRequest | undefined>(undefined);
     this._newsLanguages = new BehaviorSubject<NewsLanguage[]>([]);
     this._news = new BehaviorSubject<News[]>([]);
+    this._stockChartData = new BehaviorSubject<StockChartData | undefined>(undefined);
     this.getAvailableIcons();
   }
 
@@ -77,7 +82,7 @@ export class DataService {
     return this.http.patch(`${this.url}${ApiEndpoints.wallets}${wallet.id}/`, wallet).pipe(tap(() => {
       this._getUserWallets();
       this.getUserTransactions(this.transactionFilter, true);
-     }));
+    }));
   }
 
   getUserCategories(): Observable<TransactionCategory[]> {
@@ -169,7 +174,7 @@ export class DataService {
   }
 
   deleteCategory(categoryId: string) {
-    return this.http.delete(`${this.url}${ApiEndpoints.transactionCategories}${categoryId}/`).pipe(tap(() => { 
+    return this.http.delete(`${this.url}${ApiEndpoints.transactionCategories}${categoryId}/`).pipe(tap(() => {
       this.getUserCategories();
       this.getUserTransactions(this.transactionFilter, true);
     }))
@@ -186,7 +191,7 @@ export class DataService {
         return st;
       })
       let val = this._stockRequest.value;
-      if (val?.results && stockResults){
+      if (val?.results && stockResults) {
         val.results = stockResults;
         this._stockRequest.next(val);
       }
@@ -222,14 +227,14 @@ export class DataService {
   }
 
   getUserStocksNext(): Observable<StockRequest | undefined> {
-    if (this._stockRequest.value && this._stockRequest.value.next){
+    if (this._stockRequest.value && this._stockRequest.value.next) {
       this._getUserStocks(this._stockRequest.value.next)
     }
     return this._stockRequest.asObservable();
   }
 
   getUserStocksPrevious(): Observable<StockRequest | undefined> {
-    if (this._stockRequest.value && this._stockRequest.value.previous){
+    if (this._stockRequest.value && this._stockRequest.value.previous) {
       this._getUserStocks(this._stockRequest.value.previous)
     }
     return this._stockRequest.asObservable();
@@ -240,5 +245,18 @@ export class DataService {
       this.http.get<News[]>(`${this.url}${ApiEndpoints.news}`).subscribe(news => this._news.next(news));
     }
     return this._news.asObservable();
+  }
+
+  getUserStockChart(period: ChartDateOptions) {
+    if (!this._stockChartData.value || period !== this.stockChartPeriod) {
+      this.stockChartPeriod = period;
+      let httpParams: HttpParams = new HttpParams().set('period', '7d');
+      if (this.stockChartPeriod === ChartDateOptions.Month) httpParams = httpParams.set('period', '1mo');
+      if (this.stockChartPeriod === ChartDateOptions.ThreeMonths) httpParams = httpParams.set('period', '3mo');
+      if (this.stockChartPeriod === ChartDateOptions.Year) httpParams = httpParams.set('period', '1y');
+
+      this.http.get<StockChartData>(`${this.url}${ApiEndpoints.stockChartData}`, { params: httpParams }).pipe(map(response => ({ averagePrice: response.averagePrice, data: new Map(Object.entries(response.data)) }))).subscribe(val => this._stockChartData.next(val));
+    }
+    return this._stockChartData.asObservable();
   }
 }

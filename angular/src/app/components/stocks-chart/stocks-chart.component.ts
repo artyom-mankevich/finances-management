@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Chart, ChartDataset, ChartOptions } from 'chart.js';
+import { BaseChartDirective } from 'ng2-charts';
 import { ChartDateOptions } from 'src/app/enums/chartDateOptions';
+import { DataService } from 'src/app/services/data.service';
 
 @Component({
   selector: 'app-stocks-chart',
@@ -8,6 +10,7 @@ import { ChartDateOptions } from 'src/app/enums/chartDateOptions';
   styleUrls: ['./stocks-chart.component.css']
 })
 export class StocksChartComponent implements OnInit {
+  @ViewChild( BaseChartDirective ) chart: BaseChartDirective | undefined;
 
   chartDateOptions = ChartDateOptions;
   selectedOption: ChartDateOptions = ChartDateOptions.Week;
@@ -22,20 +25,9 @@ export class StocksChartComponent implements OnInit {
       hoverBackgroundColor: '#F6BA1B'
     },
   ];
-  expData: ChartDataset[] = [
-    {
-      label: 'Value',
-      data: [],
-      backgroundColor: '#3E68D1',
-      pointRadius: 2,
-      borderColor: 'transparent', 
-      tension: 0.3, 
-      hoverBackgroundColor: '#F6BA1B'
-    },
-  ];
  
   chartLabels = {
-    labels:  [ ]
+    labels:  ['']
   }
 
   chartOptions: ChartOptions = {
@@ -72,10 +64,26 @@ export class StocksChartComponent implements OnInit {
   
   };
   
-  constructor() { }
+  constructor(private ds: DataService) {
+
+    this.ds.getUserStockChart(this.selectedOption).subscribe(x => {
+      if (x?.data){
+        this.chartData[0].data = new Array(...x?.data).map(pairs => pairs[1])
+        this.chartLabels.labels.length = 0;
+        for (let label of x.data.keys()) {
+          this.chartLabels.labels.push(label);
+        }
+        // let a = new Array(...x?.data).map(pairs => pairs[0]);
+        // this.chartLabels.labels.push[...a]; 
+        this.chart?.update();
+
+      }
+    });
+   }
 
   selectOptions(newOption: ChartDateOptions): void {
     this.selectedOption = newOption;
+    this.ds.getUserStockChart(this.selectedOption);
   }
   ngOnInit(): void {
   }
