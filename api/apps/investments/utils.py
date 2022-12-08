@@ -151,12 +151,13 @@ def get_stocks_chart_data(
         today_sum = {
             today.strftime("%d-%m-%Y"): sum(today_prices.values())
         }
-        merged = {**historical_prices, **today_sum}
-        result["data"] = {
-            "dates": list(merged.keys()),
-            "values": list(merged.values()),
-        }
+        historical_prices = {**historical_prices, **today_sum}
         cache_lifetime = 60 * 10
+
+    result["data"] = {
+        "dates": list(historical_prices.keys()),
+        "values": list(historical_prices.values()),
+    }
 
     average_price = sum(result["data"]["values"]) / len(result["data"]["values"])
     result["average_price"] = average_price
