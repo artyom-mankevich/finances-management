@@ -67,6 +67,12 @@ export class StocksChartComponent implements OnInit {
   constructor(private ds: DataService) {
 
     this.ds.getUserStockChart(this.selectedOption).subscribe(x => {
+      if (x && Object.keys(x).length === 0) {
+        this.chartData[0].data = [];
+        this.chartLabels.labels.length = 0;
+        this.chart?.update();
+        return;
+      }
       if (x?.data){
         this.chartData[0].data = x.data.values;
         this.chartLabels.labels.length = 0;

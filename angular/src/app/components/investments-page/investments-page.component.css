@@ -24,6 +24,7 @@
 
 .dark-blue {
   background-color: var(--dark-blue);  
+  border-color: var(--dark-blue);
 }
 
 .dark-blue-border {
