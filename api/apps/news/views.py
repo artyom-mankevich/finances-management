@@ -1,3 +1,4 @@
+from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import ListModelMixin, UpdateModelMixin
 from rest_framework.response import Response
@@ -18,6 +19,12 @@ class NewsFilterViewSet(GenericViewSet, UpdateModelMixin, ListModelMixin):
 
     def get_queryset(self):
         return NewsFilter.objects.filter(user_id=self.request.user)
+
+    # overriden since only one object can exist for user
+    def list(self, request, *args, **kwargs):
+        obj = self.get_object()
+        data = self.get_serializer(obj).data
+        return Response(data)
 
 
 class NewsLanguageViewSet(GenericViewSet, ListModelMixin):
