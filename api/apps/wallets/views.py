@@ -12,7 +12,7 @@ from wallets.models import (
     Wallet,
     Transaction,
     TransactionCategory,
-    Debt
+    Debt, WalletLog
 )
 from wallets.serializers import (
     CurrencySerializer,
@@ -21,7 +21,7 @@ from wallets.serializers import (
     TransactionCategorySerializer,
     DebtSerializer,
 )
-from wallets.utils import get_top_categories
+from wallets.utils import get_top_categories, get_wallets_chart_data
 
 
 class CurrencyViewSet(viewsets.ReadOnlyModelViewSet):
@@ -34,6 +34,17 @@ class WalletViewSet(viewsets.ModelViewSet, SetUserIdFromTokenOnCreateMixin):
 
     def get_queryset(self):
         return Wallet.objects.filter(user_id=self.request.user)
+
+    @action(detail=False, methods=["GET"], url_path="chart-data", url_name="chart_data")
+    def chart_data(self, request, *args, **kwargs):
+        period = request.query_params.get("period", "7d")
+        if period not in WalletLog.CHART_PERIODS:
+            return Response(
+                {"error": f"Invalid period: {period}"}, status=400
+            )
+
+        response = get_wallets_chart_data(self.get_queryset().values_list("id"), period)
+        return Response(response)
 
 
 class DebtViewSet(viewsets.ModelViewSet, SetUserIdFromTokenOnCreateMixin):
