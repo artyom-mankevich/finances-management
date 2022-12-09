@@ -52,6 +52,26 @@ class Wallet(models.Model):
         super().save(*args, **kwargs)
 
 
+class WalletLog(models.Model):
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
+    balance = models.DecimalField(max_digits=30, decimal_places=10)
+    currency = models.CharField(max_length=10)
+    date = models.DateField(auto_now_add=True)
+
+    CHART_PERIOD_7_DAYS = "7d"
+    CHART_PERIOD_1_MONTH = "1mo"
+    CHART_PERIOD_3_MONTHS = "3mo"
+    CHART_PERIOD_1_YEAR = "1y"
+
+    CHART_PERIODS = [
+        CHART_PERIOD_7_DAYS,
+        CHART_PERIOD_1_MONTH,
+        CHART_PERIOD_3_MONTHS,
+        CHART_PERIOD_1_YEAR,
+    ]
+
+
 class Debt(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     user_id = models.CharField(max_length=64, db_index=True)
