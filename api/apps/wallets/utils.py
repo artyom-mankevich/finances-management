@@ -96,6 +96,7 @@ def get_wallets_chart_data(wallets_ids: list[str], period: str) -> dict:
         "data": {
             "dates": list(grouped_logs.keys()),
             "balances": list(grouped_logs.values()),
+            "predicted": [False for _ in range(len(grouped_logs))],
         }
     }
 
