@@ -9,27 +9,6 @@ import ngrokConfig from "../ngrok.config";
 export default function Wallet(props) {
     const [enabled, setEnabled] = useState(false);
 
-    const deleteWallet = async () => {
-        const accessToken = await AsyncStorage.getItem('accessToken');
-        const walletId = await AsyncStorage.getItem('walletId');
-
-        return fetch(ngrokConfig.myUrl + '/v2/wallets/' + walletId + '/',{
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${accessToken}`,
-            }
-        }).then(() => {
-            Alert.alert(
-                "Success",
-                `Wallet ${props.name} - deleted successfully`,
-                [
-                    { text: "OK", onPress: () => console.log("OK Pressed") }
-                ]
-            );
-        }).catch((error) => {
-            console.error(error);
-        })};
-
     return (
         <View style={{marginTop:10, width:350, height:250, borderRadius:30, backgroundColor:props.color}}>
             <View style={styles.walletHeader}>
@@ -50,21 +29,29 @@ export default function Wallet(props) {
             <View style={styles.walletFooter}>
                     <View style={styles.walletUpdateInfo}>
                         <Text style={styles.walletUpdateText}>Last Update:</Text>
-                        <Text style={styles.walletUpdateText}>{new Date(props.lastUpdated).toLocaleString()}</Text>
+                        <Text style={styles.walletUpdateText}>{new Date(props.lastUpdated).toLocaleTimeString()} {new Date(props.lastUpdated).toDateString()}</Text>
                     </View>
                     <View style={styles.walletUpdateBtn}>
-                        {enabled &&
-                        <View style={styles.walletDeleteBtn}>
-                            <TouchableOpacity
+                        {
+                            !props.createElement &&
+                            <View>
+                            {enabled &&
+                            <View style={styles.walletDeleteBtn}>
+                                <TouchableOpacity
                                     style={styles.walletDeleteBtnTouchableOpacity}
-                                    onPress={() => deleteWallet()}>
-                                <FontAwesome name="trash" size={55} color="#930000" />
-                            </TouchableOpacity>
-                        </View>
+                                    onPress={() => props.onDeleted()}>
+                                    <FontAwesome name="trash" size={55} color="#930000"/>
+                                </TouchableOpacity>
+                            </View>
+                        }
+                            </View>
                         }
                         <TouchableOpacity
                             style={styles.walletUpdateBtnTouchableOpacity}
-                            onPress={() => setEnabled(!enabled)}
+                            onPress={() => {
+                                props.createElement ? setEnabled(false) : setEnabled(!enabled);
+
+                            }}
                             key={props.name}
                         >
                             <View style={styles.walletUpdateCircle}>
@@ -95,7 +82,7 @@ const styles = StyleSheet.create({
         paddingLeft: 30,
         paddingTop: 20,
         width: 170,
-        height: 130,
+        height: 140,
     },
     walletNameText: {
         color: '#fff',
@@ -130,7 +117,7 @@ const styles = StyleSheet.create({
     },
     walletFooter: {
         flexDirection: 'row',
-        bottom: 30,
+        bottom: 40,
     },
     walletUpdateInfo: {
         flexDirection: 'column',
