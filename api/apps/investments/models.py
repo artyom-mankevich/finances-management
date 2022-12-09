@@ -14,6 +14,18 @@ class Stock(models.Model):
     ticker = models.ForeignKey("Ticker", null=True, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    CHART_PERIOD_7_DAYS = "7d"
+    CHART_PERIOD_1_MONTH = "1mo"
+    CHART_PERIOD_3_MONTHS = "3mo"
+    CHART_PERIOD_1_YEAR = "1y"
+
+    CHART_PERIODS = [
+        CHART_PERIOD_7_DAYS,
+        CHART_PERIOD_1_MONTH,
+        CHART_PERIOD_3_MONTHS,
+        CHART_PERIOD_1_YEAR,
+    ]
+
     @transaction.atomic
     def save(self, *args, **kwargs):
         update = Stock.objects.filter(id=self.id).exists()
