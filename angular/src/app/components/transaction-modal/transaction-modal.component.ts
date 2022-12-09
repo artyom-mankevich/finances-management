@@ -132,17 +132,20 @@ export class TransactionModalComponent implements OnInit {
       this.form.controls[key].updateValueAndValidity();
     }
     if (this.selectedType === TransactionTypes.Transfer) {
+      this.transaction.category = null;
       this.form.controls['sourceAmount'].setValidators([Validators.required])
       this.form.controls['targetAmount'].setValidators([Validators.required])
       this.form.controls['sourceWallet'].setValidators([Validators.required])
       this.form.controls['targetWallet'].setValidators([Validators.required])
     }
     if (this.selectedType === TransactionTypes.Income) {
+      this.transaction.sourceWallet = null;
       this.form.controls['targetAmount'].setValidators([Validators.required])
       this.form.controls['category'].setValidators([Validators.required])
       this.form.controls['targetWallet'].setValidators([Validators.required])
     }
     if (this.selectedType === TransactionTypes.Expense) {
+      this.transaction.targetWallet = null;
       this.form.controls['sourceAmount'].setValidators([Validators.required])
       this.form.controls['category'].setValidators([Validators.required])
       this.form.controls['sourceWallet'].setValidators([Validators.required])
