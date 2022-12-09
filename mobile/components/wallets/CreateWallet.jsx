@@ -1,65 +1,21 @@
 import {useEffect, useState} from "react";
-import {View, Alert, StyleSheet, TouchableOpacity} from "react-native";
+import {View, StyleSheet, TouchableOpacity} from "react-native";
 import Modal from "react-native-modal";
 import WalletInputs from "./WalletInputs";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ngrokConfig from "../ngrok.config";
 import {FontAwesome5} from "@expo/vector-icons";
 
-export default function CreateWallet() {
+export default function CreateWallet(props) {
     const [modalVisible, setModalVisible] = useState(false);
     const [name, setName] = useState('');
-    const [currencyList, setCurrencyList] = useState([]);
+    const [currencyList, setCurrencyList] = useState(props.currencyList);
     const [currency, setCurrency] = useState('USD');
     const [balance, setBalance] = useState(0);
     const [goal, setGoal] = useState('');
-    const [colorList, setColorList] = useState([]);
+    const [colorList, setColorList] = useState(props.colorList);
     const [color, setColor] = useState("#7A3EF8");
     const [lastUpdated, setLastUpdated] = useState(new Date().getTime());
-
-    const getCurrencyList = async () => {
-        const accessToken = await AsyncStorage.getItem('accessToken');
-        return fetch(ngrokConfig.myUrl + '/v2/currencies',{
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${accessToken}`,
-            }
-        })
-            .then((response) => response.json())
-            .then((responseJson) => {
-                let currencyLists = [];
-                for (let i = 0; i < responseJson.length; i++) {
-                    currencyLists.push({
-                        code: responseJson[i].code,
-                        name: responseJson[i].name,
-                    });
-                setCurrencyList(currencyLists);
-                }
-            })
-            .catch((error) =>{
-                console.error(error);
-            });
-    };
-
-    const getColorsList = async () => {
-        const accessToken = await AsyncStorage.getItem('accessToken');
-        Array.from(new Set(colorList));
-        return fetch(ngrokConfig.myUrl + '/v2/colors',{
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${accessToken}`,
-            }
-        })
-            .then((response) => response.json())
-            .then((responseJson) => {
-                for (let i = 0; i < responseJson.length; i++) {
-                    colorList.push(responseJson[i].hexCode);
-                }
-            })
-            .catch((error) =>{
-                console.error(error);
-            });
-    };
 
     const setAsyncWallet = async () => {
         const accessToken = await AsyncStorage.getItem('accessToken');
@@ -70,32 +26,24 @@ export default function CreateWallet() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                'currency': currency.toString(),
-                'balance': parseFloat(balance),
-                'name': name.toString(),
-                'color': color.toString(),
-                'goal': parseFloat(goal),
+                'currency': currency,
+                'balance': balance,
+                'name': name,
+                'color': color,
+                'goal': goal,
             })
-
-        }).then((response) => response.json())
-            .then(() => {
-                Alert.alert(
-                    "Success",
-                    "Wallet created successfully",
-                    [
-                        { text: "OK", onPress: () => console.log("OK Pressed") }
-                    ]
-                );
-            }).catch((error) => {
+        }).then((response) => {
+            props.onWalletList();
+            response.json()
+        })
+            .catch((error) => {
                 console.error(error);
             })}
 
     useEffect(() => {
-        getColorsList().then(r => {
-            setColor(colorList[~~(Math.random() * colorList.length)]);
-        });
-        getCurrencyList().then();
-    }, []);
+        setCurrencyList(props.currencyList);
+        setColorList(props.colorList);
+    });
 
     const onCancel = () => {
         setModalVisible(false);
@@ -147,6 +95,7 @@ export default function CreateWallet() {
                 onCancel={onCancel}
                 onSubmit={onSubmit}
                 onBtnText={"Create"}
+                createElement={true}
             />
             </Modal>
             <View style={styles.addWalletView}>
@@ -157,7 +106,7 @@ export default function CreateWallet() {
                         setColor(colorList[~~(Math.random() * colorList.length)]);
                     }}
                 >
-                    <FontAwesome5 name="plus" size={110} color='#fff' />
+                    <FontAwesome5 name="plus" size={40} color='#fff' />
                 </TouchableOpacity>
             </View>
         </View>
@@ -166,13 +115,13 @@ export default function CreateWallet() {
 
 const styles = StyleSheet.create({
     addWalletView: {
-        padding: 10,
+        paddingTop: 10,
     },
     addWalletBtn: {
         width: 350,
-        height: 250,
+        height: 80,
         backgroundColor: '#3e68d1',
-        borderRadius: 30,
+        borderRadius: 50,
         textAlign: 'center',
         alignItems: 'center',
         justifyContent: 'center',
