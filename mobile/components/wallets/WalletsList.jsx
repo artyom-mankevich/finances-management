@@ -3,10 +3,58 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useEffect, useState} from "react";
 import ngrokConfig from "../ngrok.config";
 import WalletUpdateInputs from "./WalletUpdateInputs";
+import CreateWallet from "./CreateWallet";
 
 export default function WalletsList() {
     const [wallets, setWallets] = useState([]);
-    const [refresh, setRefresh] = useState(0);
+    const [currencyList, setCurrencyList] = useState([]);
+    const [colorList, setColorList] = useState([]);
+
+    const getCurrencyList = async () => {
+        const accessToken = await AsyncStorage.getItem('accessToken');
+        return fetch(ngrokConfig.myUrl + '/v2/currencies',{
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+            }
+        })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                let currencyLists = [];
+                for (let i = 0; i < responseJson.length; i++) {
+                    currencyLists.push({
+                        code: responseJson[i].code,
+                        name: responseJson[i].name,
+                    });
+                    setCurrencyList(currencyLists);
+                }
+            })
+            .catch((error) =>{
+                console.error(error);
+            });
+    };
+
+    const getColorsList = async () => {
+        const accessToken = await AsyncStorage.getItem('accessToken');
+        Array.from(new Set(colorList));
+        return fetch(ngrokConfig.myUrl + '/v2/colors',{
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+            }
+        })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                let colorsList = [];
+                for (let i = 0; i < responseJson.length; i++) {
+                    colorsList.push(responseJson[i].hexCode);
+                    setColorList(colorsList);
+                }
+            })
+            .catch((error) =>{
+                console.error(error);
+            });
+    };
 
     const getWalletsList = async () => {
         const accessToken = await AsyncStorage.getItem('accessToken');
@@ -16,7 +64,6 @@ export default function WalletsList() {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${accessToken}`,
             }
-
         })
             .then((response) => response.json())
             .then((responseJson) => {
@@ -27,21 +74,39 @@ export default function WalletsList() {
             });
     };
 
+    const deleteWallet = async () => {
+        const accessToken = await AsyncStorage.getItem('accessToken');
+        const walletId = await AsyncStorage.getItem('walletId');
+        return fetch(ngrokConfig.myUrl + '/v2/wallets/' + walletId + '/',{
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+            }
+        }).then(() => {
+            getWalletsList();
+        })
+            .catch((error) => {
+                console.error(error);
+            })};
+
     useEffect(() => {
-        const refreshTimer = setTimeout(() => {
-            const newRefresh = refresh + 1;
-            setRefresh(newRefresh);
-        }, 1500);
+        getCurrencyList().then();
+        getColorsList().then();
         getWalletsList().then();
-        return () => clearTimeout(refreshTimer);
-    },[refresh]);
+    },[]);
+
 
     return (
         <View style={styles.container}>
             <ScrollView>
                 <View>
+                    <CreateWallet
+                        currencyList={currencyList}
+                        colorList={colorList}
+                        onWalletList={() => getWalletsList().then()}
+                    />
                     {
-                        wallets.map((item) => {
+                        wallets.sort((a, b) => a.name > b.name ? 1 : -1).map((item) => {
                             return (
                                 <View>
                                     <WalletUpdateInputs
@@ -52,7 +117,10 @@ export default function WalletsList() {
                                         goal={item.goal}
                                         color={item.color}
                                         lastUpdated={new Date(item.lastUpdated).toLocaleString()}
+                                        currencyList={currencyList}
+                                        colorsList={colorList}
                                         key={item.name}
+                                        onDeleted={() => deleteWallet().then()}
                                     />
                                 </View>
                             )
@@ -67,5 +135,6 @@ export default function WalletsList() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        paddingBottom: 10
     }
 });
