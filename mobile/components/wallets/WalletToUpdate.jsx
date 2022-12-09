@@ -23,7 +23,7 @@ export default function WalletToUpdate(props) {
             <View style={styles.walletFooter}>
                 <View style={styles.walletUpdateInfo}>
                     <Text style={styles.walletUpdateText}>Last Update:</Text>
-                    <Text style={styles.walletUpdateText}>{new Date(props.lastUpdated).toLocaleString()}</Text>
+                    <Text style={styles.walletUpdateText}>{new Date(props.lastUpdated).toLocaleTimeString()} {new Date(props.lastUpdated).toDateString()}</Text>
                 </View>
             </View>
         </View>
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
         paddingLeft: 30,
         paddingTop: 20,
         width: 170,
-        height: 130,
+        height: 140,
     },
     walletNameText: {
         color: '#fff',
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     },
     walletFooter: {
         flexDirection: 'row',
-        bottom: 30,
+        bottom: 40,
     },
     walletUpdateInfo: {
         flexDirection: 'column',
@@ -101,10 +101,8 @@ const styles = StyleSheet.create({
         height: 100,
         justifyContent: 'center',
         alignItems: 'center',
-
     },
     walletUpdateGear: {
         bottom: 50,
-
     }
 });
