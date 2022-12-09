@@ -5,6 +5,7 @@ import { ApiEndpoints, environment } from 'src/environments/environment';
 import { ChartDateOptions } from '../enums/chartDateOptions';
 import { TransactionFilters } from '../enums/transactionFilters';
 import { TransactionTypes } from '../enums/transactionTypes';
+import { AnalyticsCategoires } from '../models/analyticsCategories';
 import { Color } from '../models/color';
 import { Currency } from '../models/currency';
 import { Icon } from '../models/icon';
@@ -32,6 +33,7 @@ export class DataService {
   private _newsFilter: BehaviorSubject<NewsFilter | undefined>;
   private _news: BehaviorSubject<News[]>;
   private _stockChartData: BehaviorSubject<StockChartData | undefined>;
+  private _analyticsCategories: BehaviorSubject<AnalyticsCategoires | undefined>;
   stockChartPeriod: ChartDateOptions = ChartDateOptions.Week;
   transactionFilter: TransactionFilters = TransactionFilters.All;
   moreTransactions: boolean = false;
@@ -46,6 +48,7 @@ export class DataService {
     this._newsLanguages = new BehaviorSubject<NewsLanguage[]>([]);
     this._news = new BehaviorSubject<News[]>([]);
     this._stockChartData = new BehaviorSubject<StockChartData | undefined>(undefined);
+    this._analyticsCategories = new BehaviorSubject<AnalyticsCategoires | undefined>(undefined);
     this.getAvailableIcons();
     this._prefetchData();
   }
@@ -303,5 +306,12 @@ export class DataService {
 
   updateNewsFilter() {
     return this.http.put(`${this.url}${ApiEndpoints.newsFilter}${this._newsFilter.value?.id}/`, this._newsFilter.value).pipe(tap(() => this.getUserNews(true)));
+  }
+
+  getUsersTopCategories(force: boolean = false): Observable<AnalyticsCategoires | undefined> {
+    if (!this._analyticsCategories.value || force) {
+      this.http.get<AnalyticsCategoires>(`${this.url}${ApiEndpoints.topCategories}`).subscribe(val => this._analyticsCategories.next(val));
+    }
+    return this._analyticsCategories.asObservable();
   }
 }

@@ -1,0 +1,13 @@
+<div class="analytics-wrapper">
+    <section class="analytics-charts"></section>
+    <h2>Top Categories</h2>
+    <section class="analytics-categories" *ngIf="analyticsCategories$ | async as analyticsCategories">
+        <div class="top-incomes">
+            <div class="cateogry" *ngFor="let income of analyticsCategories.incomes.data"></div>
+        </div>
+        <div class="top-expenses">
+            <div class="cateogry" *ngFor="let income of analyticsCategories.expenses.data"></div>
+        </div>
+    </section>
+
+</div>
