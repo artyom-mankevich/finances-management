@@ -25,7 +25,7 @@ def get_top_categories_queryset(
     initial_qs: TransactionCategory.objects,
     wallet_type: str,
     amount_type: str
-) -> TransactionCategory.objects:
+) -> list:
     wallet_lookup = {f"transaction__{wallet_type}_wallet__isnull": True}
     transaction_lookup = {f"{amount_type}_wallet__isnull": False}
 
@@ -42,9 +42,9 @@ def get_top_categories_queryset(
             category.total = total
             list_of_categories.append(category)
 
-    categories = sorted(list_of_categories, key=lambda x: x.total, reverse=True)
+    list_of_categories = sorted(list_of_categories, key=lambda x: x.total, reverse=True)
 
-    return categories[:3]
+    return list_of_categories[:3]
 
 
 def get_transactions_total_amount(
