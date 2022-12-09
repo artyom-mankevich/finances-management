@@ -1,7 +1,7 @@
 import {TouchableOpacity, View, StyleSheet, Alert} from "react-native";
 import WalletToUpdate from "./WalletToUpdate";
 import {Feather, FontAwesome} from "@expo/vector-icons";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import Modal from "react-native-modal";
 import WalletInputs from "./WalletInputs";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -19,50 +19,6 @@ export default function WalletUpdateInputs(props) {
     const [color, setColor] = useState(props.color);
     const [lastUpdated, setLastUpdated] = useState(props.lastUpdated);
 
-    const getCurrencyList = async () => {
-        const accessToken = await AsyncStorage.getItem('accessToken');
-        return fetch(ngrokConfig.myUrl + '/v2/currencies',{
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${accessToken}`,
-            }
-        })
-            .then((response) => response.json())
-            .then((responseJson) => {
-                let currencyLists = [];
-                for (let i = 0; i < responseJson.length; i++) {
-                    currencyLists.push({
-                        code: responseJson[i].code,
-                        name: responseJson[i].name,
-                    });
-                    setCurrencyList(currencyLists);
-                }
-            })
-            .catch((error) =>{
-                console.error(error);
-            });
-    };
-
-    const getColorsList = async () => {
-        const accessToken = await AsyncStorage.getItem('accessToken');
-        Array.from(new Set(colorList));
-        return fetch(ngrokConfig.myUrl + '/v2/colors',{
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${accessToken}`,
-            }
-        })
-            .then((response) => response.json())
-            .then((responseJson) => {
-                for (let i = 0; i < responseJson.length; i++) {
-                    colorList.push(responseJson[i].hexCode);
-                }
-            })
-            .catch((error) =>{
-                console.error(error);
-            });
-    };
-
     const setUpdateWallet = async () => {
         const accessToken = await AsyncStorage.getItem('accessToken');
         return fetch(ngrokConfig.myUrl + '/v2/wallets/' + walletId + '/',{
@@ -78,25 +34,14 @@ export default function WalletUpdateInputs(props) {
                 'color': color,
                 'goal': goal,
             })
-
-        }).then((response) => response.json())
-            .then(() => {
-                setModalVisible(false);
-                Alert.alert(
-                    "Success",
-                    "Wallet updated successfully",
-                    [
-                        { text: "OK", onPress: () => console.log("OK Pressed") }
-                    ]
-                );
-            }).catch((error) => {
+        }).then((response) => {
+            response.json();
+            props.onWalletList();
+            setModalVisible(false);
+        })
+            .catch((error) => {
                 console.error(error);
             })}
-
-    useEffect(() => {
-        getColorsList().then();
-        getCurrencyList().then();
-    }, [walletId]);
 
     return (
         <View>
@@ -126,6 +71,8 @@ export default function WalletUpdateInputs(props) {
                     lastUpdated={lastUpdated}
                     colorList={Array.from(new Set(colorList))}
                     onBtnText={"Update"}
+                    createElement={false}
+                    onDeleted={() => props.onDeleted()}
                     onCancel={() => {
                         setModalVisible(false);
                     }}
@@ -148,6 +95,10 @@ export default function WalletUpdateInputs(props) {
                     style={styles.walletUpdateBtnTouchableOpacity}
                     onPress={() =>{
                         setModalVisible(true);
+                        for(let i = 0; i < props.colorsList.length; i++) {
+                            colorList.push(props.colorsList[i]);
+                        }
+                        setCurrencyList(props.currencyList);
                         AsyncStorage.setItem('walletId', props.walletId).then();
                     }}
                     key={props.name}
@@ -169,7 +120,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 0,
         marginLeft: 'auto',
-        bottom: 0,
+        top: 175,
     },
     walletUpdateBtnTouchableOpacity: {
         width: 100,
