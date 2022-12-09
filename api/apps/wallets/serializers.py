@@ -69,6 +69,20 @@ class TransactionCategorySerializer(serializers.ModelSerializer):
         fields = read_only_fields + ("name", "icon", "color",)
 
 
+class ExtendedTransactionCategorySerializer(TransactionCategorySerializer):
+    class Meta(TransactionCategorySerializer.Meta):
+        read_only_fields = TransactionCategorySerializer.Meta.read_only_fields + (
+            "total",
+        )
+        fields = read_only_fields + TransactionCategorySerializer.Meta.fields
+
+    total = serializers.SerializerMethodField()
+
+    def get_total(self, obj: TransactionCategory) -> float:
+        if getattr(obj, "total", None) is not None:
+            return obj.total
+
+
 class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction

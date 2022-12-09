@@ -2,7 +2,9 @@ from django.db.models import QuerySet
 from django_filters import CharFilter
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet
 from rest_framework import viewsets
+from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
 
 from accounts.views import SetUserIdFromTokenOnCreateMixin
 from wallets.models import (
@@ -19,6 +21,7 @@ from wallets.serializers import (
     TransactionCategorySerializer,
     DebtSerializer,
 )
+from wallets.utils import get_top_categories
 
 
 class CurrencyViewSet(viewsets.ReadOnlyModelViewSet):
@@ -83,3 +86,8 @@ class TransactionCategoryViewSet(viewsets.ModelViewSet, SetUserIdFromTokenOnCrea
         return TransactionCategory.objects.filter(user_id=self.request.user).order_by(
             "-created_at"
         )
+
+    @action(detail=False, methods=["GET"], url_path="top", url_name="top")
+    def top(self, request, *args, **kwargs):
+        response = get_top_categories(self.get_queryset())
+        return Response(response)
