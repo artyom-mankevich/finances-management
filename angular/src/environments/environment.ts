@@ -22,7 +22,7 @@ export enum ApiEndpoints  {
   availableNewsLanguages = 'news-languages/',
   news = 'news/',
   stockChartData ='stocks/chart-data/',
-  topCategories = 'top-categories/'
+  topCategories = 'transaction-categories/top/',
 }
 
 /*

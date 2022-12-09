@@ -2,11 +2,20 @@ import { TransactionCategory } from "./transactionCategory"
 
 export interface AnalyticsCategoires {
     incomes: {
-        data: TransactionCategory[],
+        data: Category[],
         total: number | null
     }
     expenses: {
-        data: TransactionCategory[],
+        data: Category[],
         total: number | null
     }
+}
+
+interface Category {
+    id: string,
+    userId: string,
+    name: string,
+    icon: string, 
+    color: string
+    total: number
 }
