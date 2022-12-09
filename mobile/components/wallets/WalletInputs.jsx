@@ -10,7 +10,16 @@ export default function WalletInputs(props) {
 
 return (
     <View style={styles.container}>
-        <Wallet name={props.name} currency={props.currency} balance={props.balance} goal={props.goal} color={props.color} lastUpdated={props.lastUpdated} />
+        <Wallet
+            name={props.name}
+            currency={props.currency}
+            balance={props.balance}
+            goal={props.goal}
+            color={props.color}
+            lastUpdated={props.lastUpdated}
+            createElement={props.createElement}
+            onDeleted={() => props.onDeleted()}
+        />
         <ScrollView style={{width: 500}}>
             <View style={{marginTop: 10}}>
                 <View style={styles.inputView}>
