@@ -32,6 +32,6 @@ def get_top_categories_queryset(
 
     result = initial_qs.filter(**wallet_lookup).annotate(total=Sum(sum_lookup)).order_by(
         "-total"
-    )[:3]
+    ).exclude(total__isnull=True)[:3]
 
     return result
