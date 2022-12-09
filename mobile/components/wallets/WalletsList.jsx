@@ -5,7 +5,7 @@ import ngrokConfig from "../ngrok.config";
 import WalletUpdateInputs from "./WalletUpdateInputs";
 import CreateWallet from "./CreateWallet";
 
-export default function WalletsList() {
+export default function WalletsList(props) {
     const [wallets, setWallets] = useState([]);
     const [currencyList, setCurrencyList] = useState([]);
     const [colorList, setColorList] = useState([]);
@@ -95,6 +95,7 @@ export default function WalletsList() {
         getWalletsList().then();
     },[]);
 
+    props.refreshing ? getWalletsList().then() : null;
 
     return (
         <View style={styles.container}>
@@ -121,6 +122,7 @@ export default function WalletsList() {
                                         colorsList={colorList}
                                         key={item.name}
                                         onDeleted={() => deleteWallet().then()}
+                                        onWalletList={() => getWalletsList().then()}
                                     />
                                 </View>
                             )
