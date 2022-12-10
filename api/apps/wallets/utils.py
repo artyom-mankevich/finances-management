@@ -108,9 +108,7 @@ def get_wallets_chart_data(wallets_ids: list[str], period: str) -> dict:
 def get_grouped_logs(logs: WalletLog.objects, period: str) -> dict:
     grouped_logs = {}
     for log in logs:
-        if period == WalletLog.CHART_PERIOD_7_DAYS:
-            date = log.date.strftime("%d-%m-%Y")
-        elif period == WalletLog.CHART_PERIOD_1_MONTH:
+        if period in [WalletLog.CHART_PERIOD_7_DAYS, WalletLog.CHART_PERIOD_1_MONTH]:
             date = log.date.strftime("%d-%m-%Y")
         elif period == WalletLog.CHART_PERIOD_3_MONTHS:
             date = "Week " + get_week_start(log.date).strftime("%d-%m-%Y")
