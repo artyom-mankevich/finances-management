@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
 from decimal import Decimal
 
+from django.db.models.functions import TruncDate
+
 from base.utils import convert_currency
 from wallets.models import TransactionCategory, Transaction, WalletLog, Wallet
 from wallets.serializers import ExtendedTransactionCategorySerializer
@@ -128,3 +130,55 @@ def get_chart_period_dates(period: str) -> tuple[datetime.date, datetime.date]:
         start_date = end_date
 
     return start_date, end_date
+
+
+def get_transactions_chart_data(user_id: str) -> dict:
+    expenses = list(get_transaction_queryset_by_type(user_id, "target", "source"))
+    incomes = list(get_transaction_queryset_by_type(user_id, "source", "target"))
+
+    grouped_expenses = get_grouped_transactions(expenses, "source")
+    grouped_incomes = get_grouped_transactions(incomes, "target")
+
+    result = {
+        "expenses": {
+            "dates": list(grouped_expenses.keys()),
+            "values": list(grouped_expenses.values()),
+        },
+        "incomes": {
+            "dates": list(grouped_incomes.keys()),
+            "values": list(grouped_incomes.values()),
+        },
+    }
+
+    return result
+
+
+def get_transaction_queryset_by_type(
+    user_id: str, wallet_type: str, amount_type: str
+) -> Transaction.objects:
+    wallet_filter = {f"{wallet_type}_wallet__isnull": True}
+    start_date = (datetime.now() - timedelta(days=30)).date()
+
+    return (
+        Transaction.objects.filter(
+            user_id=user_id, created_at__gt=start_date, **wallet_filter
+        )
+        .prefetch_related(f"{amount_type}_wallet__currency")
+        .annotate(date=TruncDate("created_at"))
+        .order_by("date")
+        .values("date", f"{amount_type}_amount", f"{amount_type}_wallet__currency__code")
+    )
+
+
+def get_grouped_transactions(transactions: list[dict], amount_type: str) -> dict:
+    result = {}
+    for transaction in transactions:
+        date = transaction["date"].strftime("%d-%m-%Y")
+        if date not in result:
+            result[date] = 0
+        result[date] += convert_currency(
+            transaction[f"{amount_type}_amount"],
+            transaction[f"{amount_type}_wallet__currency__code"],
+        )
+
+    return result

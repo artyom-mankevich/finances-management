@@ -21,7 +21,11 @@ from wallets.serializers import (
     TransactionCategorySerializer,
     DebtSerializer,
 )
-from wallets.utils import get_top_categories, get_wallets_chart_data
+from wallets.utils import (
+    get_top_categories,
+    get_wallets_chart_data,
+    get_transactions_chart_data
+)
 
 
 class CurrencyViewSet(viewsets.ReadOnlyModelViewSet):
@@ -88,6 +92,11 @@ class TransactionViewSet(viewsets.ModelViewSet, SetUserIdFromTokenOnCreateMixin)
         return Transaction.objects.filter(user_id=self.request.user).prefetch_related(
             "category", "target_wallet", "source_wallet"
         ).order_by("-created_at")
+
+    @action(detail=False, methods=["GET"], url_path="chart-data", url_name="chart_data")
+    def chart_data(self, request, *args, **kwargs):
+        response = get_transactions_chart_data(str(self.request.user))
+        return Response(response)
 
 
 class TransactionCategoryViewSet(viewsets.ModelViewSet, SetUserIdFromTokenOnCreateMixin):
