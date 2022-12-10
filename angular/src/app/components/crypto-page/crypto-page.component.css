@@ -1,0 +1,14 @@
+@import url('../../common/styles/buttons.css');
+
+.crypto-wrapper {
+    width: 90%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

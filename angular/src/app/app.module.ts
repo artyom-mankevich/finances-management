@@ -35,6 +35,9 @@ import { LanguageNamePipe } from './pipes/language-name.pipe';
 import { AnalyticsPageComponent } from './components/analytics-page/analytics-page.component';
 import { WalletsBalanceChartComponent } from './components/wallets-balance-chart/wallets-balance-chart.component';
 import { TransactionsAmountChartComponent } from './components/transactions-amount-chart/transactions-amount-chart.component';
+import { CryptoPageComponent } from './components/crypto-page/crypto-page.component';
+import { CryptoWalletModalComponent } from './components/crypto-wallet-modal/crypto-wallet-modal.component';
+import { CryptoTransferModalComponent } from './components/crypto-transfer-modal/crypto-transfer-modal.component';
 
 @NgModule({
   declarations: [
@@ -62,6 +65,9 @@ import { TransactionsAmountChartComponent } from './components/transactions-amou
     AnalyticsPageComponent,
     WalletsBalanceChartComponent,
     TransactionsAmountChartComponent
+    CryptoPageComponent,
+    CryptoWalletModalComponent,
+    CryptoTransferModalComponent
   ],
   imports: [
     BrowserModule,
