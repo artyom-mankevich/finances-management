@@ -21,8 +21,11 @@ from wallets.serializers import (
     TransactionCategorySerializer,
     DebtSerializer,
 )
-from wallets.utils import get_top_categories, get_wallets_chart_data, \
+from wallets.utils import (
+    get_top_categories,
+    get_wallets_chart_data,
     get_transactions_chart_data
+)
 
 
 class CurrencyViewSet(viewsets.ReadOnlyModelViewSet):
