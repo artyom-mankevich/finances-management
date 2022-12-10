@@ -139,15 +139,20 @@ def get_transactions_chart_data(user_id: str) -> dict:
     grouped_expenses = get_grouped_transactions(expenses, "source")
     grouped_incomes = get_grouped_transactions(incomes, "target")
 
+    all_dates = list(set(list(grouped_expenses.keys()) + list(grouped_incomes.keys())))
+    all_dates.sort(key=lambda x: datetime.strptime(x, "%d-%m-%Y"))
+
+    expenses_data = [
+        grouped_expenses[date] if date in grouped_expenses else 0 for date in all_dates
+    ]
+    incomes_data = [
+        grouped_incomes[date] if date in grouped_incomes else 0 for date in all_dates
+    ]
+
     result = {
-        "expenses": {
-            "dates": list(grouped_expenses.keys()),
-            "values": list(grouped_expenses.values()),
-        },
-        "incomes": {
-            "dates": list(grouped_incomes.keys()),
-            "values": list(grouped_incomes.values()),
-        },
+        "expenses": expenses_data,
+        "incomes": incomes_data,
+        "dates": all_dates,
     }
 
     return result
