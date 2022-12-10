@@ -90,7 +90,7 @@ def get_wallets_chart_data(wallets_ids: list[str], period: str) -> dict:
         wallet_id__in=wallets_ids, date__range=(start_date, end_date)
     ).order_by("date")
 
-    grouped_logs = get_grouped_logs(logs)
+    grouped_logs = get_grouped_logs(logs, period)
     current_balances_sum = get_current_balances_sum(wallets_ids)
 
     result = {
@@ -105,15 +105,25 @@ def get_wallets_chart_data(wallets_ids: list[str], period: str) -> dict:
     return result
 
 
-def get_grouped_logs(logs: WalletLog.objects) -> dict:
+def get_grouped_logs(logs: WalletLog.objects, period: str) -> dict:
     grouped_logs = {}
     for log in logs:
-        date = log.date.strftime("%d-%m-%Y")
+        if period in [WalletLog.CHART_PERIOD_7_DAYS, WalletLog.CHART_PERIOD_1_MONTH]:
+            date = log.date.strftime("%d-%m-%Y")
+        elif period == WalletLog.CHART_PERIOD_3_MONTHS:
+            date = "Week " + get_week_start(log.date).strftime("%d-%m-%Y")
+        else:
+            date = log.date.strftime("%B %Y")
+
         if date not in grouped_logs:
             grouped_logs[date] = 0
         grouped_logs[date] += convert_currency(log.balance, log.currency)
 
     return grouped_logs
+
+
+def get_week_start(date: datetime.date) -> datetime.date:
+    return date - timedelta(days=date.weekday())
 
 
 def get_chart_period_dates(period: str) -> tuple[datetime.date, datetime.date]:
