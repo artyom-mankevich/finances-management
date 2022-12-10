@@ -33,6 +33,8 @@ import { NgChartsModule } from 'ng2-charts';
 import { StocksChartComponent } from './components/stocks-chart/stocks-chart.component';
 import { LanguageNamePipe } from './pipes/language-name.pipe';
 import { AnalyticsPageComponent } from './components/analytics-page/analytics-page.component';
+import { WalletsBalanceChartComponent } from './components/wallets-balance-chart/wallets-balance-chart.component';
+import { TransactionsAmountChartComponent } from './components/transactions-amount-chart/transactions-amount-chart.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +59,9 @@ import { AnalyticsPageComponent } from './components/analytics-page/analytics-pa
     NewsFiltersModalComponent,
     StocksChartComponent,
     LanguageNamePipe,
-    AnalyticsPageComponent
+    AnalyticsPageComponent,
+    WalletsBalanceChartComponent,
+    TransactionsAmountChartComponent
   ],
   imports: [
     BrowserModule,

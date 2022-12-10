@@ -23,6 +23,8 @@ export enum ApiEndpoints  {
   news = 'news/',
   stockChartData ='stocks/chart-data/',
   topCategories = 'transaction-categories/top/',
+  walletsBalance = 'wallets/chart-data/',
+  transactionsAmount = 'transactions/chart-data/'
 }
 
 /*

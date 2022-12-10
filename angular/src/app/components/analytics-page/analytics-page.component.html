@@ -1,5 +1,8 @@
 <div class="analytics-wrapper">
-    <section class="analytics-charts"></section>
+    <section class="analytics-charts">
+        <app-wallets-balance-chart class="chart wallets-balance"></app-wallets-balance-chart>
+        <app-transactions-amount-chart class="chart transactions-amount"></app-transactions-amount-chart>
+    </section>
     <h2>Top Categories</h2>
     <section class="analytics-categories" *ngIf="analyticsCategories$ | async as analyticsCategories">
         <div class="top-list incomes">

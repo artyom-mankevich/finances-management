@@ -7,6 +7,19 @@ p {
     margin: 0;
 }
 
+.chart {
+    flex-grow: 1;
+    min-width: 280px;
+    width: 40%;
+}
+
+.analytics-charts {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
 .top-list {
     display: flex;
     flex-direction: column;

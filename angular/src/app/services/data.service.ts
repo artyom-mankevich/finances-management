@@ -17,6 +17,7 @@ import { StockChartData } from '../models/stockChartData';
 import { PostTransaction, Transaction, TransactionRequest } from '../models/transaction';
 import { TransactionCategory } from '../models/transactionCategory';
 import { Wallet } from '../models/wallet';
+import { WalletsBalanceChart } from '../models/walletsBalanceChart';
 
 @Injectable({
   providedIn: 'root'
@@ -34,6 +35,7 @@ export class DataService {
   private _news: BehaviorSubject<News[]>;
   private _stockChartData: BehaviorSubject<StockChartData | undefined>;
   private _analyticsCategories: BehaviorSubject<AnalyticsCategoires | undefined>;
+  private _walletsBalanceChart: BehaviorSubject<WalletsBalanceChart | undefined>;
   stockChartPeriod: ChartDateOptions = ChartDateOptions.Week;
   transactionFilter: TransactionFilters = TransactionFilters.All;
   moreTransactions: boolean = false;
@@ -49,6 +51,7 @@ export class DataService {
     this._news = new BehaviorSubject<News[]>([]);
     this._stockChartData = new BehaviorSubject<StockChartData | undefined>(undefined);
     this._analyticsCategories = new BehaviorSubject<AnalyticsCategoires | undefined>(undefined);
+    this._walletsBalanceChart = new BehaviorSubject<WalletsBalanceChart | undefined>(undefined);
     this.getAvailableIcons();
     this._prefetchData();
   }
@@ -313,5 +316,17 @@ export class DataService {
       this.http.get<AnalyticsCategoires>(`${this.url}${ApiEndpoints.topCategories}`).subscribe(val => this._analyticsCategories.next(val));
     }
     return this._analyticsCategories.asObservable();
+  }
+
+  getUsersWalletsData(period: ChartDateOptions, force: boolean = false): Observable<WalletsBalanceChart | undefined> {
+   
+    if (force || !this._walletsBalanceChart.value || period !== this.stockChartPeriod) {
+      let httpParams: HttpParams = new HttpParams().set('period', '7d');
+      if (period === ChartDateOptions.Month) httpParams = httpParams.set('period', '1mo');
+      if (period === ChartDateOptions.ThreeMonths) httpParams = httpParams.set('period', '3mo');
+      if (period === ChartDateOptions.Year) httpParams = httpParams.set('period', '1y');  
+      this.http.get<WalletsBalanceChart>(`${this.url}${ApiEndpoints.walletsBalance}`).subscribe(val => this._walletsBalanceChart.next(val));
+    }
+    return this._walletsBalanceChart.asObservable();
   }
 }
