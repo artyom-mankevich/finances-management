@@ -345,7 +345,7 @@ export class DataService {
       if (period === ChartDateOptions.Month) httpParams = httpParams.set('period', '1mo');
       if (period === ChartDateOptions.ThreeMonths) httpParams = httpParams.set('period', '3mo');
       if (period === ChartDateOptions.Year) httpParams = httpParams.set('period', '1y');
-      this.http.get<WalletsBalanceChart>(`${this.url}${ApiEndpoints.walletsBalance}`).subscribe(val => this._walletsBalanceChart.next(val));
+      this.http.get<WalletsBalanceChart>(`${this.url}${ApiEndpoints.walletsBalance}`, {params: httpParams}).subscribe(val => this._walletsBalanceChart.next(val));
     }
     return this._walletsBalanceChart.asObservable();
   }
