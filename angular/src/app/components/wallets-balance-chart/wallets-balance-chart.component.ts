@@ -21,7 +21,7 @@ export class WalletsBalanceChartComponent implements OnInit {
     {
       label: 'Value',
       data: [],
-      backgroundColor: '#3E68D1',
+      backgroundColor: ['#3E68D1'],
       pointRadius: 2,
       borderColor: 'transparent', 
       tension: 0.3, 
@@ -66,6 +66,10 @@ export class WalletsBalanceChartComponent implements OnInit {
     
   
   };
+
+  chartColors: any = {
+    backgroundColor: []
+  }
   constructor(private ds: DataService) { 
     this.walletsBalance$.subscribe(val => {
       this.totalBalance = val?.currentBalancesSum ? val?.currentBalancesSum : 0;
@@ -75,7 +79,12 @@ export class WalletsBalanceChartComponent implements OnInit {
         this.chart?.update();
         return;
       }
-      if (val?.data){
+      if (val?.data && this.chartData[0].backgroundColor){
+        let colors: string[] = []
+        for (let predicted of val.data.predicted) {
+          colors.push(predicted ? '#7D848F' : '#3E68D1');
+        }
+        this.chartData[0].backgroundColor = colors;
         this.chartData[0].data = val?.data.balances;
         this.chartLabels.labels.length = 0;
         for (let label of val.data.dates) {
