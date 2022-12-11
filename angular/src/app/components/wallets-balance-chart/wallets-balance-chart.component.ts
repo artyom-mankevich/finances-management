@@ -12,7 +12,7 @@ import { DataService } from 'src/app/services/data.service';
   styleUrls: ['./wallets-balance-chart.component.css']
 })
 export class WalletsBalanceChartComponent implements OnInit {
-  selectedOption: ChartDateOptions = this.ds.stockChartPeriod;
+  selectedOption: ChartDateOptions = this.ds.walletsChartPeriod;
   chartDateOptions = ChartDateOptions;
   @ViewChild( BaseChartDirective ) chart: BaseChartDirective | undefined;
   totalBalance:number  = 0;

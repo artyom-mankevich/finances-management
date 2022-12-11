@@ -40,6 +40,7 @@ export class DataService {
   private _transactionsAmountChart: BehaviorSubject<TransactionsChart | undefined>;
   stockChartPeriod: ChartDateOptions = ChartDateOptions.Week;
   transactionFilter: TransactionFilters = TransactionFilters.All;
+  walletsChartPeriod: ChartDateOptions = ChartDateOptions.Week;
   moreTransactions: boolean = false;
   constructor(private http: HttpClient) {
     this._wallets = new BehaviorSubject<Wallet[]>([]);
@@ -75,7 +76,7 @@ export class DataService {
     this.getAvailableNewsLanguages();
     this.getUserStockChart(this.stockChartPeriod);
     this.getUsersTopCategories();
-    this.getUsersWalletsData(this.stockChartPeriod);
+    this.getUsersWalletsData(this.walletsChartPeriod);
     this.getUsersTransactionsData()
   }
 
@@ -93,7 +94,7 @@ export class DataService {
   createWallet(wallet: Wallet) {
     return this.http.post(`${this.url}${ApiEndpoints.wallets}`, wallet).pipe(tap(() => {
       this._getUserWallets();
-      this.getUsersWalletsData(this.stockChartPeriod, true);
+      this.getUsersWalletsData(this.walletsChartPeriod, true);
     }));
   }
 
@@ -109,7 +110,7 @@ export class DataService {
     return this.http.patch(`${this.url}${ApiEndpoints.wallets}${wallet.id}/`, wallet).pipe(tap(() => {
       this._getUserWallets();
       this.getUserTransactions(this.transactionFilter, true);
-      this.getUsersWalletsData(this.stockChartPeriod, true);
+      this.getUsersWalletsData(this.walletsChartPeriod, true);
     }));
   }
 
@@ -127,6 +128,7 @@ export class DataService {
       this._transactions.next(this._transactions.value.filter(transaction => transaction.id !== transactionId))
       this.getUsersTransactionsData(true);
       this.getUsersTopCategories(true);
+      this.getUsersWalletsData(this.walletsChartPeriod, true);
 
     }));
   }
@@ -174,6 +176,7 @@ export class DataService {
     return this.http.post<Transaction>(`${this.url}${ApiEndpoints.transactions}`, transaction).pipe(tap((transaction: Transaction) => {
       this.getUsersTransactionsData(true);
       this.getUsersTopCategories(true);
+      this.getUsersWalletsData(this.walletsChartPeriod, true);
       if (this.getTransactionType(transaction).toString() === this.transactionFilter || this.transactionFilter === TransactionFilters.All) {
         this._transactions.next([transaction, ...this._transactions.value]);
       }
@@ -184,6 +187,7 @@ export class DataService {
     return this.http.put<Transaction>(`${this.url}${ApiEndpoints.transactions}${transaction.id}/`, transaction).pipe(tap((transaction: Transaction) => {
       this.getUsersTransactionsData(true);
       this.getUsersTopCategories(true);
+      this.getUsersWalletsData(this.walletsChartPeriod , true);
       this._transactions.next(
         this._transactions.value.map((tr: Transaction) => tr.id === transaction.id ? transaction : tr)
       )
@@ -199,7 +203,7 @@ export class DataService {
     return this.http.delete(`${this.url}${ApiEndpoints.wallets}${walletId}/`).pipe(tap(() => {
       this.getUserWallets();
       this.getUserTransactions(this.transactionFilter, true);
-      this.getUsersWalletsData(this.stockChartPeriod, true);
+      this.getUsersWalletsData(this.walletsChartPeriod, true);
     }))
   }
 
@@ -340,7 +344,8 @@ export class DataService {
 
   getUsersWalletsData(period: ChartDateOptions, force: boolean = false): Observable<WalletsBalanceChart | undefined> {
 
-    if (force || !this._walletsBalanceChart.value || period !== this.stockChartPeriod) {
+    if (force || !this._walletsBalanceChart.value || period !== this.walletsChartPeriod) {
+      this.walletsChartPeriod = period;
       let httpParams: HttpParams = new HttpParams().set('period', '7d');
       if (period === ChartDateOptions.Month) httpParams = httpParams.set('period', '1mo');
       if (period === ChartDateOptions.ThreeMonths) httpParams = httpParams.set('period', '3mo');
