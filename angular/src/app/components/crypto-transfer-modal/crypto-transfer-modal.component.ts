@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-crypto-transfer-modal',
@@ -6,8 +7,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./crypto-transfer-modal.component.css']
 })
 export class CryptoTransferModalComponent implements OnInit {
-
-  constructor() { }
+  form: FormGroup;
+  constructor(private fb: FormBuilder) {
+    this.form = fb.group({
+      sourceWallet: [, Validators.required],
+      amount: [, Validators.required],
+      targetAddress: [, Validators.required],
+      password: [, Validators.required]
+    })
+   }
 
   ngOnInit(): void {
   }
