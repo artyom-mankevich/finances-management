@@ -47,7 +47,9 @@ class WalletViewSet(viewsets.ModelViewSet, SetUserIdFromTokenOnCreateMixin):
                 {"error": f"Invalid period: {period}"}, status=400
             )
 
-        response = get_wallets_chart_data(self.get_queryset().values_list("id"), period)
+        response = get_wallets_chart_data(
+            self.get_queryset().values_list("id"), period, str(self.request.user)
+        )
         return Response(response)
 
 
