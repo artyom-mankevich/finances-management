@@ -13,7 +13,9 @@
             </div>
             <div class="category" *ngFor="let income of analyticsCategories.incomes.data">
                 <div class="icon-name" [style.color]="income.color">
-                    <mat-icon fontIcon="material-icons-round">{{ income.icon }}</mat-icon>
+                    <div class="icon-wrapper">
+                        <mat-icon fontIcon="material-icons-round">{{ income.icon }}</mat-icon>
+                    </div>
                     <p class="name">{{ income.name }}</p>
                 </div>
                 <p class="total">${{ income.total | shortNumber }}</p>
@@ -28,7 +30,9 @@
             </div>
             <div class="category" *ngFor="let expense of analyticsCategories.expenses.data">
                 <div class="icon-name" [style.color]="expense.color">
-                    <mat-icon fontIcon="material-icons-round">{{ expense.icon }}</mat-icon>
+                    <div class="icon-wrapper">
+                        <mat-icon fontIcon="material-icons-round">{{ expense.icon }}</mat-icon>
+                    </div>
                     <p class="name">{{ expense.name }}</p>
                 </div>
                 <p class="total">${{ expense.total | shortNumber }}</p>
