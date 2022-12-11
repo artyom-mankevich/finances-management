@@ -12,7 +12,7 @@ export default function WalletsList(props) {
 
     const getCurrencyList = async () => {
         const accessToken = await AsyncStorage.getItem('accessToken');
-        return fetch(ngrokConfig.myUrl + '/v2/currencies',{
+        return fetch(ngrokConfig.myUrl + '/v2/currencies/',{
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
@@ -37,7 +37,7 @@ export default function WalletsList(props) {
     const getColorsList = async () => {
         const accessToken = await AsyncStorage.getItem('accessToken');
         Array.from(new Set(colorList));
-        return fetch(ngrokConfig.myUrl + '/v2/colors',{
+        return fetch(ngrokConfig.myUrl + '/v2/colors/',{
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
@@ -109,7 +109,7 @@ export default function WalletsList(props) {
                     {
                         wallets.sort((a, b) => a.name > b.name ? 1 : -1).map((item) => {
                             return (
-                                <View>
+                                <View key={item.id}>
                                     <WalletUpdateInputs
                                         walletId={item.id}
                                         name={item.name}

@@ -16,13 +16,13 @@ export default function WalletPage() {
     }, []);
 
     return (
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh}>
             <ScrollView>
                 <View style={styles.container }>
-                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh}>
-                        <WalletsList refreshing={refreshing}/>
-                    </RefreshControl>
+                    <WalletsList refreshing={refreshing}/>
                 </View>
             </ScrollView>
+        </RefreshControl>
     );
 }
 
