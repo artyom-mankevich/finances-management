@@ -8,6 +8,7 @@ import { TransactionTypes } from '../enums/transactionTypes';
 import { AnalyticsCategoires } from '../models/analyticsCategories';
 import { Color } from '../models/color';
 import { Currency } from '../models/currency';
+import { EthKeys } from '../models/ethKeys';
 import { Icon } from '../models/icon';
 import { News } from '../models/news';
 import { NewsFilter } from '../models/newsFilter';
@@ -360,5 +361,8 @@ export class DataService {
       this.http.get<TransactionsChart>(`${this.url}${ApiEndpoints.transactionsAmount}`).subscribe(val => this._transactionsAmountChart.next(val));
     }
     return this._transactionsAmountChart.asObservable();
+  }
+  addCryptoWallet(ethKeys: EthKeys) {
+    return this.http.post(`${this.url}${ApiEndpoints.ethKeys}`, ethKeys)
   }
 }

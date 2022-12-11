@@ -1,6 +1,6 @@
 export interface EthKeys {
     id: string | null,
-    userId: string,
+    userId: string | null,
     privateKey: string | null,
-    publicKey: string
+    address: string
 }

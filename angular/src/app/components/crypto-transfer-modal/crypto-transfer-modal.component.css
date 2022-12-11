@@ -1,0 +1,20 @@
+@import url('../../common/styles/buttons.css');
+@import url('../../common/styles/inputs.css');
+
+
+.transfer-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.crypto-transfer-modal-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 320px;
+    gap: 30px;
+}
+
+.modal-action-button {
+    background-color: var(--dark-blue);
+}
