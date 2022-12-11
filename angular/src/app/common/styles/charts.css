@@ -1,0 +1,31 @@
+.available-options {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.chart-date-option {
+    color: var(--text-gray);
+    border: 1px solid var(--text-gray);
+    height: 32px;
+    line-height: 32px;
+}
+
+.chart-date-option:hover {
+    border-color: var(--main-blue);
+}
+
+.selected-option {
+    border-color: var(--main-blue);
+    background-color: var(--main-blue);
+    color: white;
+}
+
+.chart-wrapper {
+    width: 100% !important;
+    overflow: auto;
+}
+
+canvas {
+    width: 100% !important;
+}

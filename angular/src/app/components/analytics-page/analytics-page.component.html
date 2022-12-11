@@ -1,0 +1,40 @@
+<div class="analytics-wrapper">
+    <section class="analytics-charts">
+        <app-wallets-balance-chart class="chart wallets-balance"></app-wallets-balance-chart>
+        <app-transactions-amount-chart class="chart transactions-amount"></app-transactions-amount-chart>
+    </section>
+    <h2>Top Categories</h2>
+    <section class="analytics-categories" *ngIf="analyticsCategories$ | async as analyticsCategories">
+        <div class="top-list incomes">
+            <div class="category-type-info">
+                <h2 class="name">Income</h2>
+                <p class="total">${{ (analyticsCategories.incomes.total ? analyticsCategories.incomes.total : 0 )|
+                    shortNumber }}</p>
+            </div>
+            <div class="category" *ngFor="let income of analyticsCategories.incomes.data">
+                <div class="icon-name" [style.color]="income.color">
+                    <mat-icon fontIcon="material-icons-round">{{ income.icon }}</mat-icon>
+                    <p class="name">{{ income.name }}</p>
+                </div>
+                <p class="total">${{ income.total | shortNumber }}</p>
+
+            </div>
+        </div>
+        <div class="top-list expenses">
+            <div class="category-type-info">
+                <h2 class="name">Expense</h2>
+                <p class="total">${{ (analyticsCategories.expenses.total ? analyticsCategories.expenses.total: 0 ) |
+                    shortNumber }}</p>
+            </div>
+            <div class="category" *ngFor="let expense of analyticsCategories.expenses.data">
+                <div class="icon-name" [style.color]="expense.color">
+                    <mat-icon fontIcon="material-icons-round">{{ expense.icon }}</mat-icon>
+                    <p class="name">{{ expense.name }}</p>
+                </div>
+                <p class="total">${{ expense.total | shortNumber }}</p>
+
+            </div>
+        </div>
+    </section>
+
+</div>

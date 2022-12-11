@@ -5,6 +5,7 @@ import { ApiEndpoints, environment } from 'src/environments/environment';
 import { ChartDateOptions } from '../enums/chartDateOptions';
 import { TransactionFilters } from '../enums/transactionFilters';
 import { TransactionTypes } from '../enums/transactionTypes';
+import { AnalyticsCategoires } from '../models/analyticsCategories';
 import { Color } from '../models/color';
 import { Currency } from '../models/currency';
 import { Icon } from '../models/icon';
@@ -15,7 +16,9 @@ import { Stock, StockRequest } from '../models/stock';
 import { StockChartData } from '../models/stockChartData';
 import { PostTransaction, Transaction, TransactionRequest } from '../models/transaction';
 import { TransactionCategory } from '../models/transactionCategory';
+import { TransactionsChart } from '../models/transactionsChart';
 import { Wallet } from '../models/wallet';
+import { WalletsBalanceChart } from '../models/walletsBalanceChart';
 
 @Injectable({
   providedIn: 'root'
@@ -32,8 +35,12 @@ export class DataService {
   private _newsFilter: BehaviorSubject<NewsFilter | undefined>;
   private _news: BehaviorSubject<News[]>;
   private _stockChartData: BehaviorSubject<StockChartData | undefined>;
+  private _analyticsCategories: BehaviorSubject<AnalyticsCategoires | undefined>;
+  private _walletsBalanceChart: BehaviorSubject<WalletsBalanceChart | undefined>;
+  private _transactionsAmountChart: BehaviorSubject<TransactionsChart | undefined>;
   stockChartPeriod: ChartDateOptions = ChartDateOptions.Week;
   transactionFilter: TransactionFilters = TransactionFilters.All;
+  walletsChartPeriod: ChartDateOptions = ChartDateOptions.Week;
   moreTransactions: boolean = false;
   constructor(private http: HttpClient) {
     this._wallets = new BehaviorSubject<Wallet[]>([]);
@@ -46,6 +53,9 @@ export class DataService {
     this._newsLanguages = new BehaviorSubject<NewsLanguage[]>([]);
     this._news = new BehaviorSubject<News[]>([]);
     this._stockChartData = new BehaviorSubject<StockChartData | undefined>(undefined);
+    this._analyticsCategories = new BehaviorSubject<AnalyticsCategoires | undefined>(undefined);
+    this._walletsBalanceChart = new BehaviorSubject<WalletsBalanceChart | undefined>(undefined);
+    this._transactionsAmountChart = new BehaviorSubject<TransactionsChart | undefined>(undefined);
     this.getAvailableIcons();
     this._prefetchData();
   }
@@ -65,6 +75,9 @@ export class DataService {
     this.getUserNewsFilter()
     this.getAvailableNewsLanguages();
     this.getUserStockChart(this.stockChartPeriod);
+    this.getUsersTopCategories();
+    this.getUsersWalletsData(this.walletsChartPeriod);
+    this.getUsersTransactionsData()
   }
 
   private _getUserWallets(): void {
@@ -79,7 +92,10 @@ export class DataService {
   }
 
   createWallet(wallet: Wallet) {
-    return this.http.post(`${this.url}${ApiEndpoints.wallets}`, wallet).pipe(tap(() => this._getUserWallets()));
+    return this.http.post(`${this.url}${ApiEndpoints.wallets}`, wallet).pipe(tap(() => {
+      this._getUserWallets();
+      this.getUsersWalletsData(this.walletsChartPeriod, true);
+    }));
   }
 
   getWalletColors(): Observable<string[]> {
@@ -94,6 +110,7 @@ export class DataService {
     return this.http.patch(`${this.url}${ApiEndpoints.wallets}${wallet.id}/`, wallet).pipe(tap(() => {
       this._getUserWallets();
       this.getUserTransactions(this.transactionFilter, true);
+      this.getUsersWalletsData(this.walletsChartPeriod, true);
     }));
   }
 
@@ -107,7 +124,13 @@ export class DataService {
   }
 
   deleteTransaction(transactionId: string) {
-    return this.http.delete(`${this.url}${ApiEndpoints.transactions}${transactionId}/`).pipe(tap(() => this._transactions.next(this._transactions.value.filter(transaction => transaction.id !== transactionId))));
+    return this.http.delete(`${this.url}${ApiEndpoints.transactions}${transactionId}/`).pipe(tap(() => {
+      this._transactions.next(this._transactions.value.filter(transaction => transaction.id !== transactionId))
+      this.getUsersTransactionsData(true);
+      this.getUsersTopCategories(true);
+      this.getUsersWalletsData(this.walletsChartPeriod, true);
+
+    }));
   }
 
   updateTransactionCategory(category: TransactionCategory) {
@@ -151,6 +174,9 @@ export class DataService {
 
   createTransaction(transaction: PostTransaction) {
     return this.http.post<Transaction>(`${this.url}${ApiEndpoints.transactions}`, transaction).pipe(tap((transaction: Transaction) => {
+      this.getUsersTransactionsData(true);
+      this.getUsersTopCategories(true);
+      this.getUsersWalletsData(this.walletsChartPeriod, true);
       if (this.getTransactionType(transaction).toString() === this.transactionFilter || this.transactionFilter === TransactionFilters.All) {
         this._transactions.next([transaction, ...this._transactions.value]);
       }
@@ -159,6 +185,9 @@ export class DataService {
 
   updateTransaction(transaction: PostTransaction) {
     return this.http.put<Transaction>(`${this.url}${ApiEndpoints.transactions}${transaction.id}/`, transaction).pipe(tap((transaction: Transaction) => {
+      this.getUsersTransactionsData(true);
+      this.getUsersTopCategories(true);
+      this.getUsersWalletsData(this.walletsChartPeriod , true);
       this._transactions.next(
         this._transactions.value.map((tr: Transaction) => tr.id === transaction.id ? transaction : tr)
       )
@@ -174,6 +203,7 @@ export class DataService {
     return this.http.delete(`${this.url}${ApiEndpoints.wallets}${walletId}/`).pipe(tap(() => {
       this.getUserWallets();
       this.getUserTransactions(this.transactionFilter, true);
+      this.getUsersWalletsData(this.walletsChartPeriod, true);
     }))
   }
 
@@ -220,8 +250,8 @@ export class DataService {
     return this.http.delete(`${this.url}${ApiEndpoints.stocks}${stockId}/`).pipe(tap(() => {
       this.getUserStocks(true);
       this.getUserNews(true);
-      this.getUserStockChart(this.stockChartPeriod,true);
-     }));
+      this.getUserStockChart(this.stockChartPeriod, true);
+    }));
   }
 
   _getUserNewsFilter() {
@@ -303,5 +333,32 @@ export class DataService {
 
   updateNewsFilter() {
     return this.http.put(`${this.url}${ApiEndpoints.newsFilter}${this._newsFilter.value?.id}/`, this._newsFilter.value).pipe(tap(() => this.getUserNews(true)));
+  }
+
+  getUsersTopCategories(force: boolean = false): Observable<AnalyticsCategoires | undefined> {
+    if (!this._analyticsCategories.value || force) {
+      this.http.get<AnalyticsCategoires>(`${this.url}${ApiEndpoints.topCategories}`).subscribe(val => this._analyticsCategories.next(val));
+    }
+    return this._analyticsCategories.asObservable();
+  }
+
+  getUsersWalletsData(period: ChartDateOptions, force: boolean = false): Observable<WalletsBalanceChart | undefined> {
+
+    if (force || !this._walletsBalanceChart.value || period !== this.walletsChartPeriod) {
+      this.walletsChartPeriod = period;
+      let httpParams: HttpParams = new HttpParams().set('period', '7d');
+      if (period === ChartDateOptions.Month) httpParams = httpParams.set('period', '1mo');
+      if (period === ChartDateOptions.ThreeMonths) httpParams = httpParams.set('period', '3mo');
+      if (period === ChartDateOptions.Year) httpParams = httpParams.set('period', '1y');
+      this.http.get<WalletsBalanceChart>(`${this.url}${ApiEndpoints.walletsBalance}`, {params: httpParams}).subscribe(val => this._walletsBalanceChart.next(val));
+    }
+    return this._walletsBalanceChart.asObservable();
+  }
+
+  getUsersTransactionsData(force: boolean = false) {
+    if (!this._transactionsAmountChart.value || force) {
+      this.http.get<TransactionsChart>(`${this.url}${ApiEndpoints.transactionsAmount}`).subscribe(val => this._transactionsAmountChart.next(val));
+    }
+    return this._transactionsAmountChart.asObservable();
   }
 }

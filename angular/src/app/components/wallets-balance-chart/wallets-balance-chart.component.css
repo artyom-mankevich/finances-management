@@ -1,0 +1,13 @@
+@import url('../../common/styles/buttons.css');
+@import url('../../common/styles/charts.css');
+
+
+.chart-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chart-info .value {
+    font-weight: bold;
+}
