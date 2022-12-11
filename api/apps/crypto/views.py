@@ -1,4 +1,5 @@
 from rest_framework.decorators import action
+from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import (
     RetrieveModelMixin,
     DestroyModelMixin,
@@ -33,9 +34,7 @@ class EthKeysViewSet(
         amount = request.data.get("amount")
 
         validate_transfer_args(password, eth_keys_id, to_address, amount)
-        eth_keys = self.get_queryset().filter(id=eth_keys_id).first()
-        if not eth_keys:
-            return Response({"error": "EthKeys not found"}, 404)
+        eth_keys = get_object_or_404(self.get_queryset(), id=eth_keys_id)
 
         transfer_eth(password, eth_keys, to_address, amount)
         return Response({"message": "Transfer successful"}, 200)
