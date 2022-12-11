@@ -250,7 +250,9 @@ def get_chart_period_dates(period: str) -> tuple[datetime, datetime]:
 
 
 def get_transactions_chart_data(user_id: str) -> dict:
-    start_date = (timezone.now() - timedelta(days=30)).date()
+    start_date = (timezone.now() - timedelta(days=30)).replace(
+        hour=0, minute=0, second=0, microsecond=0
+    )
     expenses = list(
         get_transaction_queryset_by_type(user_id, "target", "source", start_date)
     )
@@ -284,12 +286,12 @@ def get_transaction_queryset_by_type(
     user_id: str,
     wallet_type: str,
     amount_type: str,
-    start_date: datetime.date,
-    end_date: datetime.date = None
+    start_date: datetime,
+    end_date: datetime = None,
 ) -> Transaction.objects:
     if end_date is None:
-        end_date = timezone.now().date() + timezone.timedelta(
-            hours=23, minutes=59, seconds=59
+        end_date = timezone.now().replace(
+            hour=23, minute=59, second=59, microsecond=999999
         )
 
     wallet_filter = {f"{wallet_type}_wallet__isnull": True}
@@ -297,8 +299,7 @@ def get_transaction_queryset_by_type(
     return (
         Transaction.objects.filter(
             user_id=user_id,
-            created_at__gte=start_date,
-            created_at__lte=end_date,
+            created_at__range=(start_date, end_date),
             **wallet_filter
         )
         .prefetch_related(f"{amount_type}_wallet__currency")
