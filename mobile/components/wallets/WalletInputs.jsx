@@ -11,6 +11,7 @@ export default function WalletInputs(props) {
 return (
     <View style={styles.container}>
         <Wallet
+            id={props.id}
             name={props.name}
             currency={props.currency}
             balance={props.balance}
@@ -33,6 +34,7 @@ return (
                 <View style={styles.dropdownContainer}>
                     <View style={styles.pickerContainer}>
                         <Picker
+                            key={timeMillis}
                             itemStyle={styles.pickerItem}
                             style={styles.Picker}
                             selectedValue={props.currency}
@@ -43,9 +45,9 @@ return (
                             }
                         >
                             {
-                                props.currencyList.map((item, index) => {
-                                    return (
+                                props.currencyList.map((item) => (
                                         <Picker.Item
+                                            key={props.currencyList.indexOf(item)}
                                             defaultValue={props.currency}
                                             label=
                                                 {
@@ -56,11 +58,9 @@ return (
                                                             item.code + "\t\t" + item.name)
                                                 }
                                             value={item.code}
-                                            key={item.code}
                                             onPress={(code) => props.setCurrency(code)}
                                         />
-                                    )
-                                })
+                                    ))
                             }
                         </Picker>
                     </View>
@@ -93,10 +93,9 @@ return (
                 </View>
                 <View style={styles.inputColor}>
                     {
-                        props.colorList.map((color, key) => {
-                            return (
+                        props.colorList.map((color) => (
                                 <TouchableOpacity
-                                    key={key}
+                                    key={props.colorList.indexOf(color)}
                                     style={{
                                         backgroundColor: color,
                                         width: 40,
@@ -106,8 +105,7 @@ return (
                                     }}
                                     onPress={() => props.setColor(color)}
                                 />
-                            )
-                        }, props.colorList)
+                            ))
                     }
                 </View>
             </View>

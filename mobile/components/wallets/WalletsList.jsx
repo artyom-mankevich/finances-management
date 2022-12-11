@@ -109,7 +109,7 @@ export default function WalletsList(props) {
                     {
                         wallets.sort((a, b) => a.name > b.name ? 1 : -1).map((item) => {
                             return (
-                                <View>
+                                <View key={item.id}>
                                     <WalletUpdateInputs
                                         walletId={item.id}
                                         name={item.name}
