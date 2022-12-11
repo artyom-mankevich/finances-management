@@ -141,9 +141,10 @@ def get_predicted_balance(last_balance: Decimal, user_id: str) -> dict:
     )
 
     next_month = ((timezone.now().month + 1) % 12)
-    start_of_next_month = timezone.now().replace(day=1, month=next_month).strftime(
-        "%B %Y"
-    )
+    year = timezone.now().year + 1 if next_month == 1 else timezone.now().year
+    start_of_next_month = timezone.now().replace(
+        day=1, month=next_month, year=year
+    ).strftime("%B %Y")
 
     if len(daily_profits.keys()) < 30:
         return {start_of_next_month: last_balance}
