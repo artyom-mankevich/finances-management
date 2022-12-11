@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from decimal import Decimal
 
 import numpy as np
+from django.core.cache import cache
 from django.db.models.functions import TruncDate
 from django.utils import timezone
 from sklearn.linear_model import LinearRegression
@@ -77,8 +78,8 @@ def get_categories_total_amount(categories: list) -> Decimal | None:
     return _sum
 
 
-def get_current_balances_sum(wallets_ids: list[str]) -> Decimal:
-    balances = Wallet.objects.filter(id__in=wallets_ids).prefetch_related("currency").values(
+def get_current_wallets_balance(user_id) -> Decimal:
+    balances = Wallet.objects.filter(user_id=user_id).prefetch_related("currency").values(
         "balance", "currency__code"
     )
     current_balances_sum = sum(
@@ -155,14 +156,23 @@ def get_predicted_balance(last_balance: Decimal, user_id: str) -> dict:
     return {start_of_next_month: predicted_balance}
 
 
-def get_wallets_chart_data(wallets_ids: list[str], period: str, user_id: str) -> dict:
+def get_wallets_chart_data(period: str, user_id: str) -> dict:
     start_date, end_date = get_chart_period_dates(period)
+
     logs = WalletLog.objects.filter(
-        wallet_id__in=wallets_ids, date__range=(start_date, end_date)
+        wallet__user_id=user_id, date__range=(start_date, end_date)
     ).order_by("date")
 
-    grouped_logs = get_grouped_logs(logs, period)
-    current_balances_sum = get_current_balances_sum(wallets_ids)
+    current_balances_sum = get_current_wallets_balance(user_id)
+    cache_key = f"{user_id}_{period}_{str(end_date.date())}"
+    if cache.get(cache_key):
+        grouped_logs = cache.get(cache_key)
+    else:
+        grouped_logs = group_wallet_logs(logs, period)
+        cache.set(cache_key, grouped_logs, 60 * 60 * 24)
+
+    today_data = get_today_grouped_wallet_log(period, user_id)
+    grouped_logs.update(today_data)
 
     predicted = [False for _ in range(len(grouped_logs))]
 
@@ -184,21 +194,38 @@ def get_wallets_chart_data(wallets_ids: list[str], period: str, user_id: str) ->
     return result
 
 
-def get_grouped_logs(logs: WalletLog.objects, period: str) -> dict:
-    grouped_logs = {}
-    for log in logs:
-        if period in [WalletLog.CHART_PERIOD_7_DAYS, WalletLog.CHART_PERIOD_1_MONTH]:
-            date = log.date.strftime("%d-%m-%Y")
-        elif period == WalletLog.CHART_PERIOD_3_MONTHS:
-            date = "Week " + get_week_start(log.date).strftime("%d-%m-%Y")
-        else:
-            date = log.date.strftime("%B %Y")
+def get_today_grouped_wallet_log(period: str, user_id) -> dict:
+    today = timezone.now()
+    current_balances_sum = get_current_wallets_balance(user_id)
+    group = get_group_by_period(period, today.date())
+    today_data = {group: current_balances_sum}
 
-        if date not in grouped_logs:
-            grouped_logs[date] = 0
-        grouped_logs[date] += convert_currency(log.balance, log.currency)
+    return today_data
+
+
+def group_wallet_logs(logs: WalletLog.objects, period: str) -> dict:
+    grouped_logs = {}
+    group = get_group_by_period(period, logs[0].date)
+    for log in logs:
+        log_group = get_group_by_period(period, log.date)
+        if group and group != log_group:
+            group = log_group
+        grouped_logs[group] = convert_currency(log.balance, log.currency)
 
     return grouped_logs
+
+
+def get_group_by_period(period: str, log_date: datetime.date) -> str | None:
+    if period in [WalletLog.CHART_PERIOD_7_DAYS, WalletLog.CHART_PERIOD_1_MONTH]:
+        group = log_date.strftime("%d-%m-%Y")
+    elif period == WalletLog.CHART_PERIOD_3_MONTHS:
+        group = "Week " + get_week_start(log_date).strftime("%d-%m-%Y")
+    elif period == WalletLog.CHART_PERIOD_1_YEAR:
+        group = log_date.strftime("%B %Y")
+    else:
+        group = None
+
+    return group
 
 
 def get_week_start(date: datetime.date) -> datetime.date:
