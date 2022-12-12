@@ -1,0 +1,25 @@
+<div class="overview-wrapper">
+    <div class="charts">
+        <div class="transactions">
+            <app-transactions-amount-chart></app-transactions-amount-chart>
+        </div>
+        <div class="stocks">
+            <h2>Stocks</h2>
+            <app-stocks-chart></app-stocks-chart>
+        </div>
+    </div>
+    <div class="references">
+        <div class="transactions-card">
+            <h2>Transactions</h2>      
+            <div class="transactions">
+                <app-transaction [transaction]="transaction" *ngFor="let transaction of transactions$ | async | slice:0:3"></app-transaction>
+            </div>
+        </div>
+        <div class="wallets-card">
+            <h2>Wallets</h2>
+            <div class="wallets">
+                <app-wallet [wallet]="wallet"  *ngFor="let wallet of wallets$ | async | slice:0:4"></app-wallet>
+            </div>
+        </div>
+    </div>
+</div>

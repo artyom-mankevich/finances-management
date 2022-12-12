@@ -1,0 +1,56 @@
+.wallets {
+    margin: auto;
+    width: 100%;
+    display: grid;
+    gap: 10px;
+    justify-content: center;
+    grid-column: auto;
+    grid-template-columns: repeat(auto-fill, 245px);
+}
+
+.charts,
+.references {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+
+.overview-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    margin: auto;
+}
+
+.charts .stocks,
+.charts .transactions {
+    width: 50%;
+    flex-grow: 1;
+    min-width: 280px;
+}
+
+.wallets-card, 
+.transactions-card {
+    width: 50%;
+    flex-grow: 1;
+    min-width: 280px;
+}
+
+
+@media only screen and (max-width: 1400px) {
+    .charts,
+    .references {
+        flex-direction: column;
+    }
+
+    .charts .transactions,
+    .charts .stocks {
+        width: 100%;
+    }
+    .references .transactions-card,
+    .references .wallets-card {
+        width: 100%;
+    }
+}

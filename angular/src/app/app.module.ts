@@ -35,6 +35,7 @@ import { LanguageNamePipe } from './pipes/language-name.pipe';
 import { AnalyticsPageComponent } from './components/analytics-page/analytics-page.component';
 import { WalletsBalanceChartComponent } from './components/wallets-balance-chart/wallets-balance-chart.component';
 import { TransactionsAmountChartComponent } from './components/transactions-amount-chart/transactions-amount-chart.component';
+import { OverviewPageComponent } from './components/overview-page/overview-page.component';
 
 @NgModule({
   declarations: [
@@ -61,7 +62,8 @@ import { TransactionsAmountChartComponent } from './components/transactions-amou
     LanguageNamePipe,
     AnalyticsPageComponent,
     WalletsBalanceChartComponent,
-    TransactionsAmountChartComponent
+    TransactionsAmountChartComponent,
+    OverviewPageComponent
   ],
   imports: [
     BrowserModule,

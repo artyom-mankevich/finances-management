@@ -111,6 +111,7 @@ export class DataService {
       this._getUserWallets();
       this.getUserTransactions(this.transactionFilter, true);
       this.getUsersWalletsData(this.walletsChartPeriod, true);
+      this.getUsersTransactionsData(true);
     }));
   }
 
@@ -219,6 +220,7 @@ export class DataService {
     return this.http.delete(`${this.url}${ApiEndpoints.transactionCategories}${categoryId}/`).pipe(tap(() => {
       this.getUserCategories();
       this.getUserTransactions(this.transactionFilter, true);
+      this.getUsersTransactionsData(true);
     }))
   }
 
