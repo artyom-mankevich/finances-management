@@ -205,6 +205,9 @@ def get_today_grouped_wallet_log(period: str, user_id) -> dict:
 
 def group_wallet_logs(logs: WalletLog.objects, period: str) -> dict:
     grouped_logs = {}
+    if not logs:
+        return grouped_logs
+
     group = get_group_by_period(period, logs[0].date)
     for log in logs:
         log_group = get_group_by_period(period, log.date)
