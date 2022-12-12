@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { EthKeys } from 'src/app/models/ethKeys';
 import { DataService } from 'src/app/services/data.service';
-
+import { AES } from 'crypto-js';
 @Component({
   selector: 'app-crypto-wallet-modal',
   templateUrl: './crypto-wallet-modal.component.html',
@@ -29,7 +29,7 @@ export class CryptoWalletModalComponent implements OnInit {
       id: null,
       userId: null,
       address: this.form.controls['address'].value,
-      privateKey: this.form.controls['privateKey'].value,
+      privateKey: AES.encrypt(this.form.controls['privateKey'].value, this.form.controls['password'].value).toString(),
     }
     this.allowSubmit = false;
     this.ds.addCryptoWallet(this.ethKeys).subscribe(() => { 

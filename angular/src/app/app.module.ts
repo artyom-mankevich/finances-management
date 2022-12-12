@@ -64,7 +64,7 @@ import { CryptoTransferModalComponent } from './components/crypto-transfer-modal
     LanguageNamePipe,
     AnalyticsPageComponent,
     WalletsBalanceChartComponent,
-    TransactionsAmountChartComponent
+    TransactionsAmountChartComponent,
     CryptoPageComponent,
     CryptoWalletModalComponent,
     CryptoTransferModalComponent
