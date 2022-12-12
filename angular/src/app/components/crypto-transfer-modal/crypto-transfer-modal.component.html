@@ -5,7 +5,7 @@
             <option value="null" selected disabled hidden>Wallet</option>
             <option *ngFor="let wallet of wallets$ | async" [ngValue]="wallet">{{ wallet.address }}</option>
         </select>
-        <input class="main-input" type="number" placeholder="Amount (ETH)" formControlName="amount">
+        <input class="main-input" type="number" placeholder="Amount (ETH)" formControlName="amount" min="0">
         <label>Recipient</label>
         <input class="main-input" type="text" placeholder="Ethereum address" formControlName="targetAddress">
         <input class="main-input" type="password" placeholder="Wallet password" formControlName="password">

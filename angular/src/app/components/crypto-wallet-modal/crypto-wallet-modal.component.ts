@@ -14,7 +14,7 @@ export class CryptoWalletModalComponent implements OnInit {
   allowSubmit: boolean = true;
   constructor(private fb: FormBuilder, private ds: DataService, private dialogRef: MatDialogRef<CryptoWalletModalComponent>) {
     this.form = this.fb.group({
-      address: ['',Validators.required],
+      address: ['', [Validators.required, Validators.pattern('^0x[a-fA-F0-9]{40}$')]],
       privateKey: ['',Validators.required],
       password: ['',Validators.required]
     })

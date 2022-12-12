@@ -4,7 +4,6 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { EthereumTransfer } from 'src/app/models/ethereumTransfer';
 import { EthereumWallet } from 'src/app/models/ethereumWallet';
-import { EthKeys } from 'src/app/models/ethKeys';
 import { DataService } from 'src/app/services/data.service';
 
 @Component({
@@ -23,7 +22,7 @@ export class CryptoTransferModalComponent implements OnInit {
     this.form = this.fb.group({
       sourceWallet: [, Validators.required],
       amount: [, Validators.required],
-      targetAddress: [, Validators.required],
+      targetAddress: [, [Validators.required, Validators.pattern('^0x[a-fA-F0-9]{40}$')]],
       password: [, Validators.required]
     })
   }
