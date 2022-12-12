@@ -39,6 +39,7 @@ export class DataService {
   private _analyticsCategories: BehaviorSubject<AnalyticsCategoires | undefined>;
   private _walletsBalanceChart: BehaviorSubject<WalletsBalanceChart | undefined>;
   private _transactionsAmountChart: BehaviorSubject<TransactionsChart | undefined>;
+  private _cryptoWallets: BehaviorSubject<EthKeys[]>
   stockChartPeriod: ChartDateOptions = ChartDateOptions.Week;
   transactionFilter: TransactionFilters = TransactionFilters.All;
   walletsChartPeriod: ChartDateOptions = ChartDateOptions.Week;
@@ -57,6 +58,7 @@ export class DataService {
     this._analyticsCategories = new BehaviorSubject<AnalyticsCategoires | undefined>(undefined);
     this._walletsBalanceChart = new BehaviorSubject<WalletsBalanceChart | undefined>(undefined);
     this._transactionsAmountChart = new BehaviorSubject<TransactionsChart | undefined>(undefined);
+    this._cryptoWallets = new BehaviorSubject<EthKeys[]>([]);
     this.getAvailableIcons();
     this._prefetchData();
   }
@@ -78,7 +80,8 @@ export class DataService {
     this.getUserStockChart(this.stockChartPeriod);
     this.getUsersTopCategories();
     this.getUsersWalletsData(this.walletsChartPeriod);
-    this.getUsersTransactionsData()
+    this.getUsersTransactionsData();
+    this.getusersCryptoWallets();
   }
 
   private _getUserWallets(): void {
@@ -364,5 +367,12 @@ export class DataService {
   }
   addCryptoWallet(ethKeys: EthKeys) {
     return this.http.post(`${this.url}${ApiEndpoints.ethKeys}`, ethKeys)
+  }
+
+  getusersCryptoWallets() {
+    if (this._cryptoWallets.value.length === 0) {
+      this.http.get<EthKeys[]>(`${this.url}${ApiEndpoints.ethKeys}`).subscribe(val => this._cryptoWallets.next(val));
+    }
+    return this._cryptoWallets.asObservable();
   }
 }

@@ -3,6 +3,7 @@
         <label>Wallet</label>
         <select class="main-select" formControlName="sourceWallet">
             <option value="null" selected disabled hidden>Wallet</option>
+            <option *ngFor="let wallet of wallets$ | async" [ngValue]="wallet">{{ wallet.address }}</option>
         </select>
         <input class="main-input" type="number" placeholder="Amount (ETH)" formControlName="amount">
         <label>Recipient</label>
