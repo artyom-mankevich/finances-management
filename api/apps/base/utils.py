@@ -19,11 +19,11 @@ def convert_currency(amount, currency):
     response = requests.get(
         f"{host}/convert",
         params={"from": currency, "to": "USD", "amount": amount},
-    ).json()
+    )
 
-    if response.get("success"):
-        result = Decimal(response["result"])
+    if response.status_code == 200 and response.json().get("success"):
+        result = Decimal(response.json()["result"])
         cache.set(cache_key, result, 60 * 60 * 24)
         return result
 
-    return None
+    return amount
