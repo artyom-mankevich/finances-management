@@ -9,14 +9,18 @@
 
 .transaction-main-info {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    min-width: 200px;
+    max-width: 200px;
 }
 
 .transaction-description,
 .transaction-category {
     margin: 0;
-    width: max-content;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
 }
 
 .transaction-amount-wrapper {
@@ -98,12 +102,12 @@
 .transaction-type-icon {
     background-color: var(--transaction-type-background);
     border-radius: 30px;
-    width: 54px;
-    height: 54px;
+    min-width: 54px;
+    min-height: 54px;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: 10px;
+    margin-right: 20px;
 }
 
 .transaction-type-icon mat-icon{

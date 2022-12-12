@@ -39,6 +39,7 @@ import { CryptoPageComponent } from './components/crypto-page/crypto-page.compon
 import { CryptoWalletModalComponent } from './components/crypto-wallet-modal/crypto-wallet-modal.component';
 import { CryptoTransferModalComponent } from './components/crypto-transfer-modal/crypto-transfer-modal.component';
 import { CryptoWalletComponent } from './components/crypto-wallet/crypto-wallet.component';
+import { OverviewPageComponent } from './components/overview-page/overview-page.component';
 
 @NgModule({
   declarations: [
@@ -69,7 +70,8 @@ import { CryptoWalletComponent } from './components/crypto-wallet/crypto-wallet.
     CryptoPageComponent,
     CryptoWalletModalComponent,
     CryptoTransferModalComponent,
-    CryptoWalletComponent
+    CryptoWalletComponent,
+    OverviewPageComponent
   ],
   imports: [
     BrowserModule,
