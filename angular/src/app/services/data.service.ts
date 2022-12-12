@@ -111,6 +111,7 @@ export class DataService {
       this._getUserWallets();
       this.getUserTransactions(this.transactionFilter, true);
       this.getUsersWalletsData(this.walletsChartPeriod, true);
+      this.getUsersTransactionsData(true);
     }));
   }
 
