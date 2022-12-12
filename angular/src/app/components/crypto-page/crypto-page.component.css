@@ -8,9 +8,18 @@
     gap: 30px;
 }
 
+.add-wallet-button {
+    cursor: pointer;
+    transition-duration: 200ms;
+}
+
+.add-wallet-button:hover {
+    transform: scale(1.02);
+}
+
 .menu-buttons {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
 }
 
