@@ -21,7 +21,7 @@ def validate_transfer_args(password, eth_keys_id, to_address, amount):
 
     if amount is None:
         errors["amount"] = "This field is required."
-    if type(amount) != float:
+    if type(amount) != float and type(amount) != int:
         errors["amount"] = "This field must be a float."
     if amount <= 0:
         errors["amount"] = "This field must be greater than 0."
