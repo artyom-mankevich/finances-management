@@ -1,0 +1,9 @@
+<div class="wallet">
+    <div class="wallet-content">
+        <p class="address">{{ ethereumWallet.address }}</p>
+        <div class="amount-delete-wrapper">
+            <p class="amount">{{ ethereumWallet.amount }} ETH</p>
+            <mat-icon fontIcon="material-icons-round" (click)="deleteWallet()">close</mat-icon>
+        </div>
+    </div>
+</div>

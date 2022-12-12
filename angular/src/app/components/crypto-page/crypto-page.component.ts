@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
+import { EthereumWallet } from 'src/app/models/ethereumWallet';
 import { DataService } from 'src/app/services/data.service';
 import { CryptoTransferModalComponent } from '../crypto-transfer-modal/crypto-transfer-modal.component';
 import { CryptoWalletModalComponent } from '../crypto-wallet-modal/crypto-wallet-modal.component';
@@ -12,7 +14,8 @@ import { CryptoWalletModalComponent } from '../crypto-wallet-modal/crypto-wallet
 export class CryptoPageComponent implements OnInit {
 
   constructor(private dialog: MatDialog, private ds: DataService) { }
-  wallets$ = this.ds.getusersCryptoWallets();
+  wallets$: Observable<EthereumWallet[]> = this.ds.getusersCryptoWallets();
+  
   openWalletDialog() {
     this.dialog.open(CryptoWalletModalComponent)
   }

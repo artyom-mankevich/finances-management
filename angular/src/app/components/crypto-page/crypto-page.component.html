@@ -3,9 +3,7 @@
         <button class="add-button" (click)="openWalletDialog()">Add Wallet</button>
         <button class="add-button" (click)="openTransferDialog()">Transfer</button>
     </section>
-    <div>
-        <div class="crypto-wallet" *ngFor="let wallet of wallets$ | async"> 
-            <p class="address">{{ wallet.address }}</p>
-        </div>
+    <div class="wallets">
+        <app-crypto-wallet [ethereumWallet]="wallet" *ngFor="let wallet of wallets$ | async"></app-crypto-wallet>
     </div>
 </div>

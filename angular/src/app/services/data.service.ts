@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map, Observable, tap } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, tap } from 'rxjs';
 import { ApiEndpoints, environment } from 'src/environments/environment';
 import { ChartDateOptions } from '../enums/chartDateOptions';
 import { TransactionFilters } from '../enums/transactionFilters';
@@ -8,6 +8,8 @@ import { TransactionTypes } from '../enums/transactionTypes';
 import { AnalyticsCategoires } from '../models/analyticsCategories';
 import { Color } from '../models/color';
 import { Currency } from '../models/currency';
+import { EthereumTransfer } from '../models/ethereumTransfer';
+import { EthereumWallet } from '../models/ethereumWallet';
 import { EthKeys } from '../models/ethKeys';
 import { Icon } from '../models/icon';
 import { News } from '../models/news';
@@ -39,7 +41,7 @@ export class DataService {
   private _analyticsCategories: BehaviorSubject<AnalyticsCategoires | undefined>;
   private _walletsBalanceChart: BehaviorSubject<WalletsBalanceChart | undefined>;
   private _transactionsAmountChart: BehaviorSubject<TransactionsChart | undefined>;
-  private _cryptoWallets: BehaviorSubject<EthKeys[]>
+  private _cryptoWallets: BehaviorSubject<EthereumWallet[]>
   stockChartPeriod: ChartDateOptions = ChartDateOptions.Week;
   transactionFilter: TransactionFilters = TransactionFilters.All;
   walletsChartPeriod: ChartDateOptions = ChartDateOptions.Week;
@@ -58,7 +60,7 @@ export class DataService {
     this._analyticsCategories = new BehaviorSubject<AnalyticsCategoires | undefined>(undefined);
     this._walletsBalanceChart = new BehaviorSubject<WalletsBalanceChart | undefined>(undefined);
     this._transactionsAmountChart = new BehaviorSubject<TransactionsChart | undefined>(undefined);
-    this._cryptoWallets = new BehaviorSubject<EthKeys[]>([]);
+    this._cryptoWallets = new BehaviorSubject<EthereumWallet[]>([]);
     this.getAvailableIcons();
     this._prefetchData();
   }
@@ -191,7 +193,7 @@ export class DataService {
     return this.http.put<Transaction>(`${this.url}${ApiEndpoints.transactions}${transaction.id}/`, transaction).pipe(tap((transaction: Transaction) => {
       this.getUsersTransactionsData(true);
       this.getUsersTopCategories(true);
-      this.getUsersWalletsData(this.walletsChartPeriod , true);
+      this.getUsersWalletsData(this.walletsChartPeriod, true);
       this._transactions.next(
         this._transactions.value.map((tr: Transaction) => tr.id === transaction.id ? transaction : tr)
       )
@@ -354,7 +356,7 @@ export class DataService {
       if (period === ChartDateOptions.Month) httpParams = httpParams.set('period', '1mo');
       if (period === ChartDateOptions.ThreeMonths) httpParams = httpParams.set('period', '3mo');
       if (period === ChartDateOptions.Year) httpParams = httpParams.set('period', '1y');
-      this.http.get<WalletsBalanceChart>(`${this.url}${ApiEndpoints.walletsBalance}`, {params: httpParams}).subscribe(val => this._walletsBalanceChart.next(val));
+      this.http.get<WalletsBalanceChart>(`${this.url}${ApiEndpoints.walletsBalance}`, { params: httpParams }).subscribe(val => this._walletsBalanceChart.next(val));
     }
     return this._walletsBalanceChart.asObservable();
   }
@@ -366,13 +368,26 @@ export class DataService {
     return this._transactionsAmountChart.asObservable();
   }
   addCryptoWallet(ethKeys: EthKeys) {
-    return this.http.post(`${this.url}${ApiEndpoints.ethKeys}`, ethKeys)
+    return this.http.post<EthereumWallet>(`${this.url}${ApiEndpoints.ethKeys}`, ethKeys).pipe(tap((ew) => this._cryptoWallets.next([...this._cryptoWallets.value, ew])))
   }
 
-  getusersCryptoWallets() {
-    if (this._cryptoWallets.value.length === 0) {
-      this.http.get<EthKeys[]>(`${this.url}${ApiEndpoints.ethKeys}`).subscribe(val => this._cryptoWallets.next(val));
+  getusersCryptoWallets(force: boolean = false): Observable<EthereumWallet[]> {
+    if (this._cryptoWallets.value.length === 0 || force) {
+      this.http.get<EthereumWallet[]>(`${this.url}${ApiEndpoints.ethKeys}`).subscribe(val => this._cryptoWallets.next(val));
     }
     return this._cryptoWallets.asObservable();
   }
+
+  deleteCryptoWallet(wallet: EthereumWallet) {
+    this._cryptoWallets.next(this._cryptoWallets.value.filter(ew => ew.id !== wallet.id));
+
+    return this.http.delete(`${this.url}${ApiEndpoints.ethKeys}${wallet.id}/`).pipe(catchError( (err: any) => { 
+      this._cryptoWallets.next([...this._cryptoWallets.value, wallet]);
+      return err;
+    }))
+  }
+
+  makeEthTransfer(transfer: EthereumTransfer) {
+    return this.http.post(`${this.url}${ApiEndpoints.ethereumTransfer}`, transfer);
+  } 
 }

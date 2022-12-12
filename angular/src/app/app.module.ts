@@ -38,6 +38,7 @@ import { TransactionsAmountChartComponent } from './components/transactions-amou
 import { CryptoPageComponent } from './components/crypto-page/crypto-page.component';
 import { CryptoWalletModalComponent } from './components/crypto-wallet-modal/crypto-wallet-modal.component';
 import { CryptoTransferModalComponent } from './components/crypto-transfer-modal/crypto-transfer-modal.component';
+import { CryptoWalletComponent } from './components/crypto-wallet/crypto-wallet.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +68,8 @@ import { CryptoTransferModalComponent } from './components/crypto-transfer-modal
     TransactionsAmountChartComponent,
     CryptoPageComponent,
     CryptoWalletModalComponent,
-    CryptoTransferModalComponent
+    CryptoTransferModalComponent,
+    CryptoWalletComponent
   ],
   imports: [
     BrowserModule,

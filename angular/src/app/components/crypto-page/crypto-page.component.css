@@ -5,12 +5,23 @@
     margin: auto;
     display: flex;
     flex-direction: column;
+    gap: 30px;
 }
 
 .menu-buttons {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.wallets {
+    width: 100%;
+    display: grid;
+    column-gap: 58px;
+    justify-content: center;
+    row-gap: 40px;  
+    grid-column: auto;
+    grid-template-columns: repeat(auto-fill, 245px);
 }
 
 @media only screen and (max-width: 900px) {

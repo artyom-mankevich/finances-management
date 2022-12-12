@@ -10,5 +10,5 @@
         <input class="main-input" type="text" placeholder="Ethereum address" formControlName="targetAddress">
         <input class="main-input" type="password" placeholder="Wallet password" formControlName="password">
     </form>
-    <button class="modal-action-button" [disabled]="!form.valid">Submit</button>
+    <button class="modal-action-button" [disabled]="!form.valid || !ableToTransfer" (click)="makeTransfer()">Submit</button>
 </div>
