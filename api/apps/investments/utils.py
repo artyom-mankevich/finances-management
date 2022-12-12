@@ -35,13 +35,21 @@ def get_stock_prices(tickers: list) -> dict:
 def set_tickers_data_from_api(data: dict, tickers_to_fetch: list[str]):
     yq_tickers = yq.Ticker(
         " ".join(tickers_to_fetch), asynchronous=True, validate=True
-    ).financial_data
-    if not yq_tickers:
+    )
+    if not yq_tickers.symbols:
         return
 
+    financial_data = yq_tickers.financial_data
+    if yq_tickers.invalid_symbols:
+        for symbol in yq_tickers.invalid_symbols:
+            financial_data[symbol] = {
+                "currentPrice": None,
+                "financialCurrency": None,
+            }
+
     for ticker in tickers_to_fetch:
-        price = yq_tickers[ticker].get("currentPrice")
-        currency = yq_tickers[ticker].get("financialCurrency")
+        price = financial_data[ticker].get("currentPrice")
+        currency = financial_data[ticker].get("financialCurrency")
 
         data[ticker]["price"] = price
         data[ticker]["currency"] = currency
@@ -69,20 +77,6 @@ def set_tickers_data_from_cache(data, tickers):
             data[ticker]["currency"] = currency
 
 
-def get_period_dates(
-    period: str, today: datetime.date
-) -> tuple[str, str] | tuple[None, None]:
-    if period == Stock.CHART_PERIOD_7_DAYS:
-        start_date = (
-                today - datetime.timedelta(days=today.weekday())
-        ).strftime("%Y-%m-%d")
-        end_date = today.strftime("%Y-%m-%d")
-
-        return start_date, end_date
-
-    return None, None
-
-
 def get_period_interval(period: str) -> str:
     if period in [Stock.CHART_PERIOD_7_DAYS, Stock.CHART_PERIOD_1_MONTH]:
         return "1d"
@@ -98,29 +92,26 @@ def get_stocks_chart_data(
     tickers = yq.Ticker(list(stocks.keys()), validate=True, asynchronous=True).symbols
     symbols = " ".join(tickers)
 
-    today = datetime.date.today()
-    start_date, end_date = get_period_dates(period, today)
     interval = get_period_interval(period)
 
     tickers_key = "_".join(tickers)
     amounts_key = "_".join([str(val) for val in stocks.values()])
-    cache_key = f"stocks_chart_data_{tickers_key}_{amounts_key}_{period}_{start_date}" \
-                f"_{end_date}_{interval}_{user_id}"
+    cache_key = f"stocks_chart_data_{tickers_key}_{amounts_key}" \
+                f"_{period}_{interval}_{user_id}"
     cached_value = cache.get(cache_key)
     if cached_value:
         return cached_value
 
     cache_lifetime = 60 * 60 * 24
 
-    historical_prices = get_historical_stocks_data(
-        symbols, stocks, period, start_date, end_date, interval
-    )
+    historical_prices = get_historical_stocks_data(symbols, stocks, period, interval)
     if not historical_prices:
         return {}
 
     result = {"data": historical_prices}
 
     if period in [Stock.CHART_PERIOD_7_DAYS, Stock.CHART_PERIOD_1_MONTH]:
+        today = datetime.date.today()
         today_prices = get_stock_prices(tickers)
         for ticker in today_prices:
             today_prices[ticker] = today_prices[ticker] * stocks[ticker]
@@ -147,8 +138,6 @@ def get_historical_stocks_data(
     symbols: str,
     stocks: dict,
     period: str,
-    start_date: str = None,
-    end_date: str = None,
     interval: str = "1d"
 ) -> dict[str, Decimal]:
     ticker = yq.Ticker(symbols=symbols, asynchronous=True, validate=True)
@@ -156,11 +145,8 @@ def get_historical_stocks_data(
     if not ticker.symbols:
         return {}
 
-    series = ticker.history(
-        period=period, start=start_date, end=end_date, interval=interval
-    )
-
-    if not series.get("close"):
+    series = ticker.history(period=period, interval=interval)
+    if series.empty:
         return {}
 
     series = series["close"]
