@@ -8,6 +8,11 @@
     gap: 30px;
 }
 
+.add-button {
+    background-color: var(--dark-blue);
+    border-color: var(--dark-blue);
+}
+
 .add-wallet-button {
     cursor: pointer;
     transition-duration: 200ms;
@@ -19,7 +24,7 @@
 
 .menu-buttons {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
 }
 
