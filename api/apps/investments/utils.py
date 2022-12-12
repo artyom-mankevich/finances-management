@@ -159,6 +159,10 @@ def get_historical_stocks_data(
     series = ticker.history(
         period=period, start=start_date, end=end_date, interval=interval
     )
+
+    if not series.get("close"):
+        return {}
+
     series = series["close"]
 
     result = {}
