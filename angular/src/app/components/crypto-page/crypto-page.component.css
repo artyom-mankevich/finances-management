@@ -1,0 +1,110 @@
+@import url('../../common/styles/buttons.css');
+
+.crypto-wrapper {
+    width: 90%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.add-button {
+    background-color: var(--dark-blue);
+    border-color: var(--dark-blue);
+}
+
+.add-wallet-button {
+    cursor: pointer;
+    transition-duration: 200ms;
+}
+
+.add-wallet-button:hover {
+    transform: scale(1.02);
+}
+
+.menu-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.wallets {
+    width: 100%;
+    display: grid;
+    column-gap: 58px;
+    justify-content: center;
+    row-gap: 40px;  
+    grid-column: auto;
+    grid-template-columns: repeat(auto-fill, 245px);
+}
+
+.transactions {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.transaction {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.icon-background {
+    width: 52px;
+    height: 52px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #F8F9FD;
+    border-radius: 30px;
+}
+
+.address  {
+   display: flex;
+   flex-direction: column;
+}
+
+.address .source,
+.address .target,
+.date-amount .date,
+.date-amount .amount {
+    margin: 0;
+}
+
+.address .source {
+    font-weight: bold;
+    font-size: 1.25rem;
+}
+
+.transaction .info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+.date-amount {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 50px;
+}
+
+.date-amount .amount {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.icon-background mat-icon {
+    color: var(--purple);
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+}
+
+@media only screen and (max-width: 900px) {
+    .crypto-wrapper {
+        padding-top: 30px;
+    }
+}

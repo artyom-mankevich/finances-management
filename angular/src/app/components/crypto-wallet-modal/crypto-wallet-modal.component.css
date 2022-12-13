@@ -1,0 +1,20 @@
+@import url('../../common/styles/inputs.css');
+@import url('../../common/styles/buttons.css');
+
+
+.form-input {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-action-button {
+    background-color: var(--purple);
+}
+
+.crypto-wallet-modal-wrapper {
+    width: 320px;
+    height: 320px;
+    justify-content: space-between;
+    display: flex;
+    flex-direction: column;
+}
