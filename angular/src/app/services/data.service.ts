@@ -8,7 +8,7 @@ import { TransactionTypes } from '../enums/transactionTypes';
 import { AnalyticsCategoires } from '../models/analyticsCategories';
 import { Color } from '../models/color';
 import { Currency } from '../models/currency';
-import { EthereumTransfer } from '../models/ethereumTransfer';
+import { EthereumTransfer, EthereumTransferDisplay } from '../models/ethereumTransfer';
 import { EthereumWallet } from '../models/ethereumWallet';
 import { EthKeys } from '../models/ethKeys';
 import { Icon } from '../models/icon';
@@ -41,7 +41,8 @@ export class DataService {
   private _analyticsCategories: BehaviorSubject<AnalyticsCategoires | undefined>;
   private _walletsBalanceChart: BehaviorSubject<WalletsBalanceChart | undefined>;
   private _transactionsAmountChart: BehaviorSubject<TransactionsChart | undefined>;
-  private _cryptoWallets: BehaviorSubject<EthereumWallet[]>
+  private _cryptoWallets: BehaviorSubject<EthereumWallet[]>;
+  private _ethereumTransactions: BehaviorSubject<EthereumTransferDisplay[]>
   stockChartPeriod: ChartDateOptions = ChartDateOptions.Week;
   transactionFilter: TransactionFilters = TransactionFilters.All;
   walletsChartPeriod: ChartDateOptions = ChartDateOptions.Week;
@@ -60,6 +61,7 @@ export class DataService {
     this._analyticsCategories = new BehaviorSubject<AnalyticsCategoires | undefined>(undefined);
     this._walletsBalanceChart = new BehaviorSubject<WalletsBalanceChart | undefined>(undefined);
     this._transactionsAmountChart = new BehaviorSubject<TransactionsChart | undefined>(undefined);
+    this._ethereumTransactions = new BehaviorSubject<EthereumTransferDisplay[]>([]);
     this._cryptoWallets = new BehaviorSubject<EthereumWallet[]>([]);
     this.getAvailableIcons();
     this._prefetchData();
@@ -84,6 +86,7 @@ export class DataService {
     this.getUsersWalletsData(this.walletsChartPeriod);
     this.getUsersTransactionsData();
     this.getusersCryptoWallets();
+    this.getUsersEtheremTransactions();
   }
 
   private _getUserWallets(): void {
@@ -392,4 +395,11 @@ export class DataService {
   makeEthTransfer(transfer: EthereumTransfer) {
     return this.http.post(`${this.url}${ApiEndpoints.ethereumTransfer}`, transfer);
   } 
+
+  getUsersEtheremTransactions(force: boolean = false) {
+    if (force || this._ethereumTransactions.value.length === 0) {
+      this.http.get<EthereumTransferDisplay[]>(`${this.url}${ApiEndpoints.ethereumtransactions}`).subscribe(val => this._ethereumTransactions.next(val));
+    }
+    return this._ethereumTransactions.asObservable();
+  }
 }

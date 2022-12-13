@@ -12,4 +12,22 @@
         </svg>
         <app-crypto-wallet [ethereumWallet]="wallet" *ngFor="let wallet of wallets$ | async"></app-crypto-wallet>
     </div>
+    <section class="transactions">
+        <h2>Ethereum Transactions</h2>
+        <div class="transaction" *ngFor="let transfer of transfers$ | async">
+            <div class="info">
+                <div class="icon-background">
+                    <mat-icon fontIcon="material-icons-round">sync</mat-icon>
+                </div>
+                <div class="address">
+                    <p class="source"> {{ transfer.sourceWalletAddress }}</p>
+                    <p class="target"> {{ transfer.targeetWalletAddress }}</p>
+                </div>
+            </div>
+            <div class="date-amount">
+                <p class="date">{{ transfer.date | date }}</p>
+                <p class="amount">{{ transfer.amount }} ETH</p>
+            </div>
+        </div>
+    </section>
 </div>
