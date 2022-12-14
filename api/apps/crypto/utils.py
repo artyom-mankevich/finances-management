@@ -1,6 +1,8 @@
+import requests
 from rest_framework.exceptions import ValidationError
 
 from crypto.models import EthKeys
+from project import settings
 
 
 def validate_transfer_args(password, eth_keys_id, to_address, amount):
@@ -37,3 +39,35 @@ def transfer_eth(
     amount: float
 ):
     pass
+
+
+def get_eth_transactions_for_addresses(addresses: list[str]) -> list[dict]:
+    api_url = settings.ETHERSCAN_API_URL
+    api_key = settings.ETHERSCAN_API_KEY
+
+    query_params = {
+        "module": "account",
+        "action": "txlist",
+        "startblock": 0,
+        "endblock": 99999999,
+        "page": 1,
+        "offset": 100,
+        "sort": "desc",
+        "apikey": api_key
+    }
+
+    transactions = []
+    for address in addresses:
+        query_params["address"] = address
+        response = requests.get(api_url, params=query_params)
+        if response.status_code == 200 and response.json()["status"] == "1":
+            transactions.extend(response.json()["result"])
+
+    transactions = [{
+        "date": float(transaction["timeStamp"]) * 1000,
+        "sourceWalletAddress": transaction["from"],
+        "targetWalletAddress": transaction["to"],
+        "amount": float(transaction["value"]) / 10 ** 18,
+    } for transaction in transactions]
+
+    return transactions

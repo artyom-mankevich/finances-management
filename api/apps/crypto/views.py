@@ -11,7 +11,11 @@ from rest_framework.viewsets import GenericViewSet
 from accounts.views import SetUserIdFromTokenOnCreateMixin
 from crypto.models import EthKeys
 from crypto.serializers import EthKeysSerializer
-from crypto.utils import validate_transfer_args, transfer_eth
+from crypto.utils import (
+    validate_transfer_args,
+    transfer_eth,
+    get_eth_transactions_for_addresses
+)
 
 
 class EthKeysViewSet(
@@ -38,3 +42,12 @@ class EthKeysViewSet(
 
         transfer_eth(password, eth_keys, to_address, amount)
         return Response({"message": "Transfer successful"}, 200)
+
+    @action(
+        detail=False, methods=["GET"], url_path="transactions", url_name="transactions"
+    )
+    def transactions(self, request, *args, **kwargs):
+        addresses = self.get_queryset().values_list("address", flat=True)
+        transactions = get_eth_transactions_for_addresses(addresses)
+
+        return Response(transactions, 200)
