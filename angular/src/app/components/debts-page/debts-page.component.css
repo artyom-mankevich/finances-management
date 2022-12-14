@@ -1,0 +1,15 @@
+@import url('../../common/styles/buttons.css');
+
+.action-menu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.debts-wrapper {
+    width: 90%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}

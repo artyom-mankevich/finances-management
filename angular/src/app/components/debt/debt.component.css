@@ -1,0 +1,48 @@
+.chart-wrapper {
+    width: 250px;
+    height: 250px;
+}
+
+.debt {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.expiration-date, 
+.amount {
+    margin: 0;
+}
+
+.amount,
+.name {
+    font-size: 1.875rem;
+    font-weight: bold;
+}
+
+.description .amount-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.color {
+    width: 42px;
+    height: 42px;
+    background-color: #F6BA1B;
+    border-radius: 9px;
+}
+
+.description {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+    height: 225px;
+}
+
+.color-name {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+}
