@@ -1,9 +1,13 @@
 <div class="debts-wrapper">
     <section class="action-menu">
-        <button class="add-button">Add debt</button>
-        <button class="add-button">Add payment</button>
+        <button class="add-button" (click)="openDebtDialog()">Add debt</button>
+        <button class="add-button" (click)="openDebtPaymentDialog()">Add payment</button>
    </section>
+   <h2>Debts</h2>
    <div class="debts">
+        <app-debt></app-debt>
+        <app-debt></app-debt>
+        <app-debt></app-debt>
         <app-debt></app-debt>
    </div>
 </div>

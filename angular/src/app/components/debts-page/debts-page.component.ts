@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { DebtModalComponent } from '../debt-modal/debt-modal.component';
+import { DebtPaymentModalComponent } from '../debt-payment-modal/debt-payment-modal.component';
 
 @Component({
   selector: 'app-debts-page',
@@ -7,9 +10,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DebtsPageComponent implements OnInit {
 
-  constructor() { }
+  constructor(private dialog: MatDialog) { }
 
   ngOnInit(): void {
+  }
+
+  openDebtDialog() {
+    this.dialog.open(DebtModalComponent);
+  }
+
+  openDebtPaymentDialog() {
+    this.dialog.open(DebtPaymentModalComponent);
   }
 
 }

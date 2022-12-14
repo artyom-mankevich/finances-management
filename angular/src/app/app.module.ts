@@ -42,6 +42,8 @@ import { CryptoWalletComponent } from './components/crypto-wallet/crypto-wallet.
 import { OverviewPageComponent } from './components/overview-page/overview-page.component';
 import { DebtsPageComponent } from './components/debts-page/debts-page.component';
 import { DebtComponent } from './components/debt/debt.component';
+import { DebtModalComponent } from './components/debt-modal/debt-modal.component';
+import { DebtPaymentModalComponent } from './components/debt-payment-modal/debt-payment-modal.component';
 
 @NgModule({
   declarations: [
@@ -75,7 +77,9 @@ import { DebtComponent } from './components/debt/debt.component';
     CryptoWalletComponent,
     OverviewPageComponent,
     DebtsPageComponent,
-    DebtComponent
+    DebtComponent,
+    DebtModalComponent,
+    DebtPaymentModalComponent
   ],
   imports: [
     BrowserModule,

@@ -14,7 +14,8 @@ export class DebtComponent implements OnInit {
       backgroundColor: ['#F6BA1B', '#D9D9D9'],
       borderColor: 'transparent', 
       hoverBackgroundColor: ['#F6BA1B', '#D9D9D9'],
-      hoverBorderColor: 'transparent',
+      hoverBorderColor: ['#F6BA1B', '#D9D9D9'],
+      borderWidth: 2
     },
   ];
  
@@ -24,7 +25,7 @@ export class DebtComponent implements OnInit {
 
   chartOptions: ChartOptions<'doughnut'> = {
     responsive: true,
-    cutout: 90,
+    cutout: 85,
     scales: {
       y: {
         display: false
