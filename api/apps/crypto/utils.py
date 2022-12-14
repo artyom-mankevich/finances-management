@@ -1,5 +1,6 @@
 from cryptography.fernet import InvalidToken
 from requests.auth import HTTPBasicAuth
+import requests
 from rest_framework.exceptions import ValidationError
 from web3.exceptions import InvalidAddress
 
@@ -43,7 +44,7 @@ def transfer_eth(password: str, eth_keys: EthKeys, to_address: str, amount: floa
         raise ValidationError({"password": "Invalid password."})
 
     _hash = commit_transaction(eth_keys, to_address, amount, private_key)
-    
+
     return _hash
 
 
@@ -86,3 +87,64 @@ def commit_transaction(
         raise ValidationError({"amount": e.args[0]['message']})
 
     return tx_hash.hex()
+
+
+def get_eth_transactions_for_addresses(addresses: list[str]) -> list[dict]:
+    api_url = settings.ETHERSCAN_API_URL
+    api_key = settings.ETHERSCAN_API_KEY
+
+    query_params = {
+        "module": "account",
+        "action": "txlist",
+        "startblock": 0,
+        "endblock": 99999999,
+        "page": 1,
+        "offset": 100,
+        "sort": "desc",
+        "apikey": api_key
+    }
+
+    transactions = []
+    for address in addresses:
+        query_params["address"] = address
+        response = requests.get(api_url, params=query_params)
+        if response.status_code == 200 and response.json()["status"] == "1":
+            transactions.extend(response.json()["result"])
+
+    transactions = [{
+        "date": float(transaction["timeStamp"]) * 1000,
+        "sourceWalletAddress": transaction["from"],
+        "targetWalletAddress": transaction["to"],
+        "amount": float(transaction["value"]) / 10 ** 18,
+    } for transaction in transactions]
+
+    return transactions
+
+
+def set_eth_balance_for_addresses(serialized_data: dict) -> None:
+    addresses = [key["address"] for key in serialized_data]
+    balances = get_eth_balances_for_addresses(addresses)
+    for key in serialized_data:
+        key["balance"] = balances.get(key["address"], 0)
+
+
+def get_eth_balances_for_addresses(addresses: list[str]) -> dict:
+    address_str = ",".join(addresses)
+    api_url = settings.ETHERSCAN_API_URL
+    api_key = settings.ETHERSCAN_API_KEY
+
+    query_params = {
+        "module": "account",
+        "action": "balancemulti",
+        "address": address_str,
+        "apikey": api_key
+    }
+
+    response = requests.get(api_url, params=query_params)
+
+    result = {}
+    if response.status_code == 200 and response.json()["status"] == "1":
+        for balance in response.json()["result"]:
+            result[balance["account"]] = float(balance["balance"]) / 10 ** 18
+
+    return result

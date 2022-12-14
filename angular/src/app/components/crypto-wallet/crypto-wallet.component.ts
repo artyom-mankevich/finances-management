@@ -13,7 +13,7 @@ export class CryptoWalletComponent implements OnInit {
     id: '',
     userId: '',
     address: '',
-    amount: 0
+    balance: 0
   }
   constructor(private ds: DataService) { }
 
