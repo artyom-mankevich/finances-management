@@ -14,7 +14,7 @@ from crypto.serializers import EthKeysSerializer
 from crypto.utils import (
     validate_transfer_args,
     transfer_eth,
-    get_eth_transactions_for_addresses
+    get_eth_transactions_for_addresses, set_eth_balance_for_addresses
 )
 
 
@@ -29,6 +29,12 @@ class EthKeysViewSet(
 
     def get_queryset(self):
         return EthKeys.objects.filter(user_id=self.request.user)
+
+    def list(self, request, *args, **kwargs):
+        response = super().list(request, *args, **kwargs)
+        set_eth_balance_for_addresses(response.data)
+
+        return response
 
     @action(detail=False, methods=["POST"], url_path="transfer", url_name="transfer")
     def transfer(self, request, *args, **kwargs):

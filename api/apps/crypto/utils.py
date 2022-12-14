@@ -119,3 +119,32 @@ def get_eth_transactions_for_addresses(addresses: list[str]) -> list[dict]:
     } for transaction in transactions]
 
     return transactions
+
+
+def set_eth_balance_for_addresses(serialized_data: dict) -> None:
+    addresses = [key["address"] for key in serialized_data]
+    balances = get_eth_balances_for_addresses(addresses)
+    for key in serialized_data:
+        key["balance"] = balances.get(key["address"], 0)
+
+
+def get_eth_balances_for_addresses(addresses: list[str]) -> dict:
+    address_str = ",".join(addresses)
+    api_url = settings.ETHERSCAN_API_URL
+    api_key = settings.ETHERSCAN_API_KEY
+
+    query_params = {
+        "module": "account",
+        "action": "balancemulti",
+        "address": address_str,
+        "apikey": api_key
+    }
+
+    response = requests.get(api_url, params=query_params)
+
+    result = {}
+    if response.status_code == 200 and response.json()["status"] == "1":
+        for balance in response.json()["result"]:
+            result[balance["account"]] = float(balance["balance"]) / 10 ** 18
+
+    return result
