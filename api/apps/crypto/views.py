@@ -40,8 +40,8 @@ class EthKeysViewSet(
         validate_transfer_args(password, eth_keys_id, to_address, amount)
         eth_keys = get_object_or_404(self.get_queryset(), id=eth_keys_id)
 
-        transfer_eth(password, eth_keys, to_address, amount)
-        return Response({"message": "Transfer successful"}, 200)
+        _hash = transfer_eth(password, eth_keys, to_address, amount)
+        return Response({"hash": _hash})
 
     @action(
         detail=False, methods=["GET"], url_path="transactions", url_name="transactions"

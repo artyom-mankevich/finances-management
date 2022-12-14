@@ -7,7 +7,7 @@ export interface EthereumTransfer {
 
 export interface  EthereumTransferDisplay {
     sourceWalletAddress: string,
-    targeetWalletAddress: string,
+    targetWalletAddress: string,
     date: number,
     amount: number
 }

@@ -1,7 +1,13 @@
+from cryptography.fernet import InvalidToken
+from requests.auth import HTTPBasicAuth
 import requests
 from rest_framework.exceptions import ValidationError
+from web3.exceptions import InvalidAddress
 
+from base.encryption import Encryption
 from crypto.models import EthKeys
+from web3 import Web3
+
 from project import settings
 
 
@@ -11,7 +17,6 @@ def validate_transfer_args(password, eth_keys_id, to_address, amount):
         errors["password"] = "This field is required."
     if type(password) != str:
         errors["password"] = "This field must be a string."
-
 
     if not eth_keys_id:
         errors["eth_keys_id"] = "This field is required."
@@ -32,13 +37,56 @@ def validate_transfer_args(password, eth_keys_id, to_address, amount):
         raise ValidationError(errors)
 
 
-def transfer_eth(
-    password: str,
+def transfer_eth(password: str, eth_keys: EthKeys, to_address: str, amount: float) -> str:
+    try:
+        private_key = Encryption.aes_decrypt(eth_keys.private_key, password)
+    except InvalidToken:
+        raise ValidationError({"password": "Invalid password."})
+
+    _hash = commit_transaction(eth_keys, to_address, amount, private_key)
+
+    return _hash
+
+
+def commit_transaction(
     eth_keys: EthKeys,
     to_address: str,
-    amount: float
-):
-    pass
+    amount: float,
+    private_key: str
+) -> str:
+    api_key = settings.INFURA_API_KEY
+    api_url = settings.INFURA_API_URL
+    api_secret_key = settings.INFURA_API_SECRET_KEY
+
+    web3 = Web3(
+        Web3.HTTPProvider(
+            api_url + api_key,
+            request_kwargs={"auth": HTTPBasicAuth(api_key, api_secret_key)},
+        )
+    )
+    nonce = web3.eth.getTransactionCount(eth_keys.address)
+
+    tx = {
+        'type': '0x2',
+        'nonce': nonce,
+        'from': eth_keys.address,
+        'to': to_address,
+        'value': web3.toWei(amount, 'ether'),
+        'maxFeePerGas': web3.toWei('250', 'gwei'),
+        'maxPriorityFeePerGas': web3.toWei('3', 'gwei'),
+        'chainId': int(settings.CHAIN_ID)
+    }
+    try:
+        gas = web3.eth.estimateGas(tx)
+        tx['gas'] = gas
+        signed_tx = web3.eth.account.sign_transaction(tx, private_key)
+        tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
+    except InvalidAddress as e:
+        raise ValidationError({"to_address": str(e)})
+    except ValueError as e:
+        raise ValidationError({"amount": e.args[0]['message']})
+
+    return tx_hash.hex()
 
 
 def get_eth_transactions_for_addresses(addresses: list[str]) -> list[dict]:
