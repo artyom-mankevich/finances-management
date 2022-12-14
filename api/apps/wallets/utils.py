@@ -79,9 +79,12 @@ def get_categories_total_amount(categories: list) -> Decimal | None:
 
 
 def get_current_wallets_balance(user_id) -> Decimal:
-    balances = Wallet.objects.filter(user_id=user_id).prefetch_related("currency").values(
-        "balance", "currency__code"
-    ).exclude(balance=0)
+    balances = (
+        Wallet.objects.filter(user_id=user_id, debt__isnull=True)
+        .prefetch_related("currency")
+        .values("balance", "currency__code")
+        .exclude(balance=0)
+    )
     current_balances_sum = sum(
         convert_currency(wallet["balance"], wallet["currency__code"])
         for wallet in balances
