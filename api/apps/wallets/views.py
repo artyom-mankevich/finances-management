@@ -1,8 +1,11 @@
+from decimal import Decimal
+
 from django.db.models import QuerySet
 from django_filters import CharFilter
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet
 from rest_framework import viewsets
 from rest_framework.decorators import action
+from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
@@ -24,7 +27,8 @@ from wallets.serializers import (
 from wallets.utils import (
     get_top_categories,
     get_wallets_chart_data,
-    get_transactions_chart_data
+    get_transactions_chart_data,
+    pay_debt
 )
 
 
@@ -37,7 +41,7 @@ class WalletViewSet(viewsets.ModelViewSet, SetUserIdFromTokenOnCreateMixin):
     serializer_class = ExtendedWalletSerializer
 
     def get_queryset(self):
-        return Wallet.objects.filter(user_id=self.request.user)
+        return Wallet.objects.filter(user_id=self.request.user, debt__isnull=True)
 
     @action(detail=False, methods=["GET"], url_path="chart-data", url_name="chart_data")
     def chart_data(self, request, *args, **kwargs):
@@ -56,6 +60,31 @@ class DebtViewSet(viewsets.ModelViewSet, SetUserIdFromTokenOnCreateMixin):
 
     def get_queryset(self):
         return Debt.objects.filter(user_id=self.request.user)
+
+    @action(
+        detail=False,
+        methods=["POST"],
+        url_path="transactions",
+        url_name="transactions"
+    )
+    def transactions(self, request, *args, **kwargs):
+        debt_id = request.data.get("id")
+        debt = get_object_or_404(Debt, id=debt_id, user_id=self.request.user)
+
+        amount = request.data.get("amount")
+        if amount is None:
+            return Response({"amount": "This field is required"}, status=400)
+        if type(amount) != float and type(amount) != int:
+            return Response({"amount": "This field must be a number"}, status=400)
+        if amount <= 0:
+            return Response({"amount": "This field must be greater than 0"}, status=400)
+
+        amount = Decimal(str(amount))
+
+        pay_debt(debt, amount)
+        debt.refresh_from_db()
+
+        return Response(DebtSerializer(debt).data)
 
 
 class TransactionFilter(FilterSet):

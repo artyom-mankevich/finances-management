@@ -9,7 +9,7 @@ from django.utils import timezone
 from sklearn.linear_model import LinearRegression
 
 from base.utils import convert_currency
-from wallets.models import TransactionCategory, Transaction, WalletLog, Wallet
+from wallets.models import TransactionCategory, Transaction, WalletLog, Wallet, Debt
 from wallets.serializers import ExtendedTransactionCategorySerializer
 
 
@@ -327,3 +327,11 @@ def get_grouped_transactions(transactions: list[dict], amount_type: str) -> dict
         )
 
     return result
+
+
+def pay_debt(debt: Debt, amount: Decimal) -> None:
+    if debt.wallet.balance + amount <= debt.wallet.goal:
+        debt.wallet.deposit(amount)
+    else:
+        debt.wallet.balance = debt.wallet.goal
+        debt.wallet.save()
