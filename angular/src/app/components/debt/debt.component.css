@@ -29,6 +29,14 @@
     font-weight: bold;
 }
 
+.name {
+    word-wrap: break-word;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+}
+
 .description .amount-info {
     display: flex;
     flex-direction: column;

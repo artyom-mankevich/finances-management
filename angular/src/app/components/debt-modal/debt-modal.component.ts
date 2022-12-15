@@ -49,10 +49,19 @@ export class DebtModalComponent implements OnInit {
       currency: this.debt.currency,
       balance: this.debt.balance,
       goal: this.debt.goal,
-      expiresAt: this.debt.expiresAt
+      expiresAt: this.formatDate(this.debt.expiresAt)
     })
   }
-
+  private formatDate(date: number) {
+    const d = new Date(date);
+    let month = '' + (d.getMonth() + 1);
+    let day = '' + d.getDate();
+    const year = d.getFullYear();
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+    return [year, month, day].join('-');
+  }
+  
   modifyWallet() {
     this.ableToSubmit = false;
     if (this.modalMode === WalletModalModes.Create) {
