@@ -18,7 +18,6 @@ export default function CreateTransaction(props) {
     const [expense, setExpense] = useState(true);
     const [income, setIncome] = useState(false);
     const [transfer, setTransfer] = useState(false);
-    const [onUpdate, setOnUpdate] = useState(false);
 
     const getWalletsList = async () => {
         const accessToken = await AsyncStorage.getItem('accessToken');
@@ -92,8 +91,6 @@ export default function CreateTransaction(props) {
         setModalVisible(false);
     }
 
-    props.refreshing ? updateData() : null;
-
     return (
         <View style={styles.container}>
             <GestureRecognizer
@@ -156,7 +153,8 @@ export default function CreateTransaction(props) {
                                 categories={categories}
                                 color={color}
                                 onCancel={onCancel}
-                                onUpdated={() => setOnUpdate(true)}
+                                onUpdated={props.onRefresh}
+                                createElement={true}
                             />
                         }
                         {
@@ -166,7 +164,8 @@ export default function CreateTransaction(props) {
                                     categories={categories}
                                     color={color}
                                     onCancel={onCancel}
-                                    onUpdated={() => setOnUpdate(true)}
+                                    onUpdated={props.onRefresh}
+                                    createElement={true}
                                 />
                         }
                         {
@@ -176,7 +175,8 @@ export default function CreateTransaction(props) {
                                     categories={categories}
                                     color={color}
                                     onCancel={onCancel}
-                                    onUpdated={() => setOnUpdate(true)}
+                                    onUpdated={props.onRefresh}
+                                    createElement={true}
                                 />
                         }
                     </View>
@@ -194,7 +194,7 @@ export default function CreateTransaction(props) {
                     <Text style={styles.addTransactionText}>Add Transaction</Text>
                 </TouchableOpacity>
             </View>
-            <TransactionList refreshing={props.refreshing} onUpdate={onUpdate}/>
+            <TransactionList refreshing={props.refreshing}/>
         </View>
         );
 }
