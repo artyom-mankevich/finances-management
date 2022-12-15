@@ -2,6 +2,7 @@ import * as React from 'react';
 import {View, StyleSheet, ScrollView, RefreshControl} from "react-native";
 import CategoryList from "../components/transactions/categories/CategoryList";
 import {useCallback, useState} from "react";
+import CreateTransaction from "../components/transactions/transaction/CreateTransaction";
 
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
@@ -16,19 +17,15 @@ export default function TransactionsPage() {
     }, []);
 
     return (
+        <View>
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh}>
             <ScrollView>
-                <View style={styles.container }>
+                <View>
                     <CategoryList refreshing={refreshing}/>
                 </View>
             </ScrollView>
         </RefreshControl>
+            <CreateTransaction refreshing={refreshing}/>
+        </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-    },
-});
