@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {View, StyleSheet, ScrollView, RefreshControl} from "react-native";
+import {View, ScrollView, RefreshControl} from "react-native";
 import CategoryList from "../components/transactions/categories/CategoryList";
 import {useCallback, useState} from "react";
 import CreateTransaction from "../components/transactions/transaction/CreateTransaction";
@@ -25,7 +25,7 @@ export default function TransactionsPage() {
                 </View>
             </ScrollView>
         </RefreshControl>
-            <CreateTransaction refreshing={refreshing}/>
+            <CreateTransaction refreshing={refreshing} onRefresh={() => onRefresh()}/>
         </View>
     );
 }

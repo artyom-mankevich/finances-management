@@ -2,10 +2,15 @@ import {useEffect, useState} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ngrokConfig from "../../ngrok.config";
 import {Text, TouchableOpacity, View, StyleSheet, ScrollView} from "react-native";
-import {MaterialIcons} from "@expo/vector-icons";
+import {FontAwesome, MaterialIcons} from "@expo/vector-icons";
 import CategoryIcons from "../categories/CategoryIcons";
 import getSymbolFromCurrency from "currency-symbol-map";
 import {ReduceFriendlyNumbers} from "../../wallets/WalletValidation";
+import Modal from "react-native-modal";
+import ExpenseTransaction from "./ExpenseTransaction";
+import IncomeTransaction from "./IncomeTransaction";
+import TransferTransaction from "./TransferTransaction";
+import GestureRecognizer from "react-native-swipe-gestures";
 
 export default function TransactionList(props) {
     const [transactions, setTransactions] = useState([]);
@@ -13,6 +18,16 @@ export default function TransactionList(props) {
     const [incomeTransactions, setIncomeTransactions] = useState(false);
     const [expenseTransactions, setExpenseTransactions] = useState(false);
     const [transferTransactions, setTransferTransactions] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [transactionType, setTransactionType] = useState('income');
+    const [sourceAmount, setSourceAmount] = useState(0);
+    const [targetAmount, setTargetAmount] = useState(0);
+    const [sourceWallet, setSourceWallet] = useState('');
+    const [targetWallet, setTargetWallet] = useState('');
+    const [category, setCategory] = useState('');
+    const [description, setDescription] = useState('');
+    const [color, setColor] = useState('');
+    const [transactionId, setTransactionId] = useState('');
 
     const getTransactionsList = async () => {
         const accessToken = await AsyncStorage.getItem('accessToken');
@@ -33,11 +48,54 @@ export default function TransactionList(props) {
             });
     }
 
+    const getTargetWalletsList = () => {
+        const targetWallets = [];
+        transactions.map((transaction) => {
+            if (transaction.targetWallet) {
+                targetWallets.push(transaction.targetWallet);
+            }
+        })
+        return targetWallets;
+    }
+
+    const getCategoriesList = () => {
+        const categories = [];
+        transactions.map((transaction) => {
+            if (transaction.category) {
+                if (categories.filter((category) => category.id === transaction.category.id).length === 0) {
+                    categories.push(transaction.category);
+                }
+            }
+        });
+        return categories;
+    }
+
+    const deleteTransaction = async () => {
+        const accessToken = await AsyncStorage.getItem('accessToken');
+        return fetch(ngrokConfig.myUrl + '/v2/transactions/' + transactionId + '/',{
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+            }
+        }).then(() => {
+            getTransactionsList().then();
+            setModalVisible(false);
+            console.log('Transaction deleted');
+        })
+            .catch((error) => {
+                console.error(error);
+            })};
+
     useEffect(() => {
+        getTransactionsList();
+        getCategoriesList();
         getTransactionsList().then();
     }, []);
 
-    props.onUpdate ? getTransactionsList().then() : null;
+    const onCancel = () => {
+        setModalVisible(false);
+    }
+
     props.refreshing ? getTransactionsList().then() : null;
 
     return (
@@ -80,6 +138,96 @@ export default function TransactionList(props) {
                     <Text style={transferTransactions ? styles.filterButtonTextActive : styles.filterButtonText}>Transfer</Text>
                 </TouchableOpacity>
             </View>
+            <GestureRecognizer
+                onSwipeDown={()=>setModalVisible(false)}
+                onSwipeUp={()=>setModalVisible(false)}
+                onSwipeLeft={()=>setModalVisible(false)}
+                onSwipeRight={()=>setModalVisible(false)}
+            >
+                <Modal
+                    isVisible={modalVisible}
+                    backdropColor={'#000000'}
+                    backdropOpacity={0.8}
+                    animationIn={"zoomInDown"}
+                    animationOut={"zoomOutUp"}
+                    animationInTiming={600}
+                    animationOutTiming={600}
+                    backdropTransitionInTiming={600}
+                    backdropTransitionOutTiming={600}
+                >
+                    <View style={styles.modalContainer}>
+                        <View>
+                            <View style={styles.walletDeleteBtn}>
+                                <TouchableOpacity
+                                    style={styles.walletDeleteBtnTouchableOpacity}
+                                    onPress={() => deleteTransaction()}>
+                                    <FontAwesome name="trash" size={55} color="#930000"/>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                        <View style={[styles.modalHeader, color ? {backgroundColor: color} : {backgroundColor: '#000'}]}>
+                            <Text style={styles.modalHeaderText}>{transactionType === 'Expense' ? 'Expense' : transactionType === 'Income' ? 'Income' : 'Transfer'}</Text>
+                        </View>
+                        <View style={styles.modalBody}>
+                            {
+                                transactionType === 'Income' ?
+                                <IncomeTransaction
+                                    targetAmount={targetAmount}
+                                    category={category}
+                                    targetWallet={targetWallet}
+                                    description={description}
+                                    wallets={getTargetWalletsList()}
+                                    categories={getCategoriesList()}
+                                    color={color}
+                                    onCancel={onCancel}
+                                    onUpdate={() => {
+                                        getTransactionsList().then();
+                                        setModalVisible(false);}
+                                    }
+                                    createElement={false}
+                                    transactionId={transactionId}
+                                />
+                                    :
+                                transactionType === 'Expense' ?
+                                    <ExpenseTransaction
+                                        sourceAmount={sourceAmount}
+                                        category={category}
+                                        sourceWallet={sourceWallet}
+                                        description={description}
+                                        wallets={getTargetWalletsList()}
+                                        categories={getCategoriesList()}
+                                        color={color}
+                                        onCancel={onCancel}
+                                        onUpdate={() => {
+                                            getTransactionsList().then();
+                                            setModalVisible(false);}
+                                        }
+                                        createElement={false}
+                                        transactionId={transactionId}
+                                        />
+                                    :
+                                    <TransferTransaction
+                                        sourceAmount={sourceAmount}
+                                        targetAmount={targetAmount}
+                                        sourceWallet={sourceWallet}
+                                        targetWallet={targetWallet}
+                                        description={description}
+                                        wallets={getTargetWalletsList()}
+                                        categories={getCategoriesList()}
+                                        onCancel={onCancel}
+                                        onUpdate={() => {
+                                            getTransactionsList().then();
+                                            setModalVisible(false);}
+                                        }
+                                        createElement={false}
+                                        color={color}
+                                        transactionId={transactionId}
+                                        />
+                            }
+                        </View>
+                    </View>
+                </Modal>
+            </GestureRecognizer>
             <View>
             <ScrollView
                 style={styles.scrollView}
@@ -89,9 +237,23 @@ export default function TransactionList(props) {
             <View style={styles.transactionsContainer}>
                 {
                     incomeTransactions && transactions.filter(transaction => transaction.sourceAmount === null && transaction.targetAmount !== null).map((transaction, index) => (
-                        <View style={styles.transactionContainer} key={transaction.id}>
+                        <View key={transaction.id}>
+                        <TouchableOpacity
+                            style={styles.transactionContainer}
+                            key={transaction.id}
+                            onPress={() => {
+                                setTransactionType('Income');
+                                setTargetAmount(transaction.targetAmount);
+                                setTargetWallet(transaction.targetWallet);
+                                setModalVisible(true)
+                                setDescription(transaction.description)
+                                setCategory(transaction.category)
+                                setColor(transaction.category.color);
+                                setTransactionId(transaction.id);
+                            }}
+                        >
                             <View style={styles.transactionStartIconContainer}>
-                            {
+                                {
                                 transaction.sourceAmount !== null && transaction.targetAmount === null
                                     ?
                                     <MaterialIcons name={'arrow-downward'} size={35} color={'red'} />
@@ -152,12 +314,27 @@ export default function TransactionList(props) {
                                     }
                                 </Text>
                             </View>
+                        </TouchableOpacity>
                         </View>
                         ))
                     }
                 {
                         expenseTransactions && transactions.filter(transaction => transaction.sourceAmount !== null && transaction.targetAmount === null).map((transaction, index) => (
-                            <View style={styles.transactionContainer} key={transaction.id}>
+                            <View key={transaction.id}>
+                            <TouchableOpacity
+                                style={styles.transactionContainer}
+                                key={transaction.id}
+                                onPress={() => {
+                                    setTransactionType('Expense');
+                                    setSourceAmount(transaction.sourceAmount);
+                                    setSourceWallet(transaction.sourceWallet);
+                                    setModalVisible(true)
+                                    setDescription(transaction.description)
+                                    setCategory(transaction.category)
+                                    setColor(transaction.category.color);
+                                    setTransactionId(transaction.id);
+                                }}
+                            >
                                 <View style={styles.transactionStartIconContainer}>
                                     {
                                         transaction.sourceAmount !== null && transaction.targetAmount === null
@@ -220,12 +397,27 @@ export default function TransactionList(props) {
                                         }
                                     </Text>
                                 </View>
+                            </TouchableOpacity>
                             </View>
                         ))
                 }
                 {
                     transferTransactions && transactions.filter(transaction => transaction.sourceAmount !== null && transaction.targetAmount !== null).map((transaction, index) => (
-                        <View style={styles.transactionContainer} key={transaction.id}>
+                        <View key={transaction.id}>
+                        <TouchableOpacity
+                            style={styles.transactionContainer}
+                            key={transaction.id}
+                            onPress={() => {
+                                setTransactionType('Transfer');
+                                setSourceAmount(transaction.sourceAmount);
+                                setTargetAmount(transaction.targetAmount);
+                                setSourceWallet(transaction.sourceWallet);
+                                setTargetWallet(transaction.targetWallet);
+                                setModalVisible(true)
+                                setDescription(transaction.description)
+                                setTransactionId(transaction.id);
+                            }}
+                        >
                             <View style={styles.transactionStartIconContainer}>
                                 {
                                     transaction.sourceAmount !== null && transaction.targetAmount === null
@@ -288,13 +480,31 @@ export default function TransactionList(props) {
                                     }
                                 </Text>
                             </View>
+                        </TouchableOpacity>
                         </View>
                     ))
                 }
                 {
                     allTransactions && transactions.map((transaction) => (
-                        //console.log("transaction: ", transaction),
-                        <View style={styles.transactionContainer} key={transaction.id}>
+                    <View key={transaction.id}>
+                        <TouchableOpacity
+                            style={styles.transactionContainer}
+                            key={transaction.id}
+                            onPress={() => {
+                                transaction.sourceWallet !== null && transaction.targetWallet !== null && setTransactionType('Transfer');
+                                transaction.sourceWallet !== null && transaction.targetWallet === null && setTransactionType('Expense');
+                                transaction.sourceWallet === null && transaction.targetWallet !== null && setTransactionType('Income');
+                                transaction.sourceAmount !== null && setSourceAmount(transaction.sourceAmount);
+                                transaction.targetAmount !== null && setTargetAmount(transaction.targetAmount);
+                                transaction.sourceWallet !== null && setSourceWallet(transaction.sourceWallet);
+                                transaction.targetWallet !== null && setTargetWallet(transaction.targetWallet);
+                                transaction.category !== null && setCategory(transaction.category);
+                                transaction.category !== null && setColor(transaction.category.color);
+                                setModalVisible(true)
+                                setDescription(transaction.description)
+                                setTransactionId(transaction.id);
+                            }}
+                        >
                             <View style={styles.transactionStartIconContainer}>
                                 {
                                     transaction.sourceAmount !== null && transaction.targetAmount === null
@@ -357,7 +567,8 @@ export default function TransactionList(props) {
                                     }
                                 </Text>
                             </View>
-                        </View>
+                        </TouchableOpacity>
+                    </View>
                     ))
                 }
             </View>
@@ -366,6 +577,8 @@ export default function TransactionList(props) {
         </View>
     );
 }
+
+
 
 const styles = StyleSheet.create({
     scrollView: {
@@ -406,8 +619,20 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 10,
-        backgroundColor: '#ececec',
         borderRadius: 20,
+        backgroundColor: '#ececec',
+    },
+    modalHeader: {
+        borderTopRightRadius: 30,
+        borderTopLeftRadius: 30,
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalHeaderText: {
+        color: '#fff',
+        fontSize: 24,
+        fontWeight: 'bold',
     },
     transactionStartIconContainer: {
         width: 90,
@@ -459,5 +684,10 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    walletDeleteBtn: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingBottom: 30,
     }
 });
