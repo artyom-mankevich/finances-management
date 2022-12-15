@@ -11,6 +11,9 @@
     transition-duration: 200ms;
     font-weight: 500;
 }
+.menu-option mat-icon {
+    margin-right: 20px;
+}
 
 .menu-option svg {
     display: flex;
@@ -100,7 +103,8 @@
         max-width: 60px;
     }
 
-    .item-icon-name svg {
+    .item-icon-name svgб
+    .item-icon-name mat-icon {
         margin-right: 0px;
     }
 

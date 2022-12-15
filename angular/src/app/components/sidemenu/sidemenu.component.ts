@@ -1,6 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { Pages } from 'src/app/enums/pages';
+import { DataService } from 'src/app/services/data.service';
 @Component({
   selector: 'app-sidemenu',
   templateUrl: './sidemenu.component.html',
@@ -8,7 +9,13 @@ import { Pages } from 'src/app/enums/pages';
 })
 export class SidemenuComponent implements OnInit {
   pages = Pages;
-  constructor(private router: Router) { }
+  constructor(private router: Router, private ds: DataService) {
+    this.ds.getUserSettings().subscribe(val =>{
+      if (val) {
+        this.changeCurrentPage(Pages[val.startingPage as keyof typeof Pages]);
+      }
+    })
+   }
 
 
   @Output()
