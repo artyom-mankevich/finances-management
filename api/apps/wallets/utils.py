@@ -330,8 +330,4 @@ def get_grouped_transactions(transactions: list[dict], amount_type: str) -> dict
 
 
 def pay_debt(debt: Debt, amount: Decimal) -> None:
-    if debt.wallet.balance + amount <= debt.wallet.goal:
-        debt.wallet.deposit(amount)
-    else:
-        debt.wallet.balance = debt.wallet.goal
-        debt.wallet.save()
+    debt.wallet.deposit(amount)
