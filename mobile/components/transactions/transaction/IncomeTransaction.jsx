@@ -7,12 +7,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import ngrokConfig from "../../ngrok.config";
 
 export default function IncomeTransaction(props) {
-    const [targetAmount, setTargetAmount] = useState(0);
+    const [targetAmount, setTargetAmount] = useState(props.targetAmount ? props.targetAmount : '');
     const [wallets, setWallets] = useState(props.wallets);
     const [categories, setCategories] = useState(props.categories);
-    const [wallet, setWallet] = useState('');
-    const [category, setCategory] = useState('');
-    const [description, setDescription] = useState('');
+    const [wallet, setWallet] = useState(props.targetWallet ? props.targetWallet : '');
+    const [category, setCategory] = useState(props.category ? props.category : '');
+    const [description, setDescription] = useState(props.description ? props.description : '');
     const [color, setColor] = useState(props.color);
 
     const setAsyncIncome = async () => {
@@ -38,10 +38,38 @@ export default function IncomeTransaction(props) {
                 console.error(error);
             })}
 
+    const setAsyncUpdateIncome = async () => {
+        const accessToken = await AsyncStorage.getItem('accessToken');
+        return fetch(ngrokConfig.myUrl + '/v2/transactions/' + props.transactionId + '/',{
+            method: 'PATCH',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                'category': category.id,
+                'targetAmount': targetAmount,
+                'targetWallet': wallet.id,
+                'description': description,
+            })
+        }).then((response) => {
+            props.onUpdate();
+            console.log("Transaction income updated");
+            response.json()
+        })
+            .catch((error) => {
+                console.error(error);
+            })}
+
     const onSubmit = () => {
         setAsyncIncome().then();
         setDescription('');
         setTargetAmount(0);
+        props.onCancel();
+    }
+
+    const onUpdated = () => {
+        setAsyncUpdateIncome().then();
         props.onCancel();
     }
 
@@ -58,7 +86,7 @@ export default function IncomeTransaction(props) {
                         style={styles.inputAmount}
                         placeholder="Target Amount"
                         onChangeText={text => setTargetAmount(NumberInputValidation(text))}
-                        value={targetAmount}
+                        value={targetAmount.toString()}
                     />
                 </View>
                 <View style={styles.infoExpense}>
@@ -79,7 +107,10 @@ export default function IncomeTransaction(props) {
                                 })
                                 console.log(selectedItem);
                             }}
-                            defaultButtonText={<Text style={styles.defaultButtonText}>Category</Text>}
+                            defaultButtonText={
+                            <Text style={[props.targetWallet ? {fontSize: 20, color: '#000'} : {fontSize: 16, color: '#7D848FFF'}]}>
+                                {props.category ? props.category.name : 'Category'}
+                            </Text>}
                             buttonTextAfterSelection={(selectedItem, index) => (selectedItem)}
                             rowTextForSelection={(item, index) => (item)}
                             buttonStyle={styles.dropdownBtnStyleCategory}
@@ -106,7 +137,10 @@ export default function IncomeTransaction(props) {
                                 })
                                 console.log(selectedItem);
                             }}
-                            defaultButtonText={<Text style={styles.defaultButtonText}>Target Wallet</Text>}
+                            defaultButtonText={
+                                <Text style={[props.targetWallet ? {fontSize: 20, color: '#000'} : {fontSize: 16, color: '#7D848FFF'}]}>
+                                    {props.targetWallet ? props.targetWallet.name : "Target Wallet"}
+                                </Text>}
                             buttonTextAfterSelection={(selectedItem, index) => (selectedItem)}
                             rowTextForSelection={(item, index) => (item)}
                             buttonStyle={styles.dropdownBtnStyleWallet}
@@ -133,8 +167,8 @@ export default function IncomeTransaction(props) {
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.createWalletBtn,
                     {backgroundColor: btnColorSet ? color : '#b4b4b4'}]}
-                                  disabled={!btnColorSet} onPress={() => onSubmit()}>
-                    <Text style={{fontSize: 22}}>Create</Text>
+                                  disabled={!btnColorSet} onPress={() => props.createElement ? onSubmit() : onUpdated()}>
+                    <Text style={{fontSize: 22}}>{props.createElement ? "Create" : "Update"}</Text>
                     <MaterialIcons name="arrow-forward-ios" size={30} color='#000' />
                 </TouchableOpacity>
             </View>
