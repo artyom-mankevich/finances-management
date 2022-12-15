@@ -6,6 +6,7 @@ import Modal from "react-native-modal";
 import WalletInputs from "./WalletInputs";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ngrokConfig from "../ngrok.config";
+import GestureRecognizer from "react-native-swipe-gestures";
 
 export default function WalletUpdateInputs(props) {
     const [modalVisible, setModalVisible] = useState(false);
@@ -45,43 +46,50 @@ export default function WalletUpdateInputs(props) {
 
     return (
         <View>
-            <Modal
-                isVisible={modalVisible}
-                backdropColor={'#000000'}
-                backdropOpacity={0.8}
-                animationIn={"zoomInDown"}
-                animationOut={"zoomOutUp"}
-                animationInTiming={600}
-                animationOutTiming={600}
-                backdropTransitionInTiming={600}
-                backdropTransitionOutTiming={600}
+            <GestureRecognizer
+                onSwipeLeft={() => setModalVisible(false)}
+                onSwipeRight={() => setModalVisible(false)}
+                onSwipeUp={() => setModalVisible(false)}
+                onSwipeDown={() => setModalVisible(false)}
             >
-                <WalletInputs
-                    name={name}
-                    setName={setName}
-                    currency={currency}
-                    setCurrency={setCurrency}
-                    currencyList={Array.from(new Set(currencyList))}
-                    balance={balance}
-                    setBalance={setBalance}
-                    goal={goal}
-                    setGoal={setGoal}
-                    color={color}
-                    setColor={setColor}
-                    lastUpdated={lastUpdated}
-                    colorList={Array.from(new Set(colorList))}
-                    onBtnText={"Update"}
-                    createElement={false}
-                    onDeleted={() => props.onDeleted()}
-                    onCancel={() => {
-                        setModalVisible(false);
-                    }}
-                    onSubmit={() => {
-                        setUpdateWallet().then();
-                    }
-                    }
-                />
-            </Modal>
+                <Modal
+                    isVisible={modalVisible}
+                    backdropColor={'#000000'}
+                    backdropOpacity={0.8}
+                    animationIn={"zoomInDown"}
+                    animationOut={"zoomOutUp"}
+                    animationInTiming={600}
+                    animationOutTiming={600}
+                    backdropTransitionInTiming={600}
+                    backdropTransitionOutTiming={600}
+                >
+                    <WalletInputs
+                        name={name}
+                        setName={setName}
+                        currency={currency}
+                        setCurrency={setCurrency}
+                        currencyList={Array.from(new Set(currencyList))}
+                        balance={balance}
+                        setBalance={setBalance}
+                        goal={goal}
+                        setGoal={setGoal}
+                        color={color}
+                        setColor={setColor}
+                        lastUpdated={lastUpdated}
+                        colorList={Array.from(new Set(colorList))}
+                        onBtnText={"Update"}
+                        createElement={false}
+                        onDeleted={() => props.onDeleted()}
+                        onCancel={() => {
+                            setModalVisible(false);
+                        }}
+                        onSubmit={() => {
+                            setUpdateWallet().then();
+                        }
+                        }
+                    />
+                </Modal>
+            </GestureRecognizer>
             <WalletToUpdate
                 name={props.name}
                 currency={props.currency}
