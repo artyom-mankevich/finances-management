@@ -7,7 +7,7 @@
     flex-direction: column;
     justify-content: space-between;
     gap: 30px;
-    width: 250px
+    width: 290px
 }
 
 .data-input {
@@ -21,4 +21,10 @@
 
 .date {
     text-indent: 8px;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }

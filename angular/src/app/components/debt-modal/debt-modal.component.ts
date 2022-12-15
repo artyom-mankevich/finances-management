@@ -63,6 +63,12 @@ export class DebtModalComponent implements OnInit {
   }
   
   modifyWallet() {
+    console.log(this.form.controls['expiresAt'].value);
+    this.debt.name = this.form.controls['name'].value;
+    this.debt.currency = this.form.controls['currency'].value;
+    this.debt.balance = this.form.controls['balance'].value ? this.form.controls['balance'].value : 0;
+    this.debt.goal = this.form.controls['goal'].value;
+    this.debt.expiresAt = new Date(this.form.controls['expiresAt'].value).getTime();
     this.ableToSubmit = false;
     if (this.modalMode === WalletModalModes.Create) {
       this.ds.createDebt(this.debt).subscribe(() => this.dialogRef.close(), errror => this.ableToSubmit = true);
@@ -70,6 +76,11 @@ export class DebtModalComponent implements OnInit {
     else if (this.modalMode === WalletModalModes.Update) {
       this.ds.updateDebt(this.debt).subscribe(() => this.dialogRef.close(), errror => this.ableToSubmit = true);
     }
+  }
+
+  deleteDebt() {
+    this.ableToSubmit = false;
+    this.ds.deleteDebt(this.debt).subscribe(() => this.dialogRef.close(), error=> this.ableToSubmit = true);
   }
 
   ngOnInit(): void {

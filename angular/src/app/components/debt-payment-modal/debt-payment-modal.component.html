@@ -1,12 +1,12 @@
 <div class="modal-wrapper">
-    <form class="data-input">
+    <form class="data-input" [formGroup]="form">
         <label>Info</label>
-        <select class="main-select">
-            <option selected hidden ngValue="null">Wallet</option>
+        <select class="main-select" formControlName="debt">
+            <option selected hidden  disabled value="Wallet" [ngValue]="null">Wallet</option>
             <option *ngFor="let debt of debts$ | async" [ngValue]="debt">{{ debt.name }}</option>
         </select>
         <label>Amount</label>
-        <input class="main-input" type="number" placeholder="Amount">
+        <input class="main-input" type="number" placeholder="Amount" formControlName="amount" min="0">
     </form>
-    <button class="modal-action-button" [disabled]="form.invalid">Add</button>
+    <button class="modal-action-button" [disabled]="form.invalid || !ableToSubmit" (click)="createPayment()">Add</button>
 </div>

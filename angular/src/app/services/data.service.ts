@@ -389,7 +389,7 @@ export class DataService {
   deleteCryptoWallet(wallet: EthereumWallet) {
     this._cryptoWallets.next(this._cryptoWallets.value.filter(ew => ew.id !== wallet.id));
 
-    return this.http.delete(`${this.url}${ApiEndpoints.ethKeys}${wallet.id}/`).pipe(catchError( (err: any) => { 
+    return this.http.delete(`${this.url}${ApiEndpoints.ethKeys}${wallet.id}/`).pipe(catchError((err: any) => {
       this._cryptoWallets.next([...this._cryptoWallets.value, wallet]);
       return err;
     }))
@@ -397,7 +397,7 @@ export class DataService {
 
   makeEthTransfer(transfer: EthereumTransfer) {
     return this.http.post(`${this.url}${ApiEndpoints.ethereumTransfer}`, transfer);
-  } 
+  }
 
   getUsersEtheremTransactions(force: boolean = false) {
     if (force || this._ethereumTransactions.value.length === 0) {
@@ -406,7 +406,7 @@ export class DataService {
     return this._ethereumTransactions.asObservable();
   }
 
-  getUsersDebts(force: boolean = true) {
+  getUsersDebts(force: boolean = false) {
     if (this._debts.value.length === 0 || force) {
       this.http.get<Debt[]>(`${this.url}${ApiEndpoints.debts}`).subscribe(debts => this._debts.next(debts));
     }
@@ -424,6 +424,13 @@ export class DataService {
   }
 
   createDebtPayment(payment: DebtPayment) {
-    return this.http.post(`${this.url}${ApiEndpoints.debts}`, payment).pipe(tap(() => this.getUsersDebts(true)));
+    return this.http.post<Debt>(`${this.url}${ApiEndpoints.debtPayment}`, payment).pipe(tap((debt) => {
+      this._debts.next(this._debts.value.map((d: Debt) => d.id === debt.id ? debt : d))
+    }));
   }
+
+  deleteDebt(debt: Debt) {
+    return this.http.delete(`${this.url}${ApiEndpoints.debts}${debt.id}/`).pipe(tap(() => this._debts.next(this._debts.value.filter(d => d.id !== debt.id))))
+  }
+
 }
