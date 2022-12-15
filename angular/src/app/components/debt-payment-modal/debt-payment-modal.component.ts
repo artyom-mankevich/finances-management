@@ -13,7 +13,7 @@ export class DebtPaymentModalComponent implements OnInit {
 
   form: FormGroup;
   payment: DebtPayment = {
-    debt: '',
+    id: '',
     amount: 0
   }
   ableToSubmit: boolean = true;
@@ -27,7 +27,7 @@ export class DebtPaymentModalComponent implements OnInit {
   
   createPayment() {
     this.ableToSubmit = false;
-    this.payment.debt = this.form.controls['debt'].value.id;
+    this.payment.id = this.form.controls['debt'].value.id;
     this.payment.amount = this.form.controls['amount'].value;
     this.ds.createDebtPayment(this.payment).subscribe(() => this.dialogRef.close(), error => this.ableToSubmit = true);
   }

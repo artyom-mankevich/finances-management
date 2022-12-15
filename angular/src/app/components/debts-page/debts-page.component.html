@@ -5,6 +5,6 @@
    </section>
    <h2>Debts</h2>
    <div class="debts">
-        <app-debt [debt]="debt" *ngFor="let debt of debts"></app-debt>
+        <app-debt [debt]="debt" *ngFor="let debt of debts$ | async"></app-debt>
    </div>
 </div>

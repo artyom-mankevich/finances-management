@@ -11,6 +11,6 @@ export interface Debt {
 }
 
 export interface DebtPayment {
-    debt: string,
+    id: string,
     amount: number
 }
