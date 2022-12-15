@@ -78,6 +78,11 @@ class Debt(models.Model):
     wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
     expires_at = models.DateField()
 
+    @transaction.atomic
+    def delete(self, using=None, keep_parents=False):
+        self.wallet.delete()
+        super().delete(using, keep_parents)
+
 
 class Transaction(models.Model):
     class Meta:

@@ -9,7 +9,7 @@ from django.utils import timezone
 from sklearn.linear_model import LinearRegression
 
 from base.utils import convert_currency
-from wallets.models import TransactionCategory, Transaction, WalletLog, Wallet
+from wallets.models import TransactionCategory, Transaction, WalletLog, Wallet, Debt
 from wallets.serializers import ExtendedTransactionCategorySerializer
 
 
@@ -79,9 +79,12 @@ def get_categories_total_amount(categories: list) -> Decimal | None:
 
 
 def get_current_wallets_balance(user_id) -> Decimal:
-    balances = Wallet.objects.filter(user_id=user_id).prefetch_related("currency").values(
-        "balance", "currency__code"
-    ).exclude(balance=0)
+    balances = (
+        Wallet.objects.filter(user_id=user_id, debt__isnull=True)
+        .prefetch_related("currency")
+        .values("balance", "currency__code")
+        .exclude(balance=0)
+    )
     current_balances_sum = sum(
         convert_currency(wallet["balance"], wallet["currency__code"])
         for wallet in balances
@@ -324,3 +327,11 @@ def get_grouped_transactions(transactions: list[dict], amount_type: str) -> dict
         )
 
     return result
+
+
+def pay_debt(debt: Debt, amount: Decimal) -> None:
+    if debt.wallet.balance + amount <= debt.wallet.goal:
+        debt.wallet.deposit(amount)
+    else:
+        debt.wallet.balance = debt.wallet.goal
+        debt.wallet.save()

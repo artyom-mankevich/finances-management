@@ -1,5 +1,9 @@
 from datetime import datetime
 
+from django.db import transaction
+from django.utils import timezone
+
+from decorations.models import Color
 from rest_framework import serializers, exceptions
 
 from wallets.models import (
@@ -52,14 +56,78 @@ class ExtendedWalletSerializer(WalletSerializer):
 class DebtSerializer(serializers.ModelSerializer):
     class Meta:
         model = Debt
-        read_only_fields = ("id", "user_id", "wallet")
-        fields = read_only_fields + ("expires_at",)
+        read_only_fields = ("id", "user_id")
+        fields = read_only_fields + ("expires_at", "currency", "balance", "name", "goal",)
 
-    wallet = WalletSerializer(read_only=True)
-    expires_at = serializers.SerializerMethodField()
+    expires_at = serializers.FloatField(required=True)
+    currency = serializers.PrimaryKeyRelatedField(
+        queryset=Currency.objects.all(), required=True
+    )
+    balance = serializers.DecimalField(
+        max_digits=30, decimal_places=10, coerce_to_string=False
+    )
+    name = serializers.CharField(required=True)
+    goal = serializers.DecimalField(
+        max_digits=30, decimal_places=10, coerce_to_string=False
+    )
 
-    def get_expires_at(self, obj: Debt) -> float:
-        return datetime.combine(obj.expires_at, datetime.min.time()).timestamp() * 1000
+    def to_representation(self, instance):
+        data = {
+            "id": instance.id,
+            "user_id": instance.user_id,
+            "expires_at": instance.expires_at,
+            "currency": instance.wallet.currency.code,
+            "balance": instance.wallet.balance,
+            "name": instance.wallet.name,
+            "goal": instance.wallet.goal,
+        }
+        if instance.expires_at:
+            data["expires_at"] = timezone.datetime.combine(
+                instance.expires_at, timezone.datetime.min.time()
+            ).timestamp() * 1000
+        return data
+
+    @transaction.atomic
+    def create(self, validated_data):
+        currency = validated_data.pop("currency")
+        balance = validated_data.pop("balance")
+        name = validated_data.pop("name")
+        goal = validated_data.pop("goal")
+        user_id = str(self.context["request"].user)
+
+        wallet = Wallet.objects.create(
+            user_id=user_id,
+            currency=currency,
+            balance=balance,
+            name=name,
+            goal=goal,
+            color=Color.objects.all().first(),
+        )
+        validated_data["wallet"] = wallet
+
+        validated_data["expires_at"] = timezone.datetime.fromtimestamp(
+            validated_data["expires_at"] / 1000
+        ).date()
+
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        currency = validated_data.pop("currency", instance.wallet.currency)
+        balance = validated_data.pop("balance", instance.wallet.balance)
+        name = validated_data.pop("name", instance.wallet.name)
+        goal = validated_data.pop("goal", instance.wallet.goal)
+
+        instance.wallet.currency = currency
+        instance.wallet.balance = balance
+        instance.wallet.name = name
+        instance.wallet.goal = goal
+        instance.wallet.save()
+
+        validated_data["expires_at"] = timezone.datetime.fromtimestamp(
+            validated_data["expires_at"] / 1000
+        ).date()
+
+        return super().update(instance, validated_data)
 
 
 class TransactionCategorySerializer(serializers.ModelSerializer):
