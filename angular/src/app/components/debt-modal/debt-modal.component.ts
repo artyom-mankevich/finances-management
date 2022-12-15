@@ -5,6 +5,7 @@ import { WalletModalModes } from 'src/app/enums/walletModalModes';
 import { Debt } from 'src/app/models/debt';
 import { DataStorageService } from 'src/app/services/data-storage.service';
 import { DataService } from 'src/app/services/data.service';
+import { ValidatorService } from 'src/app/services/validator.service';
 import { CurrencyValidator } from 'src/app/validators/currency.validator';
 
 @Component({
@@ -28,12 +29,12 @@ export class DebtModalComponent implements OnInit {
   modalMode = WalletModalModes.Create;
 
   form: FormGroup;
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dss: DataStorageService, private ds: DataService, private fb: FormBuilder, private cv: CurrencyValidator, private dialogRef: MatDialogRef<DebtModalComponent>) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dss: DataStorageService, private ds: DataService, private fb: FormBuilder, private cv: CurrencyValidator, private dialogRef: MatDialogRef<DebtModalComponent>, private vs: ValidatorService) {
     this.form = this.fb.group({
       name: [, Validators.required],
       currency: [, [Validators.required, this.cv.allowedCurrency.bind(this.cv)]],
       balance: [],
-      goal: [, Validators.required],
+      goal: [, [Validators.required]],
       expiresAt: [, Validators.required]
     });
     if (this.data) {
@@ -41,6 +42,9 @@ export class DebtModalComponent implements OnInit {
       this.modalMode = WalletModalModes.Update;
       this.updateFormValues();
     }
+    this.form.controls['goal'].valueChanges.subscribe(() => vs.cutOffNumber(this.form.controls['goal']));
+    this.form.controls['balance'].valueChanges.subscribe(() => vs.cutOffNumber(this.form.controls['balance']));
+
   }
 
   updateFormValues() {
@@ -52,6 +56,7 @@ export class DebtModalComponent implements OnInit {
       expiresAt: this.formatDate(this.debt.expiresAt)
     })
   }
+
   private formatDate(date: number) {
     const d = new Date(date);
     let month = '' + (d.getMonth() + 1);
@@ -63,7 +68,6 @@ export class DebtModalComponent implements OnInit {
   }
   
   modifyWallet() {
-    console.log(this.form.controls['expiresAt'].value);
     this.debt.name = this.form.controls['name'].value;
     this.debt.currency = this.form.controls['currency'].value;
     this.debt.balance = this.form.controls['balance'].value ? this.form.controls['balance'].value : 0;
@@ -85,5 +89,4 @@ export class DebtModalComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
 }

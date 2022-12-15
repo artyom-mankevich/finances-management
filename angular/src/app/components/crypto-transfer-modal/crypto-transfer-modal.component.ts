@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { EthereumTransfer } from 'src/app/models/ethereumTransfer';
 import { EthereumWallet } from 'src/app/models/ethereumWallet';
 import { DataService } from 'src/app/services/data.service';
+import { ValidatorService } from 'src/app/services/validator.service';
 
 @Component({
   selector: 'app-crypto-transfer-modal',
@@ -18,13 +19,14 @@ export class CryptoTransferModalComponent implements OnInit {
   transfer: EthereumTransfer | undefined;
   ableToTransfer: boolean = true;
 
-  constructor(private fb: FormBuilder, private ds: DataService, private dialogRef: MatDialogRef<CryptoTransferModalComponent>) {
+  constructor(private fb: FormBuilder,private vs: ValidatorService, private ds: DataService, private dialogRef: MatDialogRef<CryptoTransferModalComponent>) {
     this.form = this.fb.group({
       sourceWallet: [, Validators.required],
       amount: [, Validators.required],
       targetAddress: [, [Validators.required, Validators.pattern('^0x[a-fA-F0-9]{40}$')]],
       password: [, Validators.required]
     })
+    this.form.controls['amount'].valueChanges.subscribe(() => this.vs.cutOffNumber(this.form.controls['amount']))
   }
 
   ngOnInit(): void {

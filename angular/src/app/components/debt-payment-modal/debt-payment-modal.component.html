@@ -6,7 +6,7 @@
             <option *ngFor="let debt of debts$ | async" [ngValue]="debt">{{ debt.name }}</option>
         </select>
         <label>Amount</label>
-        <input class="main-input" type="number" placeholder="Amount" formControlName="amount" min="0">
+        <input class="main-input" type="number" placeholder="Amount" formControlName="amount" min="0.00000001">
     </form>
     <button class="modal-action-button" [disabled]="form.invalid || !ableToSubmit" (click)="createPayment()">Add</button>
 </div>

@@ -10,6 +10,7 @@ import { Wallet } from 'src/app/models/wallet';
 import { DataStorageService } from 'src/app/services/data-storage.service';
 import { DataService } from 'src/app/services/data.service';
 import { ExchangeRateService } from 'src/app/services/exchange-rate.service';
+import { ValidatorService } from 'src/app/services/validator.service';
 
 @Component({
   selector: 'app-transaction-modal',
@@ -37,7 +38,7 @@ export class TransactionModalComponent implements OnInit {
   }
 
   form: FormGroup;
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private fb: FormBuilder, public dss: DataStorageService, public ds: DataService, private ers: ExchangeRateService, private dialogRef: MatDialogRef<TransactionModalComponent>) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private vs:ValidatorService, private fb: FormBuilder, public dss: DataStorageService, public ds: DataService, private ers: ExchangeRateService, private dialogRef: MatDialogRef<TransactionModalComponent>) {
     this.form = this.fb.group({
       sourceAmount: [],
       targetAmount: [],
@@ -46,6 +47,8 @@ export class TransactionModalComponent implements OnInit {
       targetWallet: [],
       description: []
     })
+    this.form.controls['sourceAmount'].valueChanges.subscribe(() => this.vs.cutOffNumber(this.form.controls['sourceAmount']));
+    this.form.controls['targetAmount'].valueChanges.subscribe(() => this.vs.cutOffNumber(this.form.controls['targetAmount']));
 
     if (this.data) {
       this.modalMode = TransactionModalModes.Update;

@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { DebtPayment } from 'src/app/models/debt';
 import { DataService } from 'src/app/services/data.service';
+import { ValidatorService } from 'src/app/services/validator.service';
 
 @Component({
   selector: 'app-debt-payment-modal',
@@ -18,11 +19,12 @@ export class DebtPaymentModalComponent implements OnInit {
   }
   ableToSubmit: boolean = true;
   debts$ = this.ds.getUsersDebts();
-  constructor(private fb: FormBuilder, private ds: DataService, private dialogRef: MatDialogRef<DebtPaymentModalComponent>) {
+  constructor(private fb: FormBuilder, private vs: ValidatorService, private ds: DataService, private dialogRef: MatDialogRef<DebtPaymentModalComponent>) {
     this.form = this.fb.group({
       debt: [, Validators.required],
       amount: [ , [Validators.required, Validators.min(0)]]
     })
+    this.form.controls['amount'].valueChanges.subscribe(() => this.vs.cutOffNumber(this.form.controls['amount']))
   }
   
   createPayment() {
