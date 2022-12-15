@@ -7,8 +7,7 @@
         <div class="amount-info">
             <p class="amount">{{(debt.currency | currencySymbol) +  (debt.balance | shortNumber)}} / {{ (debt.currency | currencySymbol) +  (debt.goal | shortNumber) }}</p>
             <div class="color-name">
-                <div class="color"></div>
-                <p class="name">- {{ debt.name }}</p>
+                <p class="name">{{ debt.name }}</p>
             </div>
         </div>
         <p class="expiration-date">Expires at:<br>{{ debt.expiresAt | date}}</p>

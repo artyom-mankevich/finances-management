@@ -42,13 +42,6 @@
     flex-direction: column;
 }
 
-.color {
-    width: 36px;
-    height: 36px;
-    background-color: #F6BA1B;
-    border-radius: 9px;
-}
-
 .description {
     display: flex;
     flex-direction: column;

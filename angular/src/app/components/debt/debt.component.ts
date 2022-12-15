@@ -64,7 +64,8 @@ export class DebtComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.chartData[0].data = [this.debt.balance, this.debt.goal - this.debt.balance];
+    let upaidAmount = this.debt.goal - this.debt.balance > 0 ? this.debt.goal - this.debt.balance : 0;
+    this.chartData[0].data = [this.debt.balance, upaidAmount];
     this.chart?.update();
   }
 

@@ -2,7 +2,7 @@
     <form class="data-input" [formGroup]="form">
         <label>Info</label>
         <select class="main-select" formControlName="debt">
-            <option selected hidden  disabled value="Wallet" [ngValue]="null">Wallet</option>
+            <option selected hidden  disabled value="Debt" [ngValue]="null">Debt</option>
             <option *ngFor="let debt of debts$ | async" [ngValue]="debt">{{ debt.name }}</option>
         </select>
         <label>Amount</label>
