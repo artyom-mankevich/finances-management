@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
         height: 50,
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 30,
+        borderRadius: 10,
     },
     categoriesScrollView: {
         width: 290,
