@@ -3,9 +3,10 @@
         <label>Info</label>
         <select class="main-select">
             <option selected hidden ngValue="null">Wallet</option>
+            <option *ngFor="let debt of debts$ | async" [ngValue]="debt">{{ debt.name }}</option>
         </select>
         <label>Amount</label>
         <input class="main-input" type="number" placeholder="Amount">
     </form>
-    <button class="modal-action-button">Add</button>
+    <button class="modal-action-button" [disabled]="form.invalid">Add</button>
 </div>

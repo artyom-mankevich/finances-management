@@ -1,14 +1,17 @@
 <div class="modal-wrapper">
-    <form class="data-input">
+    <form class="data-input" [formGroup]="form">
         <label>Info</label>
-        <input class="main-input" type="text" placeholder="Name">
-        <select class="main-select">
-            <option selected hidden ngValue="null">Wallet</option>
-        </select>
+        <input class="main-input" type="text" placeholder="Name" formControlName="name">
+        <input class="main-input" list="currencies" placeholder="Currency" formControlName="currency" formControlName="currency">
+        <datalist name="currencies" id="currencies">
+            <option *ngFor="let currency of dss.currencies" value="{{currency.code}}">{{currency.name}}
+            </option>
+        </datalist>
         <label>Amount</label>
-        <input class="main-input" type="number" placeholder="Value">
-        <input class="main-input" type="number" placeholder="Paid off (optional)">
-        <input class="main-input date" type="date" placeholder="Expires at">
+        <input class="main-input" type="number" placeholder="Final amount" formControlName="goal" min="0">
+        <input class="main-input" type="number" placeholder="Current value (optional)" formControlName="balance">
+        <label>Expires at</label>
+        <input class="main-input date" type="date" placeholder="Expires at" formControlName="expiresAt">
     </form>
-    <button class="modal-action-button">Create</button>
+    <button class="modal-action-button" [disabled]="form.invalid">{{ modalMode }}</button>
 </div>

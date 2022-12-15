@@ -8,6 +8,7 @@ import { TransactionTypes } from '../enums/transactionTypes';
 import { AnalyticsCategoires } from '../models/analyticsCategories';
 import { Color } from '../models/color';
 import { Currency } from '../models/currency';
+import { Debt, DebtPayment } from '../models/debt';
 import { EthereumTransfer, EthereumTransferDisplay } from '../models/ethereumTransfer';
 import { EthereumWallet } from '../models/ethereumWallet';
 import { EthKeys } from '../models/ethKeys';
@@ -43,6 +44,7 @@ export class DataService {
   private _transactionsAmountChart: BehaviorSubject<TransactionsChart | undefined>;
   private _cryptoWallets: BehaviorSubject<EthereumWallet[]>;
   private _ethereumTransactions: BehaviorSubject<EthereumTransferDisplay[]>
+  private _debts: BehaviorSubject<Debt[]>;
   stockChartPeriod: ChartDateOptions = ChartDateOptions.Week;
   transactionFilter: TransactionFilters = TransactionFilters.All;
   walletsChartPeriod: ChartDateOptions = ChartDateOptions.Week;
@@ -63,6 +65,7 @@ export class DataService {
     this._transactionsAmountChart = new BehaviorSubject<TransactionsChart | undefined>(undefined);
     this._ethereumTransactions = new BehaviorSubject<EthereumTransferDisplay[]>([]);
     this._cryptoWallets = new BehaviorSubject<EthereumWallet[]>([]);
+    this._debts = new BehaviorSubject<Debt[]>([]);
     this.getAvailableIcons();
     this._prefetchData();
   }
@@ -401,5 +404,26 @@ export class DataService {
       this.http.get<EthereumTransferDisplay[]>(`${this.url}${ApiEndpoints.ethereumtransactions}`).subscribe(val => this._ethereumTransactions.next(val));
     }
     return this._ethereumTransactions.asObservable();
+  }
+
+  getUsersDebts(force: boolean = true) {
+    if (this._debts.value.length === 0 || force) {
+      this.http.get<Debt[]>(`${this.url}${ApiEndpoints.debts}`).subscribe(debts => this._debts.next(debts));
+    }
+    return this._debts.asObservable();
+  }
+
+  createDebt(debt: Debt) {
+    return this.http.post<Debt>(`${this.url}${ApiEndpoints.debts}`, debt).pipe(tap((debt) => this._debts.next([debt, ...this._debts.value])))
+  }
+
+  updateDebt(debt: Debt) {
+    return this.http.put<Debt>(`${this.url}${ApiEndpoints.debts}${debt.id}/`, debt).pipe(tap((debt) => {
+      this._debts.next(this._debts.value.map((d: Debt) => d.id === debt.id ? debt : d))
+    }))
+  }
+
+  createDebtPayment(payment: DebtPayment) {
+    return this.http.post(`${this.url}${ApiEndpoints.debts}`, payment).pipe(tap(() => this.getUsersDebts(true)));
   }
 }

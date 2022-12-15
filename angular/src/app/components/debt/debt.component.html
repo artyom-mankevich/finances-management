@@ -1,17 +1,16 @@
-<div class="debt">
+<div class="debt" (click)="openDebtEditModal()">
     <div class="chart-wrapper">
-        <canvas baseChart [type]="'doughnut'" [datasets]="chartData" [labels]="chartLabels.labels" [options]="chartOptions">
+        <canvas baseChart [type]="'doughnut'" [datasets]="chartData" [options]="chartOptions">
         </canvas>
     </div>
     <div class="description">
         <div class="amount-info">
-            <p class="amount">$3705 / $10k</p>
+            <p class="amount">{{(debt.currency | currencySymbol) +  (debt.balance | shortNumber)}} / {{ (debt.currency | currencySymbol) +  (debt.goal | shortNumber) }}</p>
             <div class="color-name">
                 <div class="color"></div>
-                <p class="name">- name</p>
+                <p class="name">- {{ debt.name }}</p>
             </div>
         </div>
-        <p class="expiration-date">Expires at:<br>22 December 2022</p>
-
+        <p class="expiration-date">Expires at:<br>{{ debt.expiresAt | date}}</p>
     </div>
 </div>

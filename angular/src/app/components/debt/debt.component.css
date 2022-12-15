@@ -8,6 +8,14 @@
     align-items: center;
     gap: 20px;
     max-width: 450px;
+    transition-duration: 200ms;
+    cursor: pointer;
+    border-radius: 20px;
+    padding: 10px 20px;
+}
+
+.debt:hover {
+    background-color: #f7f7f7;
 }
 
 .expiration-date, 
