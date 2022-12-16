@@ -5,6 +5,7 @@ import WalletInputs from "./WalletInputs";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ngrokConfig from "../ngrok.config";
 import {FontAwesome5} from "@expo/vector-icons";
+import GestureRecognizer from "react-native-swipe-gestures";
 
 export default function CreateWallet(props) {
     const [modalVisible, setModalVisible] = useState(false);
@@ -66,38 +67,45 @@ export default function CreateWallet(props) {
 
     return (
         <View>
-            <Modal
-                isVisible={modalVisible}
-                backdropColor={'#000000'}
-                backdropOpacity={0.8}
-                animationIn={"zoomInDown"}
-                animationOut={"zoomOutUp"}
-                animationInTiming={600}
-                animationOutTiming={600}
-                backdropTransitionInTiming={600}
-                backdropTransitionOutTiming={600}
-            >
-            <WalletInputs
-                name={name}
-                setName={setName}
-                currency={currency}
-                setCurrency={setCurrency}
-                currencyList={Array.from(new Set(currencyList))}
-                balance={balance}
-                setBalance={setBalance}
-                goal={goal}
-                setGoal={setGoal}
-                color={color}
-                setColor={setColor}
-                lastUpdated={lastUpdated}
-                setLastUpdated={setLastUpdated}
-                colorList={Array.from(new Set(colorList))}
-                onCancel={onCancel}
-                onSubmit={onSubmit}
-                onBtnText={"Create"}
-                createElement={true}
-            />
-            </Modal>
+            <GestureRecognizer
+                onSwipeLeft={() => setModalVisible(false)}
+                onSwipeRight={() => setModalVisible(false)}
+                onSwipeUp={() => setModalVisible(false)}
+                onSwipeDown={() => setModalVisible(false)}
+                >
+                <Modal
+                    isVisible={modalVisible}
+                    backdropColor={'#000000'}
+                    backdropOpacity={0.8}
+                    animationIn={"zoomInDown"}
+                    animationOut={"zoomOutUp"}
+                    animationInTiming={600}
+                    animationOutTiming={600}
+                    backdropTransitionInTiming={600}
+                    backdropTransitionOutTiming={600}
+                >
+                    <WalletInputs
+                        name={name}
+                        setName={setName}
+                        currency={currency}
+                        setCurrency={setCurrency}
+                        currencyList={Array.from(new Set(currencyList))}
+                        balance={balance}
+                        setBalance={setBalance}
+                        goal={goal}
+                        setGoal={setGoal}
+                        color={color}
+                        setColor={setColor}
+                        lastUpdated={lastUpdated}
+                        setLastUpdated={setLastUpdated}
+                        colorList={Array.from(new Set(colorList))}
+                        onCancel={onCancel}
+                        onSubmit={onSubmit}
+                        onBtnText={"Create"}
+                        createElement={true}
+                    />
+                </Modal>
+            </GestureRecognizer>
             <View style={styles.addWalletView}>
                 <TouchableOpacity
                     style={styles.addWalletBtn}

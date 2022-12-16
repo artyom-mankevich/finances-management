@@ -3,8 +3,6 @@ import {Feather, FontAwesome} from "@expo/vector-icons";
 import {ReduceFriendlyNumbers} from "./WalletValidation";
 import getSymbolFromCurrency from "currency-symbol-map";
 import {useState} from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import ngrokConfig from "../ngrok.config";
 
 export default function Wallet(props) {
     const [enabled, setEnabled] = useState(false);

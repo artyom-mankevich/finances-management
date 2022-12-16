@@ -1,12 +1,14 @@
 import {ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import getSymbolFromCurrency from "currency-symbol-map";
-import { Picker } from '@react-native-picker/picker';
 import Wallet from "./Wallet";
 import {NumberInputValidation, NameConstraint} from "./WalletValidation";
+import {FontAwesome} from "@expo/vector-icons";
+import SelectDropdown from "react-native-select-dropdown";
 
 export default function WalletInputs(props) {
     const timeMillis = new Date().getTime();
+
 
 return (
     <View style={styles.container}>
@@ -32,37 +34,32 @@ return (
                     />
                 </View>
                 <View style={styles.dropdownContainer}>
-                    <View style={styles.pickerContainer}>
-                        <Picker
-                            key={timeMillis}
-                            itemStyle={styles.pickerItem}
-                            style={styles.Picker}
-                            selectedValue={props.currency}
-                            onValueChange={
-                                (itemValue, itemIndex) => {
-                                    props.setCurrency(itemValue);
-                                }
+                    <View style={styles.selectedContainer}>
+                        <SelectDropdown
+                            data={
+                                props.currencyList.map((currency) => (
+                                    currency.code + ' ' + currency.name
+                                ))
                             }
-                        >
-                            {
-                                props.currencyList.map((item) => (
-                                        <Picker.Item
-                                            key={props.currencyList.indexOf(item)}
-                                            defaultValue={props.currency}
-                                            label=
-                                                {
-                                                    getSymbolFromCurrency(item.code) ?
-                                                        (
-                                                            getSymbolFromCurrency(item.code) + "\t\t" + item.code + "\t\t" + item.name
-                                                        ) :  (
-                                                            item.code + "\t\t" + item.name)
-                                                }
-                                            value={item.code}
-                                            onPress={(code) => props.setCurrency(code)}
-                                        />
-                                    ))
-                            }
-                        </Picker>
+                            onSelect={(selectedItem, index) => {
+                                props.currencyList.map((item) => {
+                                    if (item.code.toLowerCase() === selectedItem.substring(0, 3).toLowerCase()) {
+                                        props.setCurrency(item.code);
+                                    }
+                                })
+                            }}
+                            defaultValue={getSymbolFromCurrency(props.currency.code) + ' ' + props.currency.code + ' ' + props.currency.name}
+                            defaultButtonText={<Text style={styles.defaultButtonText}>Select Currency</Text>}
+                            buttonTextAfterSelection={(selectedItem, index) => (selectedItem)}
+                            rowTextForSelection={(item, index) => (item)}
+                            buttonStyle={styles.dropdownBtnStyleWallet}
+                            buttonTextStyle={styles.dropdownBtnTxtStyle}
+                            renderDropdownIcon={isOpened => (
+                                <FontAwesome name={isOpened ? 'chevron-up' : 'chevron-down'} color={'#444'} size={14} />
+                            )}
+                            dropdownIconPosition={'right'}
+                            />
+
                     </View>
                 </View>
                 <View style={styles.inputView}>
@@ -134,23 +131,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 30,
     },
-    pickerContainer: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 20,
-        marginLeft: 100,
-        width: 300,
-        height: 50,
-        backgroundColor: '#ECECECFF',
-        marginBottom: 5,
-    },
-    Picker: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: 275,
-        height: 50,
-        backgroundColor: 'rgba(0,0,0,0)',
-    },
     modalSubmit: {
         flexDirection: 'row',
         width: '100%',
@@ -197,5 +177,22 @@ const styles = StyleSheet.create({
         color: '#464646',
         fontSize: 18,
         plaseholderTextColor: '#464646',
+    },
+    dropdownContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 20,
+        marginLeft: 100,
+        marginBottom: 5,
+        width: 300,
+    },
+    dropdownBtnStyleWallet: {
+        width: 300,
+        borderRadius: 20,
+    },
+    defaultButtonText: {
+        color: '#8c8c8c',
+        fontSize: 20,
+
     }
 });
