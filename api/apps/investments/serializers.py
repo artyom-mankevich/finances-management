@@ -43,6 +43,6 @@ class StockSerializer(serializers.ModelSerializer):
     def validate_ticker(self, value):
         if value is None:
             raise serializers.ValidationError("Ticker cannot be null")
-        value = Ticker.objects.get_or_create(code=value)[0]
+        value = Ticker.objects.get_or_create(code=value.upper())[0]
 
         return value
