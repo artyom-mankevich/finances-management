@@ -1,0 +1,42 @@
+@import url('../../common/styles/inputs.css');
+@import url('../../common/styles/buttons.css');
+
+
+.data-input {
+    display: flex;
+    flex-direction: column;
+    width: 320px;
+}
+
+.settings-wrapper {
+    width: max-content;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.home-button {
+    margin-left: 44px;
+    cursor: pointer;
+    transition-duration: 200ms;
+    width: max-content
+}
+
+.home-button:hover {
+    transform: scale(1.05);
+}
+
+.add-button:disabled {
+    background-color: var(--text-gray);
+    border-color: var(--text-gray);
+}

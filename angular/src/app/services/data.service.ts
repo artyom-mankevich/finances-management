@@ -5,6 +5,7 @@ import { ApiEndpoints, environment } from 'src/environments/environment';
 import { ChartDateOptions } from '../enums/chartDateOptions';
 import { TransactionFilters } from '../enums/transactionFilters';
 import { TransactionTypes } from '../enums/transactionTypes';
+import { AccountSettings } from '../models/accountSettings';
 import { AnalyticsCategoires } from '../models/analyticsCategories';
 import { Color } from '../models/color';
 import { Currency } from '../models/currency';
@@ -45,6 +46,7 @@ export class DataService {
   private _cryptoWallets: BehaviorSubject<EthereumWallet[]>;
   private _ethereumTransactions: BehaviorSubject<EthereumTransferDisplay[]>
   private _debts: BehaviorSubject<Debt[]>;
+  private _userSettings: BehaviorSubject<AccountSettings | undefined>
   stockChartPeriod: ChartDateOptions = ChartDateOptions.Week;
   transactionFilter: TransactionFilters = TransactionFilters.All;
   walletsChartPeriod: ChartDateOptions = ChartDateOptions.Week;
@@ -66,6 +68,7 @@ export class DataService {
     this._ethereumTransactions = new BehaviorSubject<EthereumTransferDisplay[]>([]);
     this._cryptoWallets = new BehaviorSubject<EthereumWallet[]>([]);
     this._debts = new BehaviorSubject<Debt[]>([]);
+    this._userSettings = new BehaviorSubject<AccountSettings | undefined>(undefined);
     this.getAvailableIcons();
     this._prefetchData();
   }
@@ -77,6 +80,7 @@ export class DataService {
   }
 
   private _prefetchData() {
+    this.getUserSettings();
     this.getUserWallets();
     this.getUserCategories();
     this.getUserTransactions(this.transactionFilter);
@@ -431,6 +435,24 @@ export class DataService {
 
   deleteDebt(debt: Debt) {
     return this.http.delete(`${this.url}${ApiEndpoints.debts}${debt.id}/`).pipe(tap(() => this._debts.next(this._debts.value.filter(d => d.id !== debt.id))))
+  }
+
+  saveUserSettings(accountSettings: AccountSettings) {
+    return this.http.put<AccountSettings>(`${this.url}${ApiEndpoints.userSettings}${accountSettings.id}/`, accountSettings).pipe(tap(val => {
+      this._userSettings.next(val);
+      this.getUsersWalletsData(this.walletsChartPeriod, true);
+      this.getUsersTopCategories(true);
+      this.getUsersTransactionsData(true);
+      this.getUserStockChart(this.stockChartPeriod, true);
+      this.getUserStocks(true);
+    }));
+  }
+
+  getUserSettings(): Observable<AccountSettings | undefined> {
+    if (!this._userSettings.value) {
+      this.http.get<AccountSettings>(`${this.url}${ApiEndpoints.userSettings}`).subscribe(val => this._userSettings.next(val));
+    }
+    return this._userSettings.asObservable();
   }
 
 }

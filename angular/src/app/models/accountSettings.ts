@@ -1,5 +1,8 @@
 export interface AccountSettings {
-    userId: string
+    id: string | null,
+    userId: string | null,
     dateFormat: string,
-    mainCurrency: string
+    currencyFormat: string, // left || right
+    startPage: string,
+    mainCurrency: string // code
 }

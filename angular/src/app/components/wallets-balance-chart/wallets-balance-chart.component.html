@@ -1,6 +1,6 @@
 <div class="chart-info">
     <h2 class="name">Wallets</h2>
-    <p class="value">{{ totalBalance | shortNumber}}</p>
+    <p class="value" *ngIf="userSettings$ | async as us">{{ ( totalBalance | shortNumber ) | currencyLocation : (us.mainCurrency | currencySymbol) : us.currencyFormat}}</p>
 </div>
 <div class="chart-wrapper">
     <canvas baseChart [datasets]="chartData" [labels]="chartLabels.labels" [options]="chartOptions">

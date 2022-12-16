@@ -1,4 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { AccountSettings } from 'src/app/models/accountSettings';
 import { EthereumWallet } from 'src/app/models/ethereumWallet';
 import { DataService } from 'src/app/services/data.service';
 
@@ -17,7 +19,7 @@ export class CryptoWalletComponent implements OnInit {
   }
   constructor(private ds: DataService) { }
 
-
+  userSettings$: Observable<AccountSettings | undefined> = this.ds.getUserSettings();
   deleteWallet() {
     this.ds.deleteCryptoWallet(this.ethereumWallet).subscribe();
   }

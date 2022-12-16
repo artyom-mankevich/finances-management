@@ -1,4 +1,4 @@
-<section class="stock-wrapper">
+<section class="stock-wrapper" *ngIf="userSettings$ | async as us">
     <div class="stock-info">
         <p class="stock-ticker">{{ stock.ticker }}</p>
         <p class="shares-amount">{{ stock.amount }}</p>
@@ -8,6 +8,6 @@
             <mat-icon class="stock-modify-button" fontIcon="material-icons-round" (click)="editStock()">edit</mat-icon>
             <mat-icon class="stock-modify-button" fontIcon="material-icons-round" (click)="deleteStock()">close</mat-icon>
         </div>
-        <p *ngIf="stock.price" class="stock-value">${{ + stock.price | shortNumber}}</p>
+        <p *ngIf="stock.price" class="stock-value">{{ (stock.price | shortNumber) | currencyLocation : (us.mainCurrency | currencySymbol) : us.currencyFormat}}</p>
     </section>
 </section>

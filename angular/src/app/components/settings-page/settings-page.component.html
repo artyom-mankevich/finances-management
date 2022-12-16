@@ -1,0 +1,28 @@
+<h1 routerLink="/home" class="home-button">Home</h1>
+<div class="settings-wrapper" *ngIf="userSettings$ | async">
+    <form class="data-input" [formGroup]="form">
+        <label>Date format</label>
+        <select class="main-select" formControlName="dateFormat">
+            <option *ngFor="let df of dateFormat | keyvalue" [ngValue]="df.value" [selected]="df.value === currentSettings.dateFormat">{{ df.value }}</option>
+        </select>
+        <label>Main currency</label>
+        <input class="main-input" list="currencies" placeholder="Currency" value="{{currentSettings.mainCurrency }}" formControlName="mainCurrency">
+        <datalist name="currencies" id="currencies">
+            <option *ngFor="let currency of dss.currencies" value="{{currency.code}}">{{currency.name}}
+            </option>
+        </datalist>
+        <label for="">Currency format</label>
+        <select class="main-select" formControlName="currencyFormat">
+            <option [ngValue]="cf.value" *ngFor="let cf of currencyFormat | keyvalue" [selected]="cf.value === currentSettings.currencyFormat">{{ cf.value }}</option>
+        </select>
+        <label>Starting page</label>
+        <select class="main-select" formControlName="startingPage">
+            <option [ngValue]="page.value" *ngFor="let page of pages | keyvalue" [selected]="page.value === currentSettings.startPage">{{ page.value }}</option>
+        </select>
+    </form>
+    <div class="action-buttons">
+        <button class="add-button" [disabled]="form.invalid || !ableToSubmit" (click)="saveSettings()">Save</button>
+        <button class="secondary-button" (click)="logout()">Logout</button>
+    </div>
+
+</div>
