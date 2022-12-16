@@ -28,6 +28,8 @@ export default function TransactionList(props) {
     const [description, setDescription] = useState('');
     const [color, setColor] = useState('');
     const [transactionId, setTransactionId] = useState('');
+    const [transactionCount, setTransactionCount] = useState(0);
+    const [transactionNext, setTransactionNext] = useState('');
 
     const getTransactionsList = async () => {
         const accessToken = await AsyncStorage.getItem('accessToken');
@@ -40,8 +42,28 @@ export default function TransactionList(props) {
         })
             .then((response) => response.json())
             .then((responseJson) => {
-                //console.log("responseJson.result: ", responseJson.results);
+                setTransactionCount(responseJson.count);
+                responseJson.count > 15 ? setTransactionNext(responseJson.next.toString()) : setTransactionNext('');
                 setTransactions(JSON.parse(JSON.stringify(responseJson.results)));
+            })
+            .catch((error) =>{
+                console.error(error);
+            });
+    }
+
+    const getTransactionsListNext = async() => {
+        const accessToken = await AsyncStorage.getItem('accessToken');
+        return await fetch(transactionNext.replace('http', 'https'), {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`,
+            }
+        })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                setTransactions(transactions.concat(responseJson.results));
+                setTransactionCount(transactionCount - 15);
             })
             .catch((error) =>{
                 console.error(error);
@@ -571,6 +593,21 @@ export default function TransactionList(props) {
                     </View>
                     ))
                 }
+                <View style={{justifyContent: 'center', alignItems: 'center', marginTop: 10, marginBottom: 10}}>
+                {
+                    transactionCount > 15 &&
+                    <View style={styles.loadMoreContainer}>
+                        <TouchableOpacity
+                            style={styles.loadMoreButton}
+                            onPress={() => {
+                                getTransactionsListNext(transactionNext).then();
+                            }}
+                        >
+                            <Text style={styles.loadMoreText}>Show more</Text>
+                        </TouchableOpacity>
+                    </View>
+                }
+                </View>
             </View>
             </ScrollView>
             </View>
@@ -614,6 +651,22 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         borderRadius: 10,
+    },
+    loadMoreContainer: {
+        backgroundColor: '#ffffff',
+        color: '#7D848FFF',
+        borderRadius: 10,
+        width: 100,
+        height: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: .5,
+        borderColor: '#3E68D1FF',
+    },
+    loadMoreText: {
+        color: '#3E68D1FF',
+        fontSize: 16,
+        fontWeight: 'bold',
     },
     transactionContainer: {
         flexDirection: 'row',
