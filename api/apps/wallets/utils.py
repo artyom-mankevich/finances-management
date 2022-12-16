@@ -166,7 +166,7 @@ def get_predicted_balance(last_balance: Decimal, user_id: str) -> dict:
 
 
 def get_wallets_chart_data(period: str, user_id: str) -> dict:
-    current_currency = AccountSettings.objects.get(user_id=user_id).currency.code
+    current_currency = AccountSettings.objects.get(user_id=user_id).main_currency.code
     start_date, end_date = get_chart_period_dates(period)
 
     logs = WalletLog.objects.filter(
