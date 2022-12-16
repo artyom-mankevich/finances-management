@@ -1,5 +1,5 @@
+from django.http import Http404
 from rest_framework.decorators import action
-from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import (
     RetrieveModelMixin,
     DestroyModelMixin,
@@ -14,9 +14,10 @@ from crypto.serializers import EthKeysSerializer
 from crypto.utils import (
     validate_transfer_args,
     transfer_eth,
-    get_eth_transactions_for_addresses, set_eth_balance_for_addresses
+    get_eth_transactions_for_addresses, set_eth_balance_for_addresses, 
 )
 
+from base.utils import raw_get_object_or_404
 
 class EthKeysViewSet(
     GenericViewSet,
@@ -28,7 +29,7 @@ class EthKeysViewSet(
     serializer_class = EthKeysSerializer
 
     def get_queryset(self):
-        return EthKeys.objects.filter(user_id=self.request.user)
+        return EthKeys.objects.raw(f"SELECT * FROM {EthKeys._meta.db_table} WHERE user_id=%s", [str(self.request.user)])
 
     def list(self, request, *args, **kwargs):
         response = super().list(request, *args, **kwargs)
@@ -44,7 +45,7 @@ class EthKeysViewSet(
         amount = request.data.get("amount")
 
         validate_transfer_args(password, eth_keys_id, to_address, amount)
-        eth_keys = get_object_or_404(self.get_queryset(), id=eth_keys_id)
+        eth_keys = raw_get_object_or_404(EthKeys, field='id', id=eth_keys_id)
 
         _hash = transfer_eth(password, eth_keys, to_address, amount)
         return Response({"hash": _hash})
@@ -53,7 +54,16 @@ class EthKeysViewSet(
         detail=False, methods=["GET"], url_path="transactions", url_name="transactions"
     )
     def transactions(self, request, *args, **kwargs):
-        addresses = self.get_queryset().values_list("address", flat=True)
+        addresses = [wallet.address for wallet in EthKeys.objects.raw(f"SELECT id, address FROM {EthKeys._meta.db_table} WHERE user_id=%s", [str(self.request.user)])]
         transactions = get_eth_transactions_for_addresses(addresses)
 
         return Response(transactions, 200)
+
+    def get_object(self):
+        try:
+            id = self.kwargs.get("pk")
+            if not id:
+                raise IndexError
+            return EthKeys.objects.raw(f'SELECT * FROM {EthKeys._meta.db_table} WHERE id=%s', [id])[0]
+        except IndexError:
+            raise Http404("Couldn't find object")
