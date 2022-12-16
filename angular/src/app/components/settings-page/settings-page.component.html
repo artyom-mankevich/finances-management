@@ -17,11 +17,7 @@
         </select>
         <label>Starting page</label>
         <select class="main-select" formControlName="startingPage">
-            <option [ngValue]="page.value" *ngFor="let page of pages | keyvalue" [selected]="page.value === currentSettings.startingPage">{{ page.value }}</option>
-        </select>
-        <label>First day of the week</label>
-        <select class="main-select" formControlName="firstDay">
-            <option *ngFor="let day of startingDay | keyvalue" [selected]="currentSettings.firstDay === day.value" >{{ day.key }}</option>
+            <option [ngValue]="page.value" *ngFor="let page of pages | keyvalue" [selected]="page.value === currentSettings.startPage">{{ page.value }}</option>
         </select>
     </form>
     <div class="action-buttons">

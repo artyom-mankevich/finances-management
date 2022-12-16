@@ -438,7 +438,14 @@ export class DataService {
   }
 
   saveUserSettings(accountSettings: AccountSettings) {
-    return this.http.post<AccountSettings>(`${this.url}${ApiEndpoints.userSettings}`, accountSettings).pipe(tap(val => this._userSettings.next(val)));
+    return this.http.put<AccountSettings>(`${this.url}${ApiEndpoints.userSettings}${accountSettings.id}/`, accountSettings).pipe(tap(val => {
+      this._userSettings.next(val);
+      this.getUsersWalletsData(this.walletsChartPeriod, true);
+      this.getUsersTopCategories(true);
+      this.getUsersTransactionsData(true);
+      this.getUserStockChart(this.stockChartPeriod, true);
+      this.getUserStocks(true);
+    }));
   }
 
   getUserSettings(): Observable<AccountSettings | undefined> {
@@ -448,7 +455,4 @@ export class DataService {
     return this._userSettings.asObservable();
   }
 
-  getUserSettingsValue() {
-    return this._userSettings.value;
-  }
 }

@@ -12,7 +12,7 @@ export class SidemenuComponent implements OnInit {
   constructor(private router: Router, private ds: DataService) {
     this.ds.getUserSettings().subscribe(val =>{
       if (val) {
-        this.changeCurrentPage(Pages[val.startingPage as keyof typeof Pages]);
+        this.changeCurrentPage(Pages[val.startPage as keyof typeof Pages]);
       }
     })
    }

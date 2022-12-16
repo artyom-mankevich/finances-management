@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService } from '@auth0/auth0-angular';
 import { Observable, tap } from 'rxjs';
 import { CurrencyFormat } from 'src/app/enums/currencyFormat';
@@ -22,11 +23,11 @@ export class SettingsPageComponent implements OnInit {
   form: FormGroup;
   ableToSubmit: boolean = true;
   currentSettings: AccountSettings = {
+    id: null,
     mainCurrency: 'USD',
     userId: null,
     dateFormat: DateFormat.long,
-    firstDay: 7,
-    startingPage: 'Overview',
+    startPage: 'Overview',
     currencyFormat: 'left'
   };
   dateFormat = DateFormat;
@@ -38,12 +39,11 @@ export class SettingsPageComponent implements OnInit {
       this.updateForm(); 
     }
   }));
-  constructor(public dss: DataStorageService, private auth: AuthService, private ds: DataService, private fb: FormBuilder, private cv: CurrencyValidator) {
+  constructor(public dss: DataStorageService, private auth: AuthService, private ds: DataService, private fb: FormBuilder, private cv: CurrencyValidator, private router: Router) {
     this.form = this.fb.group({
       mainCurrency: [this.currentSettings?.mainCurrency, [Validators.required,  this.cv.allowedCurrency.bind(this.cv)]],
       dateFormat: [this.currentSettings?.dateFormat, Validators.required],
-      firstDay: [this.currentSettings?.firstDay, Validators.required],
-      startingPage: [this.currentSettings?.startingPage, Validators.required],
+      startingPage: [this.currentSettings?.startPage, Validators.required],
       currencyFormat: [this.currentSettings?.currencyFormat, Validators.required]
     })
   }
@@ -52,8 +52,7 @@ export class SettingsPageComponent implements OnInit {
     this.form.patchValue({
       mainCurrency: this.currentSettings?.mainCurrency,
       dateFormat: this.currentSettings?.dateFormat,
-      firstDay: this.currentSettings?.firstDay,
-      startingPage: this.currentSettings?.startingPage,
+      startingPage: this.currentSettings?.startPage,
       currencyFormat: this.currentSettings?.currencyFormat
     })
   }
@@ -67,14 +66,14 @@ export class SettingsPageComponent implements OnInit {
   saveSettings() {
     this.ableToSubmit = false;
     this.currentSettings = {
+      id: this.currentSettings.id,
       mainCurrency: this.form.controls['mainCurrency'].value,
       userId: null,
       dateFormat: this.form.controls['dateFormat'].value,
-      firstDay: this.form.controls['firstDay'].value,
-      startingPage: this.form.controls['startingPage'].value,
+      startPage: this.form.controls['startingPage'].value,
       currencyFormat: this.form.controls['currencyFormat'].value
     }
-    this.ds.saveUserSettings(this.currentSettings);
+    this.ds.saveUserSettings(this.currentSettings).subscribe(() => { this.router.navigateByUrl('/home') }, error => this.ableToSubmit = true);
   }
 
 }

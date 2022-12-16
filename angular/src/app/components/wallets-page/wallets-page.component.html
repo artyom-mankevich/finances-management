@@ -7,8 +7,7 @@
         <rect x="119" y="44" width="7" height="66" rx="3.5" fill="white" />
         <rect x="156" y="74" width="7" height="66" rx="3.5" transform="rotate(90 156 74)" fill="white" />
     </svg>
-    <div *ngFor="let wallet of wallets$ | async" class="wallet-wrapper" (click)="selectWallet(wallet); scroll(history)">
+    <div *ngFor="let wallet of wallets$ | async" class="wallet-wrapper" (click)="selectWallet(wallet);">
         <app-wallet [wallet]="wallet" [selected]="wallet === selectedWallet"></app-wallet>
     </div>
 </div>
-<h2 #history>History</h2>
