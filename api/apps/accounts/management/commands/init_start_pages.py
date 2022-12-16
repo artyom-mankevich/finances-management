@@ -15,6 +15,7 @@ class Command(BaseCommand):
             "Transactions",
             "Wallets",
             "Analytics",
+            "Investments",
         ]
         self.stdout.write(
             self.style.SUCCESS("START - Creating missing StartPage objects")
