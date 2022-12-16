@@ -8,13 +8,13 @@
             </option>
         </datalist>
         <label>Amount</label>
-        <input class="main-input" type="number" placeholder="Final amount" formControlName="goal" min="0.00000001">
+        <input class="main-input" type="number" placeholder="Final amount" formControlName="goal" min="0">
         <input class="main-input" type="number" placeholder="Current value (optional)" formControlName="balance" min="0.00000001">
         <label>Expires at</label>
         <input class="main-input date" type="date" placeholder="Expires at" formControlName="expiresAt">
     </form>
     <div class="action-buttons">
         <button class="modal-action-button" [disabled]="form.invalid || !ableToSubmit" (click)="modifyWallet()">{{ modalMode }}</button>
-        <button class="modal-action-button-inverted" (click)="deleteDebt()" [disabled]="!ableToSubmit">Delete</button>
+        <button *ngIf="modalMode === modalModes.Update" class="modal-action-button-inverted" (click)="deleteDebt()" [disabled]="!ableToSubmit">Delete</button>
     </div>
 </div>

@@ -27,7 +27,7 @@ export class DebtModalComponent implements OnInit {
     expiresAt: 0
   }
   modalMode = WalletModalModes.Create;
-
+  modalModes = WalletModalModes;
   form: FormGroup;
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dss: DataStorageService, private ds: DataService, private fb: FormBuilder, private cv: CurrencyValidator, private dialogRef: MatDialogRef<DebtModalComponent>, private vs: ValidatorService) {
     this.form = this.fb.group({
