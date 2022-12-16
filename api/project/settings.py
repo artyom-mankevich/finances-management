@@ -67,8 +67,11 @@ MIDDLEWARE = [
 ]
 
 AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.RemoteUserBackend",
+    "base.backends.CustomRemoteUserBackend",
 ]
+
+UNAUTHENTICATED_USER = None
+UNAUTHENTICATED_TOKEN = None
 
 ROOT_URLCONF = "project.urls"
 

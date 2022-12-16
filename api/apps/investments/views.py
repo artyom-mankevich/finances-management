@@ -27,19 +27,19 @@ class StockViewSet(viewsets.ModelViewSet, SetUserIdFromTokenOnCreateMixin):
     def list(self, request, *args, **kwargs):
         response = super().list(request, *args, **kwargs)
         if response.data["results"]:
-            set_stock_prices(response.data["results"])
+            set_stock_prices(response.data["results"], str(request.user))
 
         return response
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
-        set_stock_prices([response.data])
+        set_stock_prices([response.data], str(request.user))
 
         return response
 
     def update(self, request, *args, **kwargs):
         response = super().update(request, *args, **kwargs)
-        set_stock_prices([response.data])
+        set_stock_prices([response.data], str(request.user))
 
         return response
 

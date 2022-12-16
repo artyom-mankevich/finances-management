@@ -3,7 +3,7 @@ from rest_framework import routers, permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
-from accounts.views import AccountSettingsViewSet, ChartSettingsViewSet
+from accounts.views import AccountSettingsViewSet
 from crypto.views import EthKeysViewSet
 from decorations.views import IconViewSet, ColorViewSet
 from investments.views import StockViewSet
@@ -30,7 +30,6 @@ router = routers.SimpleRouter()
 router.include_root_view = False
 
 router.register(r"account-settings", AccountSettingsViewSet, basename="account-settings")
-router.register(r"chart-settings", ChartSettingsViewSet, basename="chart-settings")
 
 router.register(r"eth-keys", EthKeysViewSet, basename="eth-keys")
 
