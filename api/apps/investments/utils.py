@@ -10,9 +10,9 @@ from base.utils import convert_currency
 from investments.models import Stock
 
 
-def set_stock_prices(response):
+def set_stock_prices(response, user_id):
     tickers = [stock["ticker"] for stock in response]
-    stock_prices = get_stock_prices(tickers)
+    stock_prices = get_stock_prices(tickers, user_id)
     for stock in response:
         if stock_prices[stock["ticker"]] is not None:
             stock["price"] = stock_prices[stock["ticker"]] * stock["amount"]
@@ -20,7 +20,7 @@ def set_stock_prices(response):
             stock["price"] = None
 
 
-def get_stock_prices(tickers: list) -> dict:
+def get_stock_prices(tickers: list, user_id) -> dict:
     data = {ticker: {"currency": None, "price": None} for ticker in tickers}
 
     set_tickers_data_from_cache(data, tickers)
@@ -29,7 +29,7 @@ def get_stock_prices(tickers: list) -> dict:
     if tickers_to_fetch:
         set_tickers_data_from_api(data, tickers_to_fetch)
 
-    return get_converted_ticker_prices(data, tickers)
+    return get_converted_ticker_prices(data, tickers, user_id)
 
 
 def set_tickers_data_from_api(data: dict, tickers_to_fetch: list[str]):
@@ -58,11 +58,11 @@ def set_tickers_data_from_api(data: dict, tickers_to_fetch: list[str]):
         cache.set(f"stock_currency_{ticker}", currency, 60 * 5)
 
 
-def get_converted_ticker_prices(data: dict, tickers: list[str]) -> dict:
+def get_converted_ticker_prices(data: dict, tickers: list[str], user_id: str) -> dict:
     result = {}
     for ticker in tickers:
         result[ticker] = convert_currency(
-            data[ticker]["price"], data[ticker]["currency"]
+            data[ticker]["price"], data[ticker]["currency"], user_id
         )
     return result
 
@@ -104,7 +104,9 @@ def get_stocks_chart_data(
 
     cache_lifetime = 60 * 60 * 24
 
-    historical_prices = get_historical_stocks_data(symbols, stocks, period, interval)
+    historical_prices = get_historical_stocks_data(
+        symbols, stocks, period, user_id, interval
+    )
     if not historical_prices:
         return {}
 
@@ -112,7 +114,7 @@ def get_stocks_chart_data(
 
     if period in [Stock.CHART_PERIOD_7_DAYS, Stock.CHART_PERIOD_1_MONTH]:
         today = datetime.date.today()
-        today_prices = get_stock_prices(tickers)
+        today_prices = get_stock_prices(tickers, user_id)
         for ticker in today_prices:
             today_prices[ticker] = today_prices[ticker] * stocks[ticker]
         today_sum = {
@@ -138,6 +140,7 @@ def get_historical_stocks_data(
     symbols: str,
     stocks: dict,
     period: str,
+    user_id: str,
     interval: str = "1d"
 ) -> dict[str, Decimal]:
     ticker = yq.Ticker(symbols=symbols, asynchronous=True, validate=True)
@@ -159,6 +162,7 @@ def get_historical_stocks_data(
         ticker = series.index[i][0]
         date = series.index[i][1].strftime("%d-%m-%Y")
         price = Decimal(str(series[i]))
+        price = convert_currency(price, ticker, user_id)
 
         if date not in result:
             result[date] = price * stocks[ticker]

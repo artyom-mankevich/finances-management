@@ -138,5 +138,5 @@ class TransactionCategoryViewSet(viewsets.ModelViewSet, SetUserIdFromTokenOnCrea
 
     @action(detail=False, methods=["GET"], url_path="top", url_name="top")
     def top(self, request, *args, **kwargs):
-        response = get_top_categories(self.get_queryset())
+        response = get_top_categories(self.get_queryset(), str(self.request.user))
         return Response(response)

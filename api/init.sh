@@ -20,3 +20,6 @@ echo
 
 python manage.py init_news_languages
 echo
+
+python manage.py init_start_pages
+echo
