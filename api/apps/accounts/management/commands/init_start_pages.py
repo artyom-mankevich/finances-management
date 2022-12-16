@@ -8,7 +8,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         pages = [
-            "Dashboard",
+            "Overview",
             "Debts",
             "Crypto",
             "Stocks",

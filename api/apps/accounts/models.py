@@ -23,7 +23,7 @@ class AccountSettings(models.Model):
         max_length=5, default=CURRENCY_FORMAT_LEFT, choices=CURRENCY_FORMAT_CHOICES
     )
     start_page = models.ForeignKey(
-        "StartPage", on_delete=models.SET_DEFAULT, default="Dashboard"
+        "StartPage", on_delete=models.SET_DEFAULT, default="Overview"
     )
 
 
