@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
 import { TransactionTypes } from 'src/app/enums/transactionTypes';
+import { AccountSettings } from 'src/app/models/accountSettings';
 import { Transaction } from 'src/app/models/transaction';
 import { DataService } from 'src/app/services/data.service';
 import { TransactionModalComponent } from '../transaction-modal/transaction-modal.component';
@@ -18,7 +20,8 @@ export class TransactionComponent implements OnInit {
   constructor(private dialog: MatDialog, private ds: DataService) { 
   
   }
-
+  
+  userSettings$ : Observable<AccountSettings | undefined> = this.ds.getUserSettings();
   openTransactionModal() {
     this.dialog.open(TransactionModalComponent,  { data: {transaction: {...this.transaction}}, panelClass: 'transaction-dialog'})
   }

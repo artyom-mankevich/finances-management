@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '@auth0/auth0-angular';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { CurrencyFormat } from 'src/app/enums/currencyFormat';
 import { DateFormat } from 'src/app/enums/dateFormat';
 import { Pages } from 'src/app/enums/pages';
@@ -21,7 +21,7 @@ export class SettingsPageComponent implements OnInit {
   pages = Pages;
   form: FormGroup;
   ableToSubmit: boolean = true;
-  currentSettings: AccountSettings | undefined = {
+  currentSettings: AccountSettings = {
     mainCurrency: 'USD',
     userId: null,
     dateFormat: DateFormat.long,
@@ -32,9 +32,13 @@ export class SettingsPageComponent implements OnInit {
   dateFormat = DateFormat;
   currencyFormat = CurrencyFormat;
   startingDay = StartingDay
-  // userSettings$: Observable<AccountSettings | undefined> = this.ds.getUserSettings(); 
+  userSettings$: Observable<AccountSettings | undefined> = this.ds.getUserSettings().pipe(tap(val => { 
+    if (val) {
+      this.currentSettings = val;
+      this.updateForm(); 
+    }
+  }));
   constructor(public dss: DataStorageService, private auth: AuthService, private ds: DataService, private fb: FormBuilder, private cv: CurrencyValidator) {
-    // this.userSettings$.subscribe(val => this.currentSettings = val); 
     this.form = this.fb.group({
       mainCurrency: [this.currentSettings?.mainCurrency, [Validators.required,  this.cv.allowedCurrency.bind(this.cv)]],
       dateFormat: [this.currentSettings?.dateFormat, Validators.required],
@@ -42,18 +46,17 @@ export class SettingsPageComponent implements OnInit {
       startingPage: [this.currentSettings?.startingPage, Validators.required],
       currencyFormat: [this.currentSettings?.currencyFormat, Validators.required]
     })
-    // this.updateForm();
   }
 
-  // updateForm() {
-  //   this.form.patchValue({
-  //     mainCurrency: [, Validators.required],
-  //     dateFormat: [, Validators.required],
-  //     firstDay: [, Validators.required],
-  //     startingPage: [, Validators.required],
-  //     currencyFormat: [, Validators.required]
-  //   })
-  // }
+  updateForm() {
+    this.form.patchValue({
+      mainCurrency: this.currentSettings?.mainCurrency,
+      dateFormat: this.currentSettings?.dateFormat,
+      firstDay: this.currentSettings?.firstDay,
+      startingPage: this.currentSettings?.startingPage,
+      currencyFormat: this.currentSettings?.currencyFormat
+    })
+  }
   ngOnInit(): void {
   }
 

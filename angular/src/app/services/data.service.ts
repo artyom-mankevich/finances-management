@@ -80,7 +80,7 @@ export class DataService {
   }
 
   private _prefetchData() {
-    // this.getUserSettings();
+    this.getUserSettings();
     this.getUserWallets();
     this.getUserCategories();
     this.getUserTransactions(this.transactionFilter);
@@ -438,14 +438,17 @@ export class DataService {
   }
 
   saveUserSettings(accountSettings: AccountSettings) {
-    this._userSettings.next(accountSettings); // temp
-    // return this.http.post<AccountSettings>(`${this.url}${ApiEndpoints.userSettings}`, accountSettings).pipe(tap(val => this._userSettings.next(val)));
+    return this.http.post<AccountSettings>(`${this.url}${ApiEndpoints.userSettings}`, accountSettings).pipe(tap(val => this._userSettings.next(val)));
   }
 
   getUserSettings(): Observable<AccountSettings | undefined> {
-    // if (!this._userSettings.value) {
-    //   this.http.get<AccountSettings>(`${this.url}${ApiEndpoints.userSettings}`).subscribe(val => this._userSettings.next(val));
-    // }
+    if (!this._userSettings.value) {
+      this.http.get<AccountSettings>(`${this.url}${ApiEndpoints.userSettings}`).subscribe(val => this._userSettings.next(val));
+    }
     return this._userSettings.asObservable();
+  }
+
+  getUserSettingsValue() {
+    return this._userSettings.value;
   }
 }

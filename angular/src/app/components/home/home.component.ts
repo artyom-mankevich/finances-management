@@ -1,6 +1,7 @@
 import { animate, style, transition, trigger } from '@angular/animations';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '@auth0/auth0-angular';
+import { tap } from 'rxjs';
 import { Pages } from 'src/app/enums/pages';
 import { DataService } from 'src/app/services/data.service';
 
@@ -28,7 +29,7 @@ export class HomeComponent implements OnInit {
   pages = Pages;
   currentPage: Pages = Pages.Overview;
   profileJson: string = '';
-
+  userSettings$ = this.ds.getUserSettings();
   changePage(event: any) {
     this.currentPage = event;
   }

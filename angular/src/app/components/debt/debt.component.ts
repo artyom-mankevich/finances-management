@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ChartDataset, ChartOptions } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { Debt } from 'src/app/models/debt';
+import { DataService } from 'src/app/services/data.service';
 import { DebtModalComponent } from '../debt-modal/debt-modal.component';
 
 @Component({
@@ -12,6 +13,8 @@ import { DebtModalComponent } from '../debt-modal/debt-modal.component';
 })
 export class DebtComponent implements OnInit {
   @ViewChild( BaseChartDirective ) chart: BaseChartDirective | undefined;
+  userSettings$ = this.ds.getUserSettings();
+
   @Input()
   debt!: Debt;
   chartData: ChartDataset<'doughnut'>[] = [
@@ -59,7 +62,7 @@ export class DebtComponent implements OnInit {
     }
   };
 
-  constructor(private dialog: MatDialog) {
+  constructor(private dialog: MatDialog, private ds: DataService) {
    
   }
 

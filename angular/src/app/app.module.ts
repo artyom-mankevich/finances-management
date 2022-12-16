@@ -45,6 +45,7 @@ import { DebtComponent } from './components/debt/debt.component';
 import { DebtModalComponent } from './components/debt-modal/debt-modal.component';
 import { DebtPaymentModalComponent } from './components/debt-payment-modal/debt-payment-modal.component';
 import { SettingsPageComponent } from './components/settings-page/settings-page.component';
+import { CurrencyLocationPipe } from './pipes/currency-location.pipe';
 
 @NgModule({
   declarations: [
@@ -81,7 +82,8 @@ import { SettingsPageComponent } from './components/settings-page/settings-page.
     DebtComponent,
     DebtModalComponent,
     DebtPaymentModalComponent,
-    SettingsPageComponent
+    SettingsPageComponent,
+    CurrencyLocationPipe
   ],
   imports: [
     BrowserModule,

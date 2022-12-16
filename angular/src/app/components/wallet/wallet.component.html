@@ -2,14 +2,14 @@
     <div class="wallet-content">
         <div class="wallet-name-balance">
             <p class="wallet-name">{{wallet.name}}</p>
-            <div class="wallet-balance-wrapper">
-                <p class="wallet-balance"> {{(wallet.currency | currencySymbol ) + (wallet.balance | shortNumber)}}</p>
-                <p *ngIf="wallet.goal" class="wallet-goal"> {{(wallet.currency | currencySymbol) + (wallet.goal | shortNumber)}}</p>
+            <div class="wallet-balance-wrapper" *ngIf="userSettings$ | async as us">
+                <p class="wallet-balance"> {{(wallet.balance | shortNumber) | currencyLocation : (wallet.currency | currencySymbol ) : us.currencyFormat}}</p>
+                <p *ngIf="wallet.goal" class="wallet-goal"> {{(wallet.goal | shortNumber) | currencyLocation : (wallet.currency | currencySymbol ) : us.currencyFormat}}</p>
             </div>
         </div>
         <div class="wallet-update-settings">
             
-            <p class="wallet-last-update">Last Update: <br> {{ wallet.lastUpdated | date: 'dd LLLL yyyy' }}</p>
+            <p class="wallet-last-update" *ngIf="userSettings$ | async as us ">Last Update: <br> {{ wallet.lastUpdated | date: us.dateFormat }}</p>
 
             <svg (click)="openWalletEditor();$event.stopPropagation()" class="wallet-settings-button" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="16" cy="16" r="15" stroke="white" stroke-width="2"/>

@@ -1,5 +1,5 @@
 <h1 routerLink="/home" class="home-button">Home</h1>
-<div class="settings-wrapper" *ngIf="currentSettings">
+<div class="settings-wrapper" *ngIf="userSettings$ | async">
     <form class="data-input" [formGroup]="form">
         <label>Date format</label>
         <select class="main-select" formControlName="dateFormat">
