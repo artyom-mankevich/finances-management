@@ -60,7 +60,9 @@ export class SettingsPageComponent implements OnInit {
   }
 
   logout() {
-    this.auth.logout();
+    this.auth.logout({
+      returnTo: window.location.origin
+    });
   }
 
   saveSettings() {
