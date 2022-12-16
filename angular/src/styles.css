@@ -37,3 +37,7 @@ body {
     margin: 0px;
     height: 100%;
 }
+
+input[type=date] {
+    font-family: 'Roboto', sans-serif;
+}

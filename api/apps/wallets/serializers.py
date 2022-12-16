@@ -95,6 +95,9 @@ class DebtSerializer(serializers.ModelSerializer):
         goal = validated_data.pop("goal")
         user_id = str(self.context["request"].user)
 
+        if goal <= 0:
+            raise exceptions.ValidationError("Goal must be greater than 0")
+
         wallet = Wallet.objects.create(
             user_id=user_id,
             currency=currency,

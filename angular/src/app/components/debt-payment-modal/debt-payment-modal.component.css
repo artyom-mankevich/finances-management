@@ -1,0 +1,24 @@
+@import url('../../common/styles/buttons.css');
+@import url('../../common/styles/inputs.css');
+
+
+.modal-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 30px;
+    width: 250px
+}
+
+.data-input {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-action-button {
+    background-color: var(--dark-blue);
+}
+
+.date {
+    text-indent: 8px;
+}

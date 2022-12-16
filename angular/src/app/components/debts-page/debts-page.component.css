@@ -1,0 +1,36 @@
+@import url('../../common/styles/buttons.css');
+
+.action-menu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.debts-wrapper {
+    width: 90%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.debts {
+    width: 100%;
+    display: grid;
+    column-gap: 58px;
+    justify-content: center;
+    row-gap: 58px;
+    grid-column: auto;
+    grid-template-columns: repeat(auto-fill, 450px);
+    padding-bottom: 30px;
+}
+
+h2 {
+    margin: 0;
+}
+
+@media only screen and (max-width: 900px) {
+    .debts-wrapper {
+        padding-top: 30px;
+    }
+}

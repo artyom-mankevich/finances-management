@@ -1,0 +1,58 @@
+.chart-wrapper {
+    width: 225px;
+    height: 225px;
+}
+
+.debt {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    max-width: 450px;
+    transition-duration: 200ms;
+    cursor: pointer;
+    border-radius: 20px;
+    padding: 10px 20px;
+}
+
+.debt:hover {
+    background-color: #f7f7f7;
+}
+
+.expiration-date, 
+.amount {
+    margin: 0;
+}
+
+.amount,
+.name {
+    font-size: 1.875rem;
+    font-weight: bold;
+}
+
+.name {
+    word-wrap: break-word;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+}
+
+.description .amount-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.description {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+    height: 200px;
+}
+
+.color-name {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+}

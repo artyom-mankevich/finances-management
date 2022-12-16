@@ -1,0 +1,10 @@
+<div class="debts-wrapper">
+    <section class="action-menu">
+        <button class="add-button" (click)="openDebtDialog()">Add debt</button>
+        <button class="add-button" (click)="openDebtPaymentDialog()">Add payment</button>
+   </section>
+   <h2>Debts</h2>
+   <div class="debts">
+        <app-debt [debt]="debt" *ngFor="let debt of debts$ | async"></app-debt>
+   </div>
+</div>

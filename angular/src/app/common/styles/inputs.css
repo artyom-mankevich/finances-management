@@ -16,6 +16,7 @@
 .main-select {
     height: 40px;
     min-width: 100px;
+    text-indent: 8px;
 }
 
 .one-line {

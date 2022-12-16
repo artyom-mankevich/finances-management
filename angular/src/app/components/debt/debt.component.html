@@ -1,0 +1,15 @@
+<div class="debt" (click)="openDebtEditModal()">
+    <div class="chart-wrapper">
+        <canvas baseChart [type]="'doughnut'" [datasets]="chartData" [options]="chartOptions">
+        </canvas>
+    </div>
+    <div class="description">
+        <div class="amount-info">
+            <p class="amount">{{(debt.currency | currencySymbol) +  (debt.balance | shortNumber)}} / {{ (debt.currency | currencySymbol) +  (debt.goal | shortNumber) }}</p>
+            <div class="color-name">
+                <p class="name">{{ debt.name }}</p>
+            </div>
+        </div>
+        <p class="expiration-date">Expires at:<br>{{ debt.expiresAt | date}}</p>
+    </div>
+</div>
