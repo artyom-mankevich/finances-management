@@ -46,7 +46,7 @@ class Wallet(models.Model):
         update = Wallet.objects.filter(pk=self.pk).exists()
         if update:
             old_obj = Wallet.objects.get(pk=self.pk)
-            if old_obj.balance != self.balance:
+            if not self.debt_set.exists() and old_obj.balance != self.balance:
                 Transaction.create_balance_transaction(self, old_obj)
 
         super().save(*args, **kwargs)
