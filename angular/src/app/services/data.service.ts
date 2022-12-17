@@ -453,6 +453,7 @@ export class DataService {
       this.getUsersTransactionsData(true);
       this.getUserStockChart(this.stockChartPeriod, true);
       this.getUserStocks(true);
+      this.getUsersInvestments(true);
     }));
   }
 
