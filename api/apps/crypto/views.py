@@ -2,13 +2,13 @@ from django.http import Http404
 from rest_framework.decorators import action
 from rest_framework.mixins import (
     RetrieveModelMixin,
-    DestroyModelMixin,
-    ListModelMixin
+    DestroyModelMixin
 )
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from accounts.views import SetUserIdFromTokenOnCreateMixin
+from apps.base.views import RawListModelMixin
 from crypto.models import EthKeys
 from crypto.serializers import EthKeysSerializer
 from crypto.utils import (
@@ -25,12 +25,15 @@ class EthKeysViewSet(
     GenericViewSet,
     RetrieveModelMixin,
     DestroyModelMixin,
-    ListModelMixin,
+    RawListModelMixin,
     SetUserIdFromTokenOnCreateMixin
 ):
     serializer_class = EthKeysSerializer
 
     def get_queryset(self):
+        return EthKeys.objects.raw(f"SELECT * FROM {EthKeys._meta.db_table} WHERE user_id=%s", [str(self.request.user)])
+
+    def get_rawqueryset(self):
         return EthKeys.objects.raw(f"SELECT * FROM {EthKeys._meta.db_table} WHERE user_id=%s", [str(self.request.user)])
 
     def list(self, request, *args, **kwargs):
