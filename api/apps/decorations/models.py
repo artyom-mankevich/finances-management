@@ -9,18 +9,21 @@ class Color(models.Model):
         with connection.cursor() as cursor:
             cursor.execute(
                 f'DELETE FROM {self._meta.db_table} WHERE hex_code=%s',
-                [self.hex_code])
+                [self.hex_code]
+            )
 
     def save(self, *args, **kwargs):
         with connection.cursor() as cursor:
             if self._state.adding:
                 cursor.execute(f'INSERT INTO {self._meta.db_table} VALUES(%s)',
-                               [self.hex_code])
+                               [self.hex_code]
+                               )
             else:
                 cursor.execute(
                     f'UPDATE {self._meta.db_table} SET hex_color=%s WHERE '
                     f'hex_code=%s',
-                    [self.hex_code])
+                    [self.hex_code]
+                )
 
 
 class Icon(models.Model):
@@ -30,15 +33,18 @@ class Icon(models.Model):
         with connection.cursor() as cursor:
             cursor.execute(
                 f'DELETE FROM {self._meta.db_table} WHERE code=%s',
-                [self.hex_code])
+                [self.hex_code]
+            )
 
     def save(self, *args, **kwargs):
         with connection.cursor() as cursor:
             if self._state.adding:
                 cursor.execute(f'INSERT INTO {self._meta.db_table} VALUES(%s)',
-                               [self.code])
+                               [self.code]
+                               )
             else:
                 cursor.execute(
                     f'UPDATE {self._meta.db_table} SET code=%s WHERE '
                     f'code=%s',
-                    [self.code])
+                    [self.code]
+                )
