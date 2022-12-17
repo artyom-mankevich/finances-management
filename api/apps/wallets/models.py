@@ -24,6 +24,7 @@ class Wallet(models.Model):
         max_digits=30, decimal_places=10, blank=True, null=True, default=None
     )
     last_updated = models.DateTimeField(auto_now=True)
+    description = models.TextField(blank=True)
 
     @transaction.atomic
     def withdraw(self, amount: Decimal) -> None:
@@ -46,7 +47,7 @@ class Wallet(models.Model):
         update = Wallet.objects.filter(pk=self.pk).exists()
         if update:
             old_obj = Wallet.objects.get(pk=self.pk)
-            if not self.debt_set.exists() and old_obj.balance != self.balance:
+            if not self.debt and old_obj.balance != self.balance:
                 Transaction.create_balance_transaction(self, old_obj)
 
         super().save(*args, **kwargs)
@@ -75,7 +76,7 @@ class WalletLog(models.Model):
 class Debt(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     user_id = models.CharField(max_length=64, db_index=True)
-    wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
+    wallet = models.OneToOneField(Wallet, on_delete=models.CASCADE)
     expires_at = models.DateField()
 
     @transaction.atomic
