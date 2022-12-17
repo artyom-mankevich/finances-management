@@ -1,12 +1,29 @@
 import * as React from 'react';
-import { View, Text } from "react-native";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import {View, Text, RefreshControl, ScrollView} from "react-native";
+import {useCallback, useState} from "react";
+import AnalyticsList from "../components/analytics/AnalyticsList";
+
+const wait = (timeout) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+}
 
 export default function AnalyticsPage() {
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        wait(100).then(() => setRefreshing(false));
+    }, []);
+
     return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Ionicons name="analytics" size={30} color='#3e68d1'/>
-            <Text style={{fontSize:16,fontWeight:'700'}}>Analytics</Text>
+        <View>
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh}>
+                <ScrollView>
+                    <View>
+                        <AnalyticsList refreshing={refreshing}/>
+                    </View>
+                </ScrollView>
+            </RefreshControl>
         </View>
     );
 }
