@@ -6,7 +6,6 @@ import { Observable, tap } from 'rxjs';
 import { CurrencyFormat } from 'src/app/enums/currencyFormat';
 import { DateFormat } from 'src/app/enums/dateFormat';
 import { Pages } from 'src/app/enums/pages';
-import { StartingDay } from 'src/app/enums/startingDay';
 import { AccountSettings } from 'src/app/models/accountSettings';
 import { DataStorageService } from 'src/app/services/data-storage.service';
 import { DataService } from 'src/app/services/data.service';
@@ -32,7 +31,6 @@ export class SettingsPageComponent implements OnInit {
   };
   dateFormat = DateFormat;
   currencyFormat = CurrencyFormat;
-  startingDay = StartingDay
   userSettings$: Observable<AccountSettings | undefined> = this.ds.getUserSettings().pipe(tap(val => { 
     if (val) {
       this.currentSettings = val;
