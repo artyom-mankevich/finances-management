@@ -24,7 +24,7 @@ import { TransactionComponent } from './components/transaction/transaction.compo
 import { TransactionModalComponent } from './components/transaction-modal/transaction-modal.component';
 import { MatIconModule } from '@angular/material/icon';
 import { CategoryModalComponent } from './components/category-modal/category-modal.component';
-import { InvestmentsPageComponent } from './components/investments-page/investments-page.component';
+import { StocksPageComponent } from './components/stocks-page/stocks-page.component';
 import { StockComponent } from './components/stock/stock.component';
 import { NewsEntryComponent } from './components/news-entry/news-entry.component';
 import { StockModalComponent } from './components/stock-modal/stock-modal.component';
@@ -46,6 +46,8 @@ import { DebtModalComponent } from './components/debt-modal/debt-modal.component
 import { DebtPaymentModalComponent } from './components/debt-payment-modal/debt-payment-modal.component';
 import { SettingsPageComponent } from './components/settings-page/settings-page.component';
 import { CurrencyLocationPipe } from './pipes/currency-location.pipe';
+import { InvestmentsPageComponent } from './components/investments-page/investments-page.component';
+import { InvestmentModalComponent } from './components/investment-modal/investment-modal.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +65,7 @@ import { CurrencyLocationPipe } from './pipes/currency-location.pipe';
     TransactionComponent,
     TransactionModalComponent,
     CategoryModalComponent,
-    InvestmentsPageComponent,
+    StocksPageComponent,
     StockComponent,
     NewsEntryComponent,
     StockModalComponent,
@@ -83,7 +85,9 @@ import { CurrencyLocationPipe } from './pipes/currency-location.pipe';
     DebtModalComponent,
     DebtPaymentModalComponent,
     SettingsPageComponent,
-    CurrencyLocationPipe
+    CurrencyLocationPipe,
+    InvestmentsPageComponent,
+    InvestmentModalComponent,
   ],
   imports: [
     BrowserModule,

@@ -15,7 +15,8 @@ from wallets.models import (
     Wallet,
     Transaction,
     TransactionCategory,
-    Debt, WalletLog
+    Debt,
+    WalletLog
 )
 from wallets.serializers import (
     CurrencySerializer,

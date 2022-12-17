@@ -74,6 +74,7 @@ class DebtSerializer(serializers.ModelSerializer):
     goal = serializers.DecimalField(
         max_digits=30, decimal_places=10, coerce_to_string=False
     )
+    description = serializers.CharField(required=False, allow_blank=True)
 
     def to_representation(self, instance):
         data = {
