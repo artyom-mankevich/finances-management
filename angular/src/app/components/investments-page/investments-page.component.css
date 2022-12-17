@@ -1,0 +1,13 @@
+@import url('../../common/styles/buttons.css');
+
+.investments-wrapper {
+    width: 90%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.top-menu {
+    display: flex;
+    justify-content: space-between;
+}
