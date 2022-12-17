@@ -19,17 +19,21 @@ import { DataService } from 'src/app/services/data.service';
 export class HomeComponent implements OnInit {
 
   constructor(public auth: AuthService, private ds: DataService) {
-    this.ds.getUserSettings().subscribe(val =>{
-      if (val) {
-        this.currentPage = Pages[val.startPage as keyof typeof Pages];
-      }
-    })
+    // this.ds.getUserSettings().subscribe(val =>{
+    //   if (val) {
+    //     this.currentPage = Pages[val.startPage as keyof typeof Pages];
+    //   }
+    // })
   }
 
   pages = Pages;
-  currentPage: Pages = Pages.Overview;
+  currentPage: Pages | undefined;
   profileJson: string = '';
-  userSettings$ = this.ds.getUserSettings();
+  userSettings$ = this.ds.getUserSettings().pipe(tap(userSettings => {
+      if (userSettings && !this.currentPage) {
+        this.currentPage = Pages[userSettings.startPage as keyof typeof Pages] 
+      }
+    }));
   changePage(event: any) {
     this.currentPage = event;
   }
