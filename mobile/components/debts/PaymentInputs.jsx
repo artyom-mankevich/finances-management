@@ -9,8 +9,10 @@ import ngrokConfig from "../ngrok.config";
 export default function PaymentInputs(props) {
     const [debtId, setDebtId] = useState('');
     const [amount, setAmount] = useState(0);
+    const [isDisabled, setIsDisabled] = useState(false);
 
     const setAsyncPayment = async () => {
+        setIsDisabled(true);
         const accessToken = await AsyncStorage.getItem('accessToken');
         return fetch(ngrokConfig.myUrl + '/v2/debts/transactions/',{
             method: 'POST',
@@ -88,7 +90,10 @@ return (
             </TouchableOpacity>
             <TouchableOpacity style={[styles.createWalletBtn,
                 {backgroundColor: amount ? '#3e68d1' : '#b4b4b4'}]}
-                              disabled={!amount} onPress={() => setAsyncPayment().then()}>
+                              disabled={isDisabled} onPress={() => {
+                                  setIsDisabled(true);
+                                  isDisabled ? setAsyncPayment().then() : null;
+            }}>
                 <Text style={{fontSize: 22}}>{"Add payment"}</Text>
                 <MaterialIcons name="arrow-forward-ios" size={30} color='#000' />
             </TouchableOpacity>

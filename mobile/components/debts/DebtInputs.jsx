@@ -4,15 +4,17 @@ import SelectDropdown from "react-native-select-dropdown";
 import getSymbolFromCurrency from "currency-symbol-map";
 import {FontAwesome, MaterialIcons} from "@expo/vector-icons";
 import DateTimePickerAndroid from "@react-native-community/datetimepicker";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ngrokConfig from "../ngrok.config";
 
 export default function DebtInputs(props) {
-     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [date, setDate] = useState(new Date(props.expiresAt));
+    const [isDisabled, setIsDisabled] = useState(false);
 
     const setAsyncDebt = async () => {
+        setIsDisabled(true);
         const accessToken = await AsyncStorage.getItem('accessToken');
         return fetch(ngrokConfig.myUrl + '/v2/debts/',{
             method: 'POST',
@@ -30,6 +32,7 @@ export default function DebtInputs(props) {
         }).then((response) => {
             props.onUpdate();
             console.log("Debt created");
+            props.setName('');
         })
             .catch((error) => {
                 console.error(error);
@@ -37,6 +40,7 @@ export default function DebtInputs(props) {
     }
 
     const setAsyncDebtUpdate = async () => {
+        setIsDisabled(true);
         const accessToken = await AsyncStorage.getItem('accessToken');
         const debtId = await AsyncStorage.getItem('debtId');
         return fetch(ngrokConfig.myUrl + '/v2/debts/' + debtId + '/',{
@@ -62,6 +66,7 @@ export default function DebtInputs(props) {
     }
 
     const deleteDebt = async () => {
+        setIsDisabled(true);
         const accessToken = await AsyncStorage.getItem('accessToken');
         const debtId = await AsyncStorage.getItem('debtId');
         return fetch(ngrokConfig.myUrl + '/v2/debts/' + debtId + '/',{
@@ -77,6 +82,16 @@ export default function DebtInputs(props) {
                 console.error(error);
             })};
 
+    useEffect(() => {
+        if (props.createElement) {
+            props.setName('');
+            props.setCurrency('USD');
+            props.setCurrentAmount(0);
+            props.setFinalAmount(0);
+            props.setExpiresAt(new Date());
+        }
+    },[]);
+
     return (
         <View style={styles.container}>
             <ScrollView style={{width: 300}} showsVerticalScrollIndicator={false}>
@@ -89,7 +104,7 @@ export default function DebtInputs(props) {
                             style={styles.inputText}
                             placeholder="Name"
                             onChangeText={text => props.setName(NameConstraint(text))}
-                            value={props.name}
+                            value={props.name ? props.name : ''}
                         />
                     </View>
                     <View style={styles.dropdownContainer}>
@@ -136,7 +151,7 @@ export default function DebtInputs(props) {
                             {
                                 props.setFinalAmount(NumberInputValidation(text));
                             }}
-                            value={props.finalAmount.toString()}
+                            value={props.finalAmount ? props.finalAmount.toString() : ''}
                         />
                     </View>
                     <View style={styles.inputView}>
@@ -149,7 +164,7 @@ export default function DebtInputs(props) {
                             {
                                 props.setCurrentAmount(NumberInputValidation(text));
                             }}
-                            value={props.currentAmount.toString()}
+                            value={props.currentAmount ? props.currentAmount.toString() : ''}
                         />
                     </View>
                 </View>
@@ -164,7 +179,7 @@ export default function DebtInputs(props) {
                         >
                             {isDatePickerVisible && (
                                 <DateTimePickerAndroid
-                                    value={date}
+                                    value={props.expiresAt}
                                     mode={'date'}
                                     onChange={(event, selectedDate) => {
                                         const currentDate = selectedDate || date;
@@ -186,6 +201,7 @@ export default function DebtInputs(props) {
                             <View style={styles.walletDeleteBtn}>
                                 <TouchableOpacity
                                     style={styles.walletDeleteBtnTouchableOpacity}
+                                    disabled={isDisabled}
                                     onPress={() => deleteDebt()}>
                                     <FontAwesome name="trash" size={55} color="#930000"/>
                                 </TouchableOpacity>
@@ -200,7 +216,10 @@ export default function DebtInputs(props) {
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.createWalletBtn,
                     {backgroundColor: props.btnColorSet ? '#3e68d1' : '#b4b4b4'}]}
-                                  disabled={!props.btnColorSet} onPress={() => props.createElement ? setAsyncDebt().then() : setAsyncDebtUpdate()}>
+                                  disabled={isDisabled} onPress={() => {
+                    setIsDisabled(true);
+                    props.createElement && isDisabled ? setAsyncDebt().then() : setAsyncDebtUpdate();
+                }}>
                     <Text style={{fontSize: 22}}>{props.createElement ? "Create" : "Update"}</Text>
                     <MaterialIcons name="arrow-forward-ios" size={30} color='#000' />
                 </TouchableOpacity>
