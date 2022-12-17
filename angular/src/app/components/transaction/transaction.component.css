@@ -24,7 +24,7 @@
 }
 
 .transaction-amount-wrapper {
-    width: 200px;
+    width: 150px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -87,6 +87,7 @@
     visibility: hidden;
     opacity: 0;
     transition-duration: 100ms;
+    display: flex;
 }
 
 .transaction-wrapper:hover .transaction-edit-menu{
@@ -125,4 +126,23 @@
 
 .transaction-category {
     margin-left: 5px;
+}
+
+@media only screen and (max-width: 700px) {
+    .transaction-date {
+        display: none;
+    }
+
+    .transaction-amount-wrapper {
+        width: auto;
+        flex-wrap: wrap;
+    }
+
+    .transaction-main-info {
+        min-width: 140px;
+    }
+
+    .transaction-edit-menu {
+        flex-direction: column;
+    }
 }

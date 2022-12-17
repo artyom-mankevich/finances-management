@@ -28,14 +28,12 @@
 .charts .transactions {
     width: 50%;
     flex-grow: 1;
-    min-width: 280px;
 }
 
 .wallets-card, 
 .transactions-card {
     width: 50%;
     flex-grow: 1;
-    min-width: 280px;
 }
 
 

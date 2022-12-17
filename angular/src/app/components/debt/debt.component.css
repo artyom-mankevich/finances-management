@@ -7,11 +7,13 @@
     display: flex;
     align-items: center;
     gap: 20px;
-    max-width: 450px;
+    flex-direction: row;
+    /* max-width: 450px; */
     transition-duration: 200ms;
     cursor: pointer;
     border-radius: 20px;
     padding: 10px 20px;
+    flex-wrap: wrap;
 }
 
 .debt:hover {
@@ -21,6 +23,7 @@
 .expiration-date, 
 .amount {
     margin: 0;
+    max-width: max-content;
 }
 
 .amount,
@@ -48,6 +51,7 @@
     justify-content: space-between;
     flex-grow: 1;
     height: 200px;
+    max-width: 150px;
 }
 
 .color-name {

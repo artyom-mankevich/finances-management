@@ -1,5 +1,4 @@
 import { TransactionCategory } from "./transactionCategory";
-import { TransactionType } from "./transactionType";
 import { Wallet } from "./wallet";
 
 export interface Transaction {
