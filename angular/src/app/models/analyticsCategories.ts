@@ -1,5 +1,3 @@
-import { TransactionCategory } from "./transactionCategory"
-
 export interface AnalyticsCategoires {
     incomes: {
         data: Category[],

@@ -11,8 +11,8 @@ export class SidemenuComponent implements OnInit {
   pages = Pages;
   constructor(private router: Router, private ds: DataService) {
     this.ds.getUserSettings().subscribe(val =>{
-      if (val) {
-        this.changeCurrentPage(Pages[val.startPage as keyof typeof Pages]);
+      if (val && !this.currentPage) {
+        this.currentPage =  Pages[val.startPage as keyof typeof Pages];
       }
     })
    }
@@ -20,7 +20,7 @@ export class SidemenuComponent implements OnInit {
 
   @Output()
   pageChangeEvent= new EventEmitter<Pages>();
-  currentPage: Pages = Pages.Overview;
+  currentPage: Pages | undefined;
 
   ngOnInit(): void {
   }

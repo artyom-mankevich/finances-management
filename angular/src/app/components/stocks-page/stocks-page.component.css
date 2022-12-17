@@ -12,6 +12,8 @@
 .investments-top-menu {
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .stocks {
@@ -88,5 +90,8 @@
 @media only screen and (max-width: 900px) {
     .investments-page-wrapper {
         padding-top: 30px;
+    }
+    .stocks {
+        min-width: 200px;
     }
 }
