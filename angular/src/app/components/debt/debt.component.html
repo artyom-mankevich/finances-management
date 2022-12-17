@@ -1,15 +1,15 @@
-<div class="debt" (click)="openDebtEditModal()">
+<div class="debt" (click)="openDebtEditModal()" *ngIf="userSettings$ | async as us">
     <div class="chart-wrapper">
         <canvas baseChart [type]="'doughnut'" [datasets]="chartData" [options]="chartOptions">
         </canvas>
     </div>
     <div class="description">
         <div class="amount-info">
-            <p class="amount">{{(debt.currency | currencySymbol) +  (debt.balance | shortNumber)}} / {{ (debt.currency | currencySymbol) +  (debt.goal | shortNumber) }}</p>
+            <p class="amount">{{(debt.balance | shortNumber) | currencyLocation : (debt.currency | currencySymbol)  : us.currencyFormat }} / {{ (debt.goal | shortNumber) | currencyLocation : (debt.currency | currencySymbol) : us.currencyFormat }}</p>
             <div class="color-name">
                 <p class="name">{{ debt.name }}</p>
             </div>
         </div>
-        <p class="expiration-date">Expires at:<br>{{ debt.expiresAt | date}}</p>
+        <p class="expiration-date">Expires at:<br>{{ debt.expiresAt | date : us.dateFormat}}</p>
     </div>
 </div>

@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {View, StyleSheet, TextInput, Text, TouchableOpacity} from "react-native";
 import {NameConstraint, NumberInputValidation} from "../../wallets/WalletValidation";
 import {FontAwesome, MaterialIcons} from "@expo/vector-icons";
@@ -60,6 +60,49 @@ export default function IncomeTransaction(props) {
             .catch((error) => {
                 console.error(error);
             })}
+
+    const refreshWalletsList = async () => {
+        const accessToken = await AsyncStorage.getItem('accessToken');
+        return await fetch(ngrokConfig.myUrl + '/v2/wallets/',{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`,
+            }
+        })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                setWallets(responseJson);
+                return responseJson;
+            })
+            .catch((error) =>{
+                console.error(error);
+            });
+    }
+
+    const refreshCategoriesList = async () => {
+        const accessToken = await AsyncStorage.getItem('accessToken');
+        return await fetch(ngrokConfig.myUrl + '/v2/transaction-categories/',{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`,
+            }
+        })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                setCategories(responseJson);
+                return responseJson;
+            })
+            .catch((error) =>{
+                console.error(error);
+            });
+    };
+
+    useEffect(() => {
+        refreshCategoriesList().then();
+        refreshWalletsList().then();
+    },[]);
 
     const onSubmit = () => {
         setAsyncIncome().then();

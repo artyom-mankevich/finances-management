@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
+import { AccountSettings } from 'src/app/models/accountSettings';
 import { Stock } from 'src/app/models/stock';
 import { DataService } from 'src/app/services/data.service';
 import { StockModalComponent } from '../stock-modal/stock-modal.component';
@@ -15,7 +17,7 @@ export class StockComponent implements OnInit {
   stock!: Stock;
   
   constructor(private dialog: MatDialog, private ds: DataService) { }
-
+  userSettings$ :Observable<AccountSettings | undefined> = this.ds.getUserSettings();
   editStock() {
     this.dialog.open(StockModalComponent, {
       data: {

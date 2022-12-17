@@ -29,7 +29,8 @@ export enum ApiEndpoints  {
   ethereumTransfer = 'eth-keys/transfer/',
   ethereumtransactions = 'eth-keys/transactions/',
   debts = 'debts/',
-  debtPayment = 'debts/transactions/'
+  debtPayment = 'debts/transactions/',
+  userSettings = 'account-settings/'
 }
 
 /*

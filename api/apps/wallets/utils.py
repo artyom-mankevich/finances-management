@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from decimal import Decimal
 
 import numpy as np
+from accounts.models import AccountSettings
 from django.core.cache import cache
 from django.db.models.functions import TruncDate
 from django.utils import timezone
@@ -13,9 +14,9 @@ from wallets.models import TransactionCategory, Transaction, WalletLog, Wallet, 
 from wallets.serializers import ExtendedTransactionCategorySerializer
 
 
-def get_top_categories(queryset: TransactionCategory.objects) -> dict:
-    incomes = get_top_categories_queryset(queryset, "source", "target")
-    expenses = get_top_categories_queryset(queryset, "target", "source")
+def get_top_categories(queryset: TransactionCategory.objects, user_id: str) -> dict:
+    incomes = get_top_categories_queryset(queryset, "source", "target", user_id)
+    expenses = get_top_categories_queryset(queryset, "target", "source", user_id)
 
     response = {
         "incomes": {
@@ -34,7 +35,8 @@ def get_top_categories(queryset: TransactionCategory.objects) -> dict:
 def get_top_categories_queryset(
     initial_qs: TransactionCategory.objects,
     wallet_type: str,
-    amount_type: str
+    amount_type: str,
+    user_id: str,
 ) -> list:
     wallet_lookup = {f"transaction__{wallet_type}_wallet__isnull": True}
     transaction_lookup = {f"{amount_type}_wallet__isnull": False}
@@ -46,7 +48,8 @@ def get_top_categories_queryset(
             category.transaction_set.filter(**transaction_lookup).prefetch_related(
                 f"{wallet_type}_wallet__currency"
             ),
-            amount_type
+            amount_type,
+            user_id
         )
         if total != 0:
             category.total = total
@@ -58,12 +61,13 @@ def get_top_categories_queryset(
 
 
 def get_transactions_total_amount(
-    transactions: Transaction.objects, amount_type: str
+    transactions: Transaction.objects, amount_type: str, user_id: str
 ) -> float:
     total = sum(
         convert_currency(
             getattr(transaction, f"{amount_type}_amount"),
-            getattr(transaction, f"{amount_type}_wallet").currency.code
+            getattr(transaction, f"{amount_type}_wallet").currency.code,
+            user_id
         ) for transaction in transactions
     )
 
@@ -86,7 +90,7 @@ def get_current_wallets_balance(user_id) -> Decimal:
         .exclude(balance=0)
     )
     current_balances_sum = sum(
-        convert_currency(wallet["balance"], wallet["currency__code"])
+        convert_currency(wallet["balance"], wallet["currency__code"], user_id)
         for wallet in balances
     )
     return current_balances_sum
@@ -136,9 +140,11 @@ def get_predicted_balance(last_balance: Decimal, user_id: str) -> dict:
     expense_transactions = get_transaction_queryset_by_type(
         user_id, "target", "source", start_date, end_date
     )
-    grouped_income_transactions = get_grouped_transactions(income_transactions, "target")
+    grouped_income_transactions = get_grouped_transactions(
+        income_transactions, "target", user_id
+    )
     grouped_expense_transactions = get_grouped_transactions(
-        expense_transactions, "source"
+        expense_transactions, "source", user_id
     )
     daily_profits = get_daily_profits(
         grouped_income_transactions, grouped_expense_transactions
@@ -160,6 +166,7 @@ def get_predicted_balance(last_balance: Decimal, user_id: str) -> dict:
 
 
 def get_wallets_chart_data(period: str, user_id: str) -> dict:
+    current_currency = AccountSettings.objects.get(user_id=user_id).main_currency.code
     start_date, end_date = get_chart_period_dates(period)
 
     logs = WalletLog.objects.filter(
@@ -167,11 +174,11 @@ def get_wallets_chart_data(period: str, user_id: str) -> dict:
     ).order_by("date")
 
     current_balances_sum = get_current_wallets_balance(user_id)
-    cache_key = f"{user_id}_{period}_{str(end_date.date())}"
+    cache_key = f"{user_id}_{period}_{str(end_date.date())}_{current_currency}"
     if cache.get(cache_key):
         grouped_logs = cache.get(cache_key)
     else:
-        grouped_logs = group_wallet_logs(logs, period)
+        grouped_logs = group_wallet_logs(logs, period, user_id)
         cache.set(cache_key, grouped_logs, 60 * 60 * 24)
 
     today_data = get_today_grouped_wallet_log(period, user_id)
@@ -206,7 +213,7 @@ def get_today_grouped_wallet_log(period: str, user_id) -> dict:
     return today_data
 
 
-def group_wallet_logs(logs: WalletLog.objects, period: str) -> dict:
+def group_wallet_logs(logs: WalletLog.objects, period: str, user_id: str) -> dict:
     grouped_logs = {}
     if not logs:
         return grouped_logs
@@ -216,7 +223,7 @@ def group_wallet_logs(logs: WalletLog.objects, period: str) -> dict:
         log_group = get_group_by_period(period, log.date)
         if group and group != log_group:
             group = log_group
-        grouped_logs[group] = convert_currency(log.balance, log.currency)
+        grouped_logs[group] = convert_currency(log.balance, log.currency, user_id)
 
     return grouped_logs
 
@@ -266,8 +273,8 @@ def get_transactions_chart_data(user_id: str) -> dict:
         get_transaction_queryset_by_type(user_id, "source", "target", start_date)
     )
 
-    grouped_expenses = get_grouped_transactions(expenses, "source")
-    grouped_incomes = get_grouped_transactions(incomes, "target")
+    grouped_expenses = get_grouped_transactions(expenses, "source", user_id)
+    grouped_incomes = get_grouped_transactions(incomes, "target", user_id)
 
     all_dates = list(set(list(grouped_expenses.keys()) + list(grouped_incomes.keys())))
     all_dates.sort(key=lambda x: datetime.strptime(x, "%d-%m-%Y"))
@@ -315,7 +322,7 @@ def get_transaction_queryset_by_type(
     )
 
 
-def get_grouped_transactions(transactions: list[dict], amount_type: str) -> dict:
+def get_grouped_transactions(transactions: list[dict], amount_type: str, user_id) -> dict:
     result = {}
     for transaction in transactions:
         date = transaction["date"].strftime("%d-%m-%Y")
@@ -324,6 +331,7 @@ def get_grouped_transactions(transactions: list[dict], amount_type: str) -> dict
         result[date] += convert_currency(
             transaction[f"{amount_type}_amount"],
             transaction[f"{amount_type}_wallet__currency__code"],
+            user_id
         )
 
     return result

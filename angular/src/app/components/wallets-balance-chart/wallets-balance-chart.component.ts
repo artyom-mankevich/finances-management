@@ -3,6 +3,7 @@ import { ChartDataset, ChartOptions } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { Observable } from 'rxjs';
 import { ChartDateOptions } from 'src/app/enums/chartDateOptions';
+import { AccountSettings } from 'src/app/models/accountSettings';
 import { WalletsBalanceChart } from 'src/app/models/walletsBalanceChart';
 import { DataService } from 'src/app/services/data.service';
 
@@ -16,6 +17,7 @@ export class WalletsBalanceChartComponent implements OnInit {
   chartDateOptions = ChartDateOptions;
   @ViewChild( BaseChartDirective ) chart: BaseChartDirective | undefined;
   totalBalance:number  = 0;
+  userSettings$: Observable<AccountSettings | undefined> = this.ds.getUserSettings();
   walletsBalance$: Observable<WalletsBalanceChart | undefined> = this.ds.getUsersWalletsData(this.selectedOption);
   chartData: ChartDataset[] = [
     {

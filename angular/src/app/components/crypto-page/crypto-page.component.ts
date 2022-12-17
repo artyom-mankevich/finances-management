@@ -17,6 +17,7 @@ export class CryptoPageComponent implements OnInit {
   constructor(private dialog: MatDialog, private ds: DataService) { }
   wallets$: Observable<EthereumWallet[]> = this.ds.getusersCryptoWallets();
   transfers$: Observable<EthereumTransferDisplay[]> = this.ds.getUsersEtheremTransactions();
+  userSettings$ = this.ds.getUserSettings();
 
   openWalletDialog() {
     this.dialog.open(CryptoWalletModalComponent)

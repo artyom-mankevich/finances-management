@@ -46,3 +46,9 @@ docker exec -i trpo_api_1 python manage.py init_currencies
 ```bash
 docker exec -i trpo_api_1 python manage.py init_news_languages
 ```
+
+### StartPage
+
+```bash
+docker exec -i trpo_api_1 python manage.py init_start_pages
+```
