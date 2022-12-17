@@ -137,8 +137,10 @@ class Transaction(models.Model):
                     old_obj, source_amount, target_amount
                 )
             else:
-                old_obj.source_wallet.deposit(old_obj.source_amount)
-                old_obj.target_wallet.withdraw(old_obj.target_amount)
+                if old_obj.source_wallet:
+                    old_obj.source_wallet.deposit(old_obj.source_amount)
+                if old_obj.target_wallet:
+                    old_obj.target_wallet.withdraw(old_obj.target_amount)
 
         if self.source_wallet and not self.target_wallet:
             self.source_wallet.withdraw(source_amount)
