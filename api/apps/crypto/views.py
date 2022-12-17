@@ -31,7 +31,10 @@ class EthKeysViewSet(
     serializer_class = EthKeysSerializer
 
     def get_queryset(self):
-        return EthKeys.objects.raw(f"SELECT * FROM {EthKeys._meta.db_table} WHERE user_id=%s", [str(self.request.user)])
+        return EthKeys.objects.raw(
+            f"SELECT * FROM {EthKeys._meta.db_table} WHERE user_id=%s",
+            [str(self.request.user)]
+        )
 
     def get_rawqueryset(self):
         return EthKeys.objects.raw(f"SELECT * FROM {EthKeys._meta.db_table} WHERE user_id=%s", [str(self.request.user)])
