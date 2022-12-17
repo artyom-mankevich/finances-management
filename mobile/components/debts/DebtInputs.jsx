@@ -25,9 +25,9 @@ export default function DebtInputs(props) {
             body: JSON.stringify({
                 'name': props.name,
                 'currency': props.currency,
-                'balance': props.currentAmount,
-                'goal': props.finalAmount,
-                'expiresAt': props.expiresAt,
+                'balance': Number(props.currentAmount),
+                'goal': Number(props.finalAmount),
+                'expiresAt': props.expiresAt.getTime(),
             })
         }).then((response) => {
             props.onUpdate();
@@ -52,13 +52,13 @@ export default function DebtInputs(props) {
             body: JSON.stringify({
                 'name': props.name,
                 'currency': props.currency,
-                'balance': props.currentAmount,
-                'goal': props.finalAmount,
-                'expiresAt': props.expiresAt,
+                'balance': Number(props.currentAmount),
+                'goal': Number(props.finalAmount),
+                'expiresAt': props.expiresAt.getTime(),
             })
         }).then((response) => {
             props.onUpdate();
-            console.log("Debt created");
+            console.log("Debt updated");
         })
             .catch((error) => {
                 console.error(error);
@@ -179,7 +179,7 @@ export default function DebtInputs(props) {
                         >
                             {isDatePickerVisible && (
                                 <DateTimePickerAndroid
-                                    value={props.expiresAt}
+                                    value={new Date(props.expiresAt)}
                                     mode={'date'}
                                     onChange={(event, selectedDate) => {
                                         const currentDate = selectedDate || date;
@@ -218,7 +218,7 @@ export default function DebtInputs(props) {
                     {backgroundColor: props.btnColorSet ? '#3e68d1' : '#b4b4b4'}]}
                                   disabled={isDisabled} onPress={() => {
                     setIsDisabled(true);
-                    props.createElement && isDisabled ? setAsyncDebt().then() : setAsyncDebtUpdate();
+                    props.createElement ? setAsyncDebt().then() : setAsyncDebtUpdate();
                 }}>
                     <Text style={{fontSize: 22}}>{props.createElement ? "Create" : "Update"}</Text>
                     <MaterialIcons name="arrow-forward-ios" size={30} color='#000' />
