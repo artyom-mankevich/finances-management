@@ -32,10 +32,6 @@ export class WalletsPageComponent implements OnInit {
     this.selectedWallet = wallet;
   }
 
-  scroll(el: HTMLElement) {
-    el.scrollIntoView({ behavior: 'smooth' });
-  }
-
   ngOnInit(): void {
   }
 
