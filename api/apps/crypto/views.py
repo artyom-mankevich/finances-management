@@ -14,10 +14,12 @@ from crypto.serializers import EthKeysSerializer
 from crypto.utils import (
     validate_transfer_args,
     transfer_eth,
-    get_eth_transactions_for_addresses, set_eth_balance_for_addresses, 
+    get_eth_transactions_for_addresses,
+    set_eth_balance_for_addresses
 )
 
 from base.utils import raw_get_object_or_404
+
 
 class EthKeysViewSet(
     GenericViewSet,
@@ -54,7 +56,8 @@ class EthKeysViewSet(
         detail=False, methods=["GET"], url_path="transactions", url_name="transactions"
     )
     def transactions(self, request, *args, **kwargs):
-        addresses = [wallet.address for wallet in EthKeys.objects.raw(f"SELECT id, address FROM {EthKeys._meta.db_table} WHERE user_id=%s", [str(self.request.user)])]
+        addresses = [wallet.address for wallet in EthKeys.objects.raw(
+            f"SELECT id, address FROM {EthKeys._meta.db_table} WHERE user_id=%s", [str(self.request.user)])]
         transactions = get_eth_transactions_for_addresses(addresses)
 
         return Response(transactions, 200)
