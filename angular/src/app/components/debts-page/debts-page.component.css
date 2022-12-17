@@ -4,6 +4,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 10px
 }
 
 .debts-wrapper {
@@ -32,5 +34,12 @@ h2 {
 @media only screen and (max-width: 900px) {
     .debts-wrapper {
         padding-top: 30px;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .debts {
+        grid-template-columns: repeat(auto-fill, 225px);
+
     }
 }

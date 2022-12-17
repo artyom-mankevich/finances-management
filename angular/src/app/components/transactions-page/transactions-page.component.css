@@ -73,6 +73,7 @@
 .filters-wrapper {
     display: flex;
     gap: 10px;
+    flex-wrap: wrap;
 }
 
 .transaction-filter-button:active {
@@ -89,9 +90,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .transactions-page-wrapper { 
     width: 90%;
     margin:auto;
 }
+

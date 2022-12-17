@@ -1,26 +1,28 @@
-<div class="investments-page-wrapper">
-    <div class="investments-top-menu">
-        <button class="add-button" (click)="openNewsFilterDialog()">Add news filter</button>
-        <button class="add-button dark-blue" (click)="openStockDialog()">Add Stock</button>
+<div class="investments-wrapper">
+    <div class="top-menu">
+        <h2>Investments</h2>
+        <button class="add-button" (click)="openInvestmentDialog()">Add investments</button>
     </div>
-    <section class="content">
-        <div class="stocks-chart-news-wrapper">
-            <section class="stocks-chart">
-                <app-stocks-chart></app-stocks-chart>
-            </section>
-            <section class="news">
-                <h2>News</h2>
-                <app-news-entry class="news-entry" [news]="newsEntry" *ngFor="let newsEntry of news$ | async"></app-news-entry>
-            </section>
-        </div>
-        <section class="stocks">
-            <ng-container *ngIf="stocks$ | async as stocks">
-                <app-stock [stock]="stock" *ngFor="let stock of stocks.results"></app-stock>
-                <div class="stocks-batch-buttons">
-                    <button *ngIf="stocks.previous" class="secondary-button dark-blue-border" (click)="loadPreviousStocks()">Previous</button>
-                    <button *ngIf="stocks.next" class="secondary-button dark-blue-border" (click)="loadNextStocks()">Next</button>
+    <div class="investments" *ngIf="userSettings$ | async as us">
+        <div class="investment" *ngFor="let investment of investments$ | async">
+            <div class="info">
+                <div class="color" [style.backgroundColor]="investment.color"></div>
+                <div class="text">
+                    <p class="name">{{ investment.name }}</p>
+                    <p class="description">{{ investment.description }}</p>
                 </div>
-            </ng-container>
-        </section>
-    </section>
+            </div>
+            <div class="right">
+                <div class="actions">
+                    <mat-icon class="action" fontIcon="material-icons-round" (click)="openEditDialog(investment)">edit</mat-icon>
+                    <mat-icon class="action" fontIcon="material-icons-round" (click)="deleteInvestment(investment)">close</mat-icon>
+                </div>
+                <div class="amount-percent">
+                    <p class="amount">{{ (investment.balance | shortNumber) | currencyLocation : ( investment.currency | currencySymbol) : us.currencyFormat}} </p>
+                    <p class="percent">{{ investment.percent }}%</p>
+                </div>
+               
+            </div>
+        </div>
+    </div>
 </div>

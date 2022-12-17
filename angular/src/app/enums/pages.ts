@@ -4,6 +4,7 @@ export enum Pages {
     Wallets = 'Wallets',
     Analytics = 'Analytics',
     Stocks = 'Stocks',
+    Investments = 'Investments',
     Debts = 'Debts',
     Crypto = 'Crypto'
 }
