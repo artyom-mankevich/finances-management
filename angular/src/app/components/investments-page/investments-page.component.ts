@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
-import { News } from 'src/app/models/news';
-import { StockRequest } from 'src/app/models/stock';
+import { AccountSettings } from 'src/app/models/accountSettings';
+import { Investment } from 'src/app/models/investment';
 import { DataService } from 'src/app/services/data.service';
-import { NewsFiltersModalComponent } from '../news-filters-modal/news-filters-modal.component';
-import { StockModalComponent } from '../stock-modal/stock-modal.component';
+import { InvestmentModalComponent } from '../investment-modal/investment-modal.component';
 
 @Component({
   selector: 'app-investments-page',
@@ -13,31 +12,25 @@ import { StockModalComponent } from '../stock-modal/stock-modal.component';
   styleUrls: ['./investments-page.component.css']
 })
 export class InvestmentsPageComponent implements OnInit {
-
-  stocks$: Observable<StockRequest | undefined> = this.ds.getUserStocks();
-  news$: Observable<News[]> = this.ds.getUserNews();
+  userSettings$: Observable<AccountSettings | undefined> = this.ds.getUserSettings();
+  investments$: Observable<Investment[]> = this.ds.getUsersInvestments();
   constructor(private dialog: MatDialog, private ds: DataService) { }
 
-  openStockDialog() {
-    this.dialog.open(StockModalComponent, {
-      width: '300px',
-      height: '300px'
+  ngOnInit(): void {
+  }
+
+  openInvestmentDialog() {
+    this.dialog.open(InvestmentModalComponent);
+  }
+
+  openEditDialog(investment: Investment) {
+    this.dialog.open(InvestmentModalComponent, {
+      data: {investment: investment}
     });
   }
 
-  openNewsFilterDialog() {
-    this.dialog.open(NewsFiltersModalComponent);
-  }
-
-  loadNextStocks() {
-    this.ds.getUserStocksNext();
-  }
-
-  loadPreviousStocks() {
-    this.ds.getUserStocksPrevious();
-  }
-
-  ngOnInit(): void {
+  deleteInvestment(investment: Investment) {
+    this.ds.deleteInvestment(investment).subscribe();
   }
 
 }

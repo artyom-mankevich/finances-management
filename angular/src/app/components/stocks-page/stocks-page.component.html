@@ -1,0 +1,26 @@
+<div class="investments-page-wrapper">
+    <div class="investments-top-menu">
+        <button class="add-button" (click)="openNewsFilterDialog()">Add news filter</button>
+        <button class="add-button dark-blue" (click)="openStockDialog()">Add Stock</button>
+    </div>
+    <section class="content">
+        <div class="stocks-chart-news-wrapper">
+            <section class="stocks-chart">
+                <app-stocks-chart></app-stocks-chart>
+            </section>
+            <section class="news">
+                <h2>News</h2>
+                <app-news-entry class="news-entry" [news]="newsEntry" *ngFor="let newsEntry of news$ | async"></app-news-entry>
+            </section>
+        </div>
+        <section class="stocks">
+            <ng-container *ngIf="stocks$ | async as stocks">
+                <app-stock [stock]="stock" *ngFor="let stock of stocks.results"></app-stock>
+                <div class="stocks-batch-buttons">
+                    <button *ngIf="stocks.previous" class="secondary-button dark-blue-border" (click)="loadPreviousStocks()">Previous</button>
+                    <button *ngIf="stocks.next" class="secondary-button dark-blue-border" (click)="loadNextStocks()">Next</button>
+                </div>
+            </ng-container>
+        </section>
+    </section>
+</div>

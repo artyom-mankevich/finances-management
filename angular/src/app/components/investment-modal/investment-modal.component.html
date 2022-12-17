@@ -1,0 +1,26 @@
+<div class="modal-wrapper">
+    <form class="data-input" [formGroup]="form">
+        <label>Info</label>
+        <input type="text" class="main-input" placeholder="Name" formControlName="name">
+        <input type="text" class="main-input" placeholder="Description" formControlName="description">
+        <label>Amount</label>
+        <input type="number" class="main-input" min=0 placeholder="Starting amount" formControlName="balance">
+        <input type="number" min=0.00000001 max="10000" class="main-input" placeholder="MPY(%)" formControlName="mpy">
+        <label>Currency</label>
+        <input class="main-input" list="currencies" placeholder="Currency" formControlName="currency">
+        <datalist name="currencies" id="currencies">
+            <option *ngFor="let currency of dss.currencies" value="{{currency.code}}">{{currency.name}}
+            </option>
+        </datalist>
+        <label>Color</label>
+        <div class="colors" id="colors">
+            <div *ngFor="let color of dss.colors" class="color" [style.backgroundColor]="color"
+                (click)="changeBackgroundColor(color)">
+                <div *ngIf="color === investment.color" class="selected-color"></div>
+            </div>
+        </div>
+    </form>
+
+    <button [disabled]="form.invalid || !ableToSubmit" class="modal-action-button"
+        [style.backgroundColor]="investment.color" (click)="modifyInvestment()">{{ modalMode }}</button>
+</div>
