@@ -62,19 +62,23 @@ export default function AnalyticsList(props) {
         })
             .then((response) => response.json())
             .then((responseJson) => {
+                console.log("responseJson", responseJson);
                 let lineIncomeChartDataTmp = [];
                 let lineExpenseChartDataTmp = [];
                 for(let i = 0; i < responseJson.incomes.length; i++) {
                     lineIncomeChartDataTmp.push({
                         value: responseJson.incomes[i],
                         label: responseJson.dates[i],
+                        dataPointText: responseJson.incomes[i],
                     })
                     setLineIncomeChartData(lineIncomeChartDataTmp);
                 }
+                console.log(lineIncomeChartData);
                 for (let i = 0; i < responseJson.expenses.length; i++) {
                     lineExpenseChartDataTmp.push({
                         value: responseJson.expenses[i],
                         label: responseJson.dates[i],
+                        dataPointText: responseJson.expenses[i],
                     })
                     setLineExpenseChartData(lineExpenseChartDataTmp);
                 }
@@ -198,15 +202,17 @@ export default function AnalyticsList(props) {
                         isAnimated={true}
                         onDataChangeAnimationDuration={2000}
                         yAxisTextStyle={{fontSize: 10}}
-                        data={lineIncomeChartData}
-                        data2={lineExpenseChartData}
+                        data={lineExpenseChartData}
+                        data2={lineIncomeChartData}
                         rotateLabel={true}
                         xAxisLabelTextStyle={{fontSize: 12, width: 70}}
                         width={330}
                         height={250}
+                        textFontSize={14}
+                        textShiftY={-6}
                         dataPointsColor1={'#7A3EF8'}
                         dataPointsColor2={'#EB4A82'}
-                        dataPointsRadius={6}
+                        dataPointsRadius={7}
                         initialSpacing={0}
                         color1={'#7A3EF8'}
                         color2={'#EB4A82'}
@@ -218,7 +224,7 @@ export default function AnalyticsList(props) {
                         focusedDataPointShape={'circle'}
                         focusedDataPointWidth={10}
                         focusedDataPointHeight={10}
-                        focusedDataPointColor={'#3E68D1'}
+                        focusedDataPointColor={'#ff0000'}
                         focusedDataPointRadius={10}
                         dataPoint
                     />
