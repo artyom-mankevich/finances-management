@@ -6,9 +6,7 @@ from django.utils import timezone
 from decorations.models import Color
 from rest_framework import serializers, exceptions
 
-from wallets.models import (
-    Currency, Wallet, Transaction, TransactionCategory, Debt
-)
+from wallets.models import Currency, Wallet, Transaction, TransactionCategory, Debt
 
 
 class CurrencySerializer(serializers.ModelSerializer):
@@ -177,7 +175,7 @@ class TransactionSerializer(serializers.ModelSerializer):
             "description",
         )
 
-    created_at = serializers.SerializerMethodField()
+    created_at = serializers.FloatField(read_only=True)
     source_amount = serializers.DecimalField(
         max_digits=30,
         decimal_places=10,
@@ -200,6 +198,9 @@ class TransactionSerializer(serializers.ModelSerializer):
     )
 
     def to_representation(self, instance):
+        instance.created_at = datetime.combine(
+            instance.created_at, datetime.min.time()
+        ).timestamp() * 1000 if instance.created_at else None
         data = super().to_representation(instance)
 
         data["category"] = TransactionCategorySerializer(
@@ -215,9 +216,6 @@ class TransactionSerializer(serializers.ModelSerializer):
         ).data if instance.target_wallet else None
 
         return data
-
-    def get_created_at(self, obj: Transaction) -> float:
-        return datetime.combine(obj.created_at, datetime.min.time()).timestamp() * 1000
 
     def update(self, instance, validated_data):
         self._reject_type_change(instance, validated_data)
