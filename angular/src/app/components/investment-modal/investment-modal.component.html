@@ -4,8 +4,8 @@
         <input type="text" class="main-input" placeholder="Name" formControlName="name">
         <input type="text" class="main-input" placeholder="Description" formControlName="description">
         <label>Amount</label>
-        <input type="number" class="main-input" min=0 placeholder="Starting amount" formControlName="amount">
-        <input type="number" min=0.00000001 class="main-input" placeholder="MPY(%)" formControlName="mpy">
+        <input type="number" class="main-input" min=0 placeholder="Starting amount" formControlName="balance">
+        <input type="number" min=0.00000001 max="10000" class="main-input" placeholder="MPY(%)" formControlName="mpy">
         <label>Currency</label>
         <input class="main-input" list="currencies" placeholder="Currency" formControlName="currency">
         <datalist name="currencies" id="currencies">

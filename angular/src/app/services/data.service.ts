@@ -14,6 +14,7 @@ import { EthereumTransfer, EthereumTransferDisplay } from '../models/ethereumTra
 import { EthereumWallet } from '../models/ethereumWallet';
 import { EthKeys } from '../models/ethKeys';
 import { Icon } from '../models/icon';
+import { Investment } from '../models/investment';
 import { News } from '../models/news';
 import { NewsFilter } from '../models/newsFilter';
 import { NewsLanguage } from '../models/newsLanguages';
@@ -47,6 +48,7 @@ export class DataService {
   private _ethereumTransactions: BehaviorSubject<EthereumTransferDisplay[]>
   private _debts: BehaviorSubject<Debt[]>;
   private _userSettings: BehaviorSubject<AccountSettings | undefined>
+  private _investments: BehaviorSubject<Investment[]>
   stockChartPeriod: ChartDateOptions = ChartDateOptions.Week;
   transactionFilter: TransactionFilters = TransactionFilters.All;
   walletsChartPeriod: ChartDateOptions = ChartDateOptions.Week;
@@ -69,6 +71,7 @@ export class DataService {
     this._cryptoWallets = new BehaviorSubject<EthereumWallet[]>([]);
     this._debts = new BehaviorSubject<Debt[]>([]);
     this._userSettings = new BehaviorSubject<AccountSettings | undefined>(undefined);
+    this._investments = new BehaviorSubject<Investment[]>([]);
     this.getAvailableIcons();
     this._prefetchData();
   }
@@ -94,6 +97,7 @@ export class DataService {
     this.getUsersTransactionsData();
     this.getusersCryptoWallets();
     this.getUsersEtheremTransactions();
+    this.getUsersInvestments();
   }
 
   private _getUserWallets(): void {
@@ -128,6 +132,7 @@ export class DataService {
       this.getUserTransactions(this.transactionFilter, true);
       this.getUsersWalletsData(this.walletsChartPeriod, true);
       this.getUsersTransactionsData(true);
+      this.getUsersInvestments(true);
     }));
   }
 
@@ -146,7 +151,7 @@ export class DataService {
       this.getUsersTransactionsData(true);
       this.getUsersTopCategories(true);
       this.getUsersWalletsData(this.walletsChartPeriod, true);
-
+      this.getUsersInvestments(true);
     }));
   }
 
@@ -194,6 +199,7 @@ export class DataService {
       this.getUsersTransactionsData(true);
       this.getUsersTopCategories(true);
       this.getUsersWalletsData(this.walletsChartPeriod, true);
+      this.getUsersInvestments(true);
       if (this.getTransactionType(transaction).toString() === this.transactionFilter || this.transactionFilter === TransactionFilters.All) {
         this._transactions.next([transaction, ...this._transactions.value]);
       }
@@ -205,6 +211,7 @@ export class DataService {
       this.getUsersTransactionsData(true);
       this.getUsersTopCategories(true);
       this.getUsersWalletsData(this.walletsChartPeriod, true);
+      this.getUsersInvestments(true);
       this._transactions.next(
         this._transactions.value.map((tr: Transaction) => tr.id === transaction.id ? transaction : tr)
       )
@@ -221,6 +228,7 @@ export class DataService {
       this.getUserWallets();
       this.getUserTransactions(this.transactionFilter, true);
       this.getUsersWalletsData(this.walletsChartPeriod, true);
+      this.getUsersInvestments(true);
     }))
   }
 
@@ -453,6 +461,50 @@ export class DataService {
       this.http.get<AccountSettings>(`${this.url}${ApiEndpoints.userSettings}`).subscribe(val => this._userSettings.next(val));
     }
     return this._userSettings.asObservable();
+  }
+
+  deleteInvestment(investment: Investment) {
+    return this.http.delete(`${this.url}${ApiEndpoints.investments}${investment.id}/`).pipe(tap(() => {
+      this._investments.next(
+        this._investments.value.filter(invest => invest.id !== investment.id)
+      )
+      this.getUsersWalletsData(this.walletsChartPeriod, true);
+      this._getUserWallets();
+      this.getUserTransactions(this.transactionFilter, true);
+      this.getUsersTopCategories(true);
+      this.getUsersTransactionsData(true);
+    }))
+  }
+
+  createInvestment(investment: Investment) {
+    return this.http.post<Investment>(`${this.url}${ApiEndpoints.investments}`, investment).pipe(tap(invest => {
+      this._investments.next([invest, ...this._investments.value]);
+      this._getUserWallets();
+      this.getUsersWalletsData(this.walletsChartPeriod, true);
+    }))
+  }
+
+  getUsersInvestments(force: boolean = false) {
+    if (this._investments.value.length === 0 || force) {
+      this.http.get<Investment[]>(`${this.url}${ApiEndpoints.investments}`).subscribe(val => this._investments.next(val));
+    }
+    return this._investments.asObservable();
+  }
+
+  updateInvestment(investment: Investment) {
+    return this.http.put<Investment>(`${this.url}${ApiEndpoints.investments}${investment.id}/`, investment).pipe(tap(invest => {
+      this.getUsersWalletsData(this.walletsChartPeriod, true);
+      this._getUserWallets();
+      this.getUserTransactions(this.transactionFilter, true);
+      this.getUsersTopCategories(true);
+      this.getUsersTransactionsData(true);
+      this._investments.next(
+        this._investments.value.map((inv: Investment) => {
+          if (inv.id === investment.id) return invest;
+          return inv;
+        })
+      );
+    }))
   }
 
 }
