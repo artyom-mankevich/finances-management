@@ -18,7 +18,7 @@
                     <mat-icon class="action" fontIcon="material-icons-round" (click)="deleteInvestment(investment)">close</mat-icon>
                 </div>
                 <div class="amount-percent">
-                    <p class="amount">{{ (investment.balance | shortNumber) | currencyLocation : investment.currency : us.currencyFormat}} </p>
+                    <p class="amount">{{ (investment.balance | shortNumber) | currencyLocation : ( investment.currency | currencySymbol) : us.currencyFormat}} </p>
                     <p class="percent">{{ investment.percent }}%</p>
                 </div>
                
