@@ -1,0 +1,97 @@
+@import url('../../common/styles/buttons.css');
+
+.investments-page-wrapper {
+    width: 90%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding-bottom: 30px;
+}
+
+.investments-top-menu {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.stocks {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 30px;
+    min-width: 375px;
+}
+
+.dark-blue {
+  background-color: var(--dark-blue);  
+  border-color: var(--dark-blue);
+}
+
+.dark-blue-border {
+    border-color: var(--dark-blue);
+    color: var(--dark-blue);
+}
+
+.dark-blue-border:hover {
+    background-color: var(--dark-blue);
+}
+
+.content {
+    width: 100%;
+    display: flex;
+    gap: 30px;
+    justify-content: space-between;
+    flex-direction: row;   
+    flex: 1 1;
+}
+
+.stocks-chart-news-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.secondary-button {
+    width: 150px;
+}
+.stocks-chart {
+    width: 100%;
+}
+
+.stocks-batch-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.news-entry {
+    padding-left:20px;
+}
+
+@media only screen and (max-width: 1100px) {
+    .content {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .stocks {
+        width: 100%;
+    }
+
+    .stocks-chart-news-wrapper {
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    .investments-page-wrapper {
+        padding-top: 30px;
+    }
+    .stocks {
+        min-width: 200px;
+    }
+}

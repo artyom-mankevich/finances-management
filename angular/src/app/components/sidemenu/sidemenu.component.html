@@ -78,6 +78,14 @@
                     <span class="menu-option-name">{{ pages.Stocks }}</span>
                 </div>
             </li>
+            <li [ngClass]="{ 'selected-option': currentPage===pages.Investments }" class="menu-option"
+                (click)="changeCurrentPage(pages.Investments)">
+                <div class="selected-box"></div>
+                <div class="item-icon-name">
+                    <mat-icon fontIcon="material-icons-round">trending_up</mat-icon>
+                    <span class="menu-option-name">Investments</span>
+                </div>
+            </li>
             <li [ngClass]="{ 'selected-option': currentPage===pages.Debts }" class="menu-option"
                 (click)="changeCurrentPage(pages.Debts)">
                 <div class="selected-box"></div>
@@ -123,7 +131,7 @@
                     <mat-icon fontIcon="material-icons-round">settings</mat-icon>
                     <span class="menu-option-name">Settings</span>
                 </div>
-              
+
             </li>
         </ul>
     </nav>

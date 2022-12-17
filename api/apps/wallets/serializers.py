@@ -22,7 +22,9 @@ class WalletSerializer(serializers.ModelSerializer):
     class Meta:
         model = Wallet
         read_only_fields = ("id", "user_id")
-        fields = read_only_fields + ("currency", "balance", "name", "color", "goal",)
+        fields = read_only_fields + (
+            "currency", "balance", "name", "color", "goal", "description"
+        )
 
     currency = serializers.PrimaryKeyRelatedField(
         queryset=Currency.objects.all(), required=True
@@ -57,7 +59,9 @@ class DebtSerializer(serializers.ModelSerializer):
     class Meta:
         model = Debt
         read_only_fields = ("id", "user_id")
-        fields = read_only_fields + ("expires_at", "currency", "balance", "name", "goal",)
+        fields = read_only_fields + (
+            "expires_at", "currency", "balance", "name", "goal", "description"
+        )
 
     expires_at = serializers.FloatField(required=True)
     currency = serializers.PrimaryKeyRelatedField(
@@ -70,6 +74,7 @@ class DebtSerializer(serializers.ModelSerializer):
     goal = serializers.DecimalField(
         max_digits=30, decimal_places=10, coerce_to_string=False
     )
+    description = serializers.CharField(required=False, allow_blank=True)
 
     def to_representation(self, instance):
         data = {
@@ -80,6 +85,7 @@ class DebtSerializer(serializers.ModelSerializer):
             "balance": instance.wallet.balance,
             "name": instance.wallet.name,
             "goal": instance.wallet.goal,
+            "description": instance.wallet.description,
         }
         if instance.expires_at:
             data["expires_at"] = timezone.datetime.combine(
@@ -93,6 +99,7 @@ class DebtSerializer(serializers.ModelSerializer):
         balance = validated_data.pop("balance")
         name = validated_data.pop("name")
         goal = validated_data.pop("goal")
+        description = validated_data.pop("description", "")
         user_id = str(self.context["request"].user)
 
         if goal <= 0:
@@ -105,6 +112,7 @@ class DebtSerializer(serializers.ModelSerializer):
             name=name,
             goal=goal,
             color=Color.objects.all().first(),
+            description=description,
         )
         validated_data["wallet"] = wallet
 
@@ -119,11 +127,13 @@ class DebtSerializer(serializers.ModelSerializer):
         balance = validated_data.pop("balance", instance.wallet.balance)
         name = validated_data.pop("name", instance.wallet.name)
         goal = validated_data.pop("goal", instance.wallet.goal)
+        description = validated_data.pop("description", instance.wallet.description)
 
         instance.wallet.currency = currency
         instance.wallet.balance = balance
         instance.wallet.name = name
         instance.wallet.goal = goal
+        instance.wallet.description = description
         instance.wallet.save()
 
         validated_data["expires_at"] = timezone.datetime.fromtimestamp(

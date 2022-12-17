@@ -5,8 +5,8 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
 from accounts.views import SetUserIdFromTokenOnCreateMixin
-from investments.models import Stock
-from investments.serializers import StockSerializer
+from investments.models import Stock, Investment
+from investments.serializers import StockSerializer, InvestmentSerializer
 from investments.utils import set_stock_prices, get_stocks_chart_data
 
 
@@ -64,3 +64,12 @@ class StockViewSet(viewsets.ModelViewSet, SetUserIdFromTokenOnCreateMixin):
             )
 
         return Response(data={})
+
+
+class InvestmentViewSet(viewsets.ModelViewSet, SetUserIdFromTokenOnCreateMixin):
+    serializer_class = InvestmentSerializer
+
+    def get_queryset(self):
+        return Investment.objects.all().filter(user_id=self.request.user).order_by(
+            "-created_at"
+        )

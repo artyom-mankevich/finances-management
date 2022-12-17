@@ -6,7 +6,7 @@ from drf_yasg import openapi
 from accounts.views import AccountSettingsViewSet
 from crypto.views import EthKeysViewSet
 from decorations.views import IconViewSet, ColorViewSet
-from investments.views import StockViewSet
+from investments.views import StockViewSet, InvestmentViewSet
 from news.views import NewsFilterViewSet, NewsLanguageViewSet, NewsAPIView
 from project import settings
 from wallets.views import (
@@ -37,6 +37,7 @@ router.register(r"icons", IconViewSet, basename="icons")
 router.register(r"colors", ColorViewSet, basename="colors")
 
 router.register(r"stocks", StockViewSet, basename="stocks")
+router.register(r"investments", InvestmentViewSet, basename="investments")
 
 router.register(r"news-filters", NewsFilterViewSet, basename="news-filters")
 router.register(r"news-languages", NewsLanguageViewSet, basename="news-languages")

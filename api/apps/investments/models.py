@@ -54,3 +54,16 @@ class Stock(models.Model):
 
 class Ticker(models.Model):
     code = models.CharField(max_length=10, primary_key=True)
+
+
+class Investment(models.Model):
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    user_id = models.CharField(max_length=64, db_index=True)
+    percent = models.DecimalField(max_digits=30, decimal_places=10)
+    wallet = models.OneToOneField(Wallet, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    @transaction.atomic
+    def delete(self, using=None, keep_parents=False):
+        self.wallet.delete()
+        super().delete(using, keep_parents)
