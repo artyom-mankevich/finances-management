@@ -288,8 +288,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     debtNameContainer: {
-        width: 140,
+        width: 120,
         marginTop: 20,
+        marginLeft: -15,
     },
     debtAmount: {
         color: '#000',
