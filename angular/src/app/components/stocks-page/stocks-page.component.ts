@@ -8,11 +8,11 @@ import { NewsFiltersModalComponent } from '../news-filters-modal/news-filters-mo
 import { StockModalComponent } from '../stock-modal/stock-modal.component';
 
 @Component({
-  selector: 'app-investments-page',
-  templateUrl: './investments-page.component.html',
-  styleUrls: ['./investments-page.component.css']
+  selector: 'app-stocks-page',
+  templateUrl: './stocks-page.component.html',
+  styleUrls: ['./stocks-page.component.css']
 })
-export class InvestmentsPageComponent implements OnInit {
+export class StocksPageComponent implements OnInit {
 
   stocks$: Observable<StockRequest | undefined> = this.ds.getUserStocks();
   news$: Observable<News[]> = this.ds.getUserNews();

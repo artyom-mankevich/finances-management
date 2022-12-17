@@ -24,7 +24,7 @@ import { TransactionComponent } from './components/transaction/transaction.compo
 import { TransactionModalComponent } from './components/transaction-modal/transaction-modal.component';
 import { MatIconModule } from '@angular/material/icon';
 import { CategoryModalComponent } from './components/category-modal/category-modal.component';
-import { InvestmentsPageComponent } from './components/investments-page/investments-page.component';
+import { StocksPageComponent } from './components/stocks-page/stocks-page.component';
 import { StockComponent } from './components/stock/stock.component';
 import { NewsEntryComponent } from './components/news-entry/news-entry.component';
 import { StockModalComponent } from './components/stock-modal/stock-modal.component';
@@ -63,7 +63,7 @@ import { CurrencyLocationPipe } from './pipes/currency-location.pipe';
     TransactionComponent,
     TransactionModalComponent,
     CategoryModalComponent,
-    InvestmentsPageComponent,
+    StocksPageComponent,
     StockComponent,
     NewsEntryComponent,
     StockModalComponent,
