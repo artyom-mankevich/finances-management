@@ -1,0 +1,38 @@
+@import url('../../common/styles/buttons.css');
+@import url('../../common/styles/inputs.css');
+
+
+.modal-wrapper {
+    gap: 30px;
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+}
+
+.data-input {
+    display: flex;
+    flex-direction: column;
+}
+
+.colors {
+    display: flex;
+    flex-direction: row;
+    margin-top: 15px;
+}
+
+.color {
+    width: 25px;
+    height: 25px;
+    border-radius: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.selected-color {
+    width: 8px;
+    height: 8px;
+    border-radius: 10px;
+    background-color: white;
+}

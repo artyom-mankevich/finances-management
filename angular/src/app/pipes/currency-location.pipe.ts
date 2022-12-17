@@ -10,7 +10,7 @@ export class CurrencyLocationPipe implements PipeTransform {
     if (currencyLocationSetting === CurrencyFormat.left) {
       return currency + value;
     }
-    return value + currency;
+    return value + ' ' + currency;
   }
 
 }

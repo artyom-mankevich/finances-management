@@ -1,12 +1,11 @@
-import { Wallet } from "./wallet";
-
 export interface Investment {
     id: string | null,
-    userId: string,
-    wallet: Wallet,
+    userId: string | null,
+    balance: number,
+    currency: string,
     percent: number,
+    color: string,
     name: string,
     description: string,
-    color: string,
-    currency: string
+    createdAt: number | null
 }
