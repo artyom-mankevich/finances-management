@@ -54,7 +54,7 @@ export default function DebtInputs(props) {
                 'currency': props.currency,
                 'balance': Number(props.currentAmount),
                 'goal': Number(props.finalAmount),
-                'expiresAt': props.expiresAt.getTime(),
+                'expiresAt': props.expiresAt.getTime() ? props.expiresAt.getTime() : props.expiresAt,
             })
         }).then((response) => {
             props.onUpdate();
