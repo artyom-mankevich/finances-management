@@ -102,9 +102,10 @@ def get_stocks_chart_data(
     amounts_key = "_".join([str(val) for val in stocks.values()])
     cache_key = f"stocks_chart_data_{tickers_key}_{amounts_key}" \
                 f"_{period}_{interval}_{user_id}"
-    cached_value = cache.get(cache_key)
-    if cached_value:
-        return cached_value
+    if len(cache_key) < 250:
+        cached_value = cache.get(cache_key)
+        if cached_value:
+            return cached_value
 
     cache_lifetime = 60 * 60 * 24
 
@@ -138,7 +139,8 @@ def get_stocks_chart_data(
     average_price = sum(result["data"]["values"]) / len(result["data"]["values"])
     result["average_price"] = average_price
 
-    cache.set(cache_key, result, cache_lifetime)
+    if len(cache_key) < 250:
+        cache.set(cache_key, result, cache_lifetime)
 
     return result
 
