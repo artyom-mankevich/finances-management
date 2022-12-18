@@ -119,8 +119,11 @@ def get_stocks_chart_data(
     if period in [Stock.CHART_PERIOD_7_DAYS, Stock.CHART_PERIOD_1_MONTH]:
         today = datetime.date.today()
         today_prices = get_stock_prices(tickers, user_id)
-        for ticker in today_prices:
-            today_prices[ticker] = today_prices[ticker] * stocks[ticker]
+        for ticker in list(today_prices.keys()):
+            if today_prices[ticker] is not None:
+                today_prices[ticker] = today_prices[ticker] * stocks[ticker]
+            else:
+                del today_prices[ticker]
         today_sum = {
             today.strftime("%d-%m-%Y"): sum(today_prices.values())
         }
