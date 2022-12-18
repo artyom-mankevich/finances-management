@@ -33,9 +33,18 @@ def convert_currency(amount, currency, user_id):
     return amount
 
 
-def raw_get_object_or_404(model, field, id):
+def raw_get_object_or_404(model, field, value):
     try:
-        return model.objects.raw(f'SELECT * FROM {model._meta.db_table}'
-                                 f' WHERE {field}=%s LIMIT 1', [id])[0]
+        return model.objects.raw(
+            f'SELECT * FROM {model._meta.db_table} WHERE {field}=%s LIMIT 1', [value]
+        )[0]
     except IndexError:
         raise NotFound("Couldn't find matching object")
+
+
+def dictfetchall(cursor):
+    columns = [col[0] for col in cursor.description]
+    return [
+        dict(zip(columns, row))
+        for row in cursor.fetchall()
+    ]
