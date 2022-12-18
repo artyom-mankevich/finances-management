@@ -1,5 +1,5 @@
 from rest_framework.generics import get_object_or_404
-from rest_framework.mixins import CreateModelMixin, UpdateModelMixin, ListModelMixin
+from rest_framework.mixins import UpdateModelMixin, ListModelMixin
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
@@ -22,8 +22,3 @@ class AccountSettingsViewSet(GenericViewSet, UpdateModelMixin, ListModelMixin):
         obj = self.get_object()
         data = self.get_serializer(obj).data
         return Response(data)
-
-
-class SetUserIdFromTokenOnCreateMixin(CreateModelMixin):
-    def perform_create(self, serializer):
-        serializer.save(user_id=str(self.request.user))
