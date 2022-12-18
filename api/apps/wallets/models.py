@@ -71,14 +71,15 @@ class Wallet(models.Model):
     def save(self, *args, **kwargs):
         with connection.cursor() as cursor:
             if self._state.adding:
+                self.last_updated = timezone.now()
                 cursor.execute(
                     f"BEGIN; "
-                    f"INSERT INTO {self._meta.db_table}"
+                    f"INSERT INTO {self._meta.db_table} "
                     f"(id, user_id, currency_id, balance, name, color_id, goal,"
                     f" last_updated, description)"
                     f" VALUES(%(id)s, %(user_id)s, %(currency_id)s, %(balance)s,"
                     f" %(name)s, %(color_id)s, %(goal)s, %(last_updated)s,"
-                    f" %(description)s;"
+                    f" %(description)s);"
                     f" COMMIT;",
                     {
                         "id": self.id,
@@ -161,6 +162,7 @@ class WalletLog(models.Model):
         with connection.cursor() as cursor:
             if self._state.adding:
                 self.date = timezone.now().date()
+                params["date"] = self.date
                 cursor.execute(
                     f"BEGIN; "
                     f"INSERT INTO {self._meta.db_table}"
