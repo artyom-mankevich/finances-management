@@ -37,7 +37,6 @@ class Stock(models.Model):
         }
         with connection.cursor() as cursor:
             if self._state.adding:
-                print('ADDING')
                 NewsFilter.add_ticker(self.user_id, self.ticker)
                 self.created_at = timezone.now()
                 params["created_at"] = self.created_at
