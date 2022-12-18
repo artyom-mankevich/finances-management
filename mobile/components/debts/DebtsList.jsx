@@ -8,6 +8,7 @@ import GestureRecognizer from "react-native-swipe-gestures";
 import Modal from "react-native-modal";
 import DebtInputs from "./DebtInputs";
 import PaymentInputs from "./PaymentInputs";
+import {format} from "date-fns";
 
 export default function DebtsList(props) {
     const [modalVisible, setModalVisible] = useState(false);
@@ -20,6 +21,8 @@ export default function DebtsList(props) {
     const [currentAmount, setCurrentAmount] = useState(0);
     const [expiresAt, setExpiresAt] = useState(new Date());
     const [onBtnCreate, setOnBtnCreate] = useState(true);
+    const [dateFormat, setDateFormat] = useState('d MMMM y');
+    const [currencyFormat, setCurrencyFormat] = useState('left');
 
     const getCurrencyList = async () => {
         const accessToken = await AsyncStorage.getItem('accessToken');
@@ -47,6 +50,10 @@ export default function DebtsList(props) {
 
     const getDebtsList = async () => {
         const accessToken = await AsyncStorage.getItem('accessToken');
+        const dateFormat = await AsyncStorage.getItem('dateFormat');
+        setDateFormat(dateFormat);
+        const currencFormat = await AsyncStorage.getItem('currencyFormat');
+        setCurrencyFormat(currencFormat);
         return await fetch(ngrokConfig.myUrl + '/v2/debts/',{
             method: 'GET',
             headers: {
@@ -219,7 +226,12 @@ export default function DebtsList(props) {
                                     <View style={styles.debtTextContainer}>
                                         <View style={styles.debtNameContainer}>
                                             <Text style={styles.debtAmount}>
-                                                {item.currency} {ReduceFriendlyNumbers(item.balance,1)} / {item.currency} {ReduceFriendlyNumbers(item.goal,1)}
+                                                {
+                                                    currencyFormat === 'left' ? item.currency + ' ' + ReduceFriendlyNumbers(item.balance, 1) +
+                                                        ' / ' + item.currency + ReduceFriendlyNumbers(item.goal, 1) :
+                                                        ReduceFriendlyNumbers(item.balance, 1) + ' ' + item.currency +
+                                                        ' / ' + ReduceFriendlyNumbers(item.goal, 1) + ' ' + item.currency
+                                                }
                                             </Text>
                                         </View>
                                         <View style={styles.debtName}>
@@ -232,7 +244,9 @@ export default function DebtsList(props) {
                                                 Expires at:
                                             </Text>
                                             <Text style={styles.debtDateText}>
-                                                {new Date(item.expiresAt).toLocaleDateString("en-GB")}
+                                                {
+                                                    format(new Date(item.expiresAt).getTime(), dateFormat)
+                                                }
                                             </Text>
                                         </View>
                                     </View>
@@ -320,7 +334,7 @@ const styles = StyleSheet.create({
     },
     debtDateText: {
         color: '#000',
-        fontSize: 16,
+        fontSize: 14,
         paddingRight: 35,
     },
     noDataText: {
