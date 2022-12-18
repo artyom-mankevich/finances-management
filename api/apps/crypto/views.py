@@ -7,7 +7,7 @@ from rest_framework.mixins import (
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from accounts.views import SetUserIdFromTokenOnCreateMixin
+from base.views import SetUserIdFromTokenOnCreateMixin
 from apps.base.views import RawListModelMixin
 from crypto.models import EthKeys
 from crypto.serializers import EthKeysSerializer

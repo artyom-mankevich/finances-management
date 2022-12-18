@@ -4,7 +4,7 @@ from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
-from accounts.views import SetUserIdFromTokenOnCreateMixin
+from base.views import SetUserIdFromTokenOnCreateMixin
 from investments.models import Stock, Investment
 from investments.serializers import StockSerializer, InvestmentSerializer
 from investments.utils import set_stock_prices, get_stocks_chart_data
