@@ -48,8 +48,12 @@ def set_tickers_data_from_api(data: dict, tickers_to_fetch: list[str]):
             }
 
     for ticker in tickers_to_fetch:
-        price = financial_data[ticker].get("currentPrice")
-        currency = financial_data[ticker].get("financialCurrency")
+        if type(financial_data[ticker]) == str:
+            price = None
+            currency = None
+        else:
+            price = financial_data[ticker].get("currentPrice")
+            currency = financial_data[ticker].get("financialCurrency")
 
         data[ticker]["price"] = price
         data[ticker]["currency"] = currency
@@ -149,12 +153,23 @@ def get_historical_stocks_data(
         return {}
 
     series = ticker.history(period=period, interval=interval)
-    if series.empty:
-        return {}
+
+    result = {}
+    if type(series) != dict and series.empty:
+        return result
+    if type(series) == dict:
+        for key in series:
+            if type(series[key]) == dict:
+                symbols = symbols.replace(key, "")
+
+    if not symbols:
+        return result
+
+    ticker = yq.Ticker(symbols=symbols, asynchronous=True, validate=True)
+    series = ticker.history(period=period, interval=interval)
 
     series = series["close"]
 
-    result = {}
     for i in range(len(series)):
         if np.isnan(series[i]):
             continue

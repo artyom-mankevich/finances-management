@@ -11,6 +11,7 @@ import ExpenseTransaction from "./ExpenseTransaction";
 import IncomeTransaction from "./IncomeTransaction";
 import TransferTransaction from "./TransferTransaction";
 import GestureRecognizer from "react-native-swipe-gestures";
+import {format} from "date-fns";
 
 export default function TransactionList(props) {
     const [transactions, setTransactions] = useState([]);
@@ -30,9 +31,15 @@ export default function TransactionList(props) {
     const [transactionId, setTransactionId] = useState('');
     const [transactionCount, setTransactionCount] = useState(0);
     const [transactionNext, setTransactionNext] = useState('');
+    const [dateFormat, setDateFormat] = useState('d MMMM y');
+    const [currencyFormat, setCurrencyFormat] = useState('left');
 
     const getTransactionsList = async () => {
         const accessToken = await AsyncStorage.getItem('accessToken');
+        const dateFormat = await AsyncStorage.getItem('dateFormat');
+        setDateFormat(dateFormat);
+        const currencFormat = await AsyncStorage.getItem('currencyFormat');
+        setCurrencyFormat(currencFormat);
         return await fetch(ngrokConfig.myUrl + '/v2/transactions/',{
             method: 'GET',
             headers: {
@@ -109,7 +116,7 @@ export default function TransactionList(props) {
             })};
 
     useEffect(() => {
-        getTransactionsList();
+        getTransactionsList().then();
         getCategoriesList();
         getTransactionsList().then();
     }, []);
@@ -314,7 +321,7 @@ export default function TransactionList(props) {
                             <View style={styles.transactionDate}>
                                 <Text style={styles.transactionTime}>
                                     {
-                                        new Date(transaction.createdAt).getDate() + '.' + (new Date(transaction.createdAt).getMonth() + 1) + '.' + new Date(transaction.createdAt).getFullYear()
+                                        format(new Date(transaction.createdAt).getTime(), dateFormat)
                                     }
                                 </Text>
                             </View>
@@ -323,15 +330,35 @@ export default function TransactionList(props) {
                                     {
                                         transaction.sourceAmount !== null && transaction.targetAmount === null
                                             ?
-                                            <Text>{getSymbolFromCurrency(transaction.sourceWallet.currency)} {ReduceFriendlyNumbers(transaction.sourceAmount, 1)}</Text>
+                                            <Text>
+                                                {
+                                                    currencyFormat === 'left' ? getSymbolFromCurrency(transaction.sourceWallet.currency) + ' ' + ReduceFriendlyNumbers(transaction.sourceAmount, 1) :
+                                                        ReduceFriendlyNumbers(transaction.sourceAmount, 1) + ' ' + getSymbolFromCurrency(transaction.sourceWallet.currency)
+                                                }
+                                            </Text>
                                             : transaction.sourceAmount === null && transaction.targetAmount !== null
                                             ?
-                                                <Text>{getSymbolFromCurrency(transaction.targetWallet.currency)} {ReduceFriendlyNumbers(transaction.targetAmount, 1)}</Text>
+                                                <Text>
+                                                    {
+                                                        currencyFormat === 'left' ? getSymbolFromCurrency(transaction.targetWallet.currency) + ' ' + ReduceFriendlyNumbers(transaction.targetAmount, 1) :
+                                                            ReduceFriendlyNumbers(transaction.targetAmount, 1) + ' ' + getSymbolFromCurrency(transaction.targetWallet.currency)
+                                                    }
+                                                </Text>
 
                                                 : <View style={styles.amountTransfer}>
-                                                    <Text style={styles.transactionText}>{getSymbolFromCurrency(transaction.sourceWallet.currency)} {ReduceFriendlyNumbers(transaction.sourceAmount, 1)}</Text>
+                                                    <Text style={styles.transactionText}>
+                                                        {
+                                                            currencyFormat === 'left' ? getSymbolFromCurrency(transaction.sourceWallet.currency) + ' ' + ReduceFriendlyNumbers(transaction.sourceAmount, 1) :
+                                                                ReduceFriendlyNumbers(transaction.sourceAmount, 1) + ' ' + getSymbolFromCurrency(transaction.sourceWallet.currency)
+                                                        }
+                                                    </Text>
                                                     <MaterialIcons name="arrow-downward" size={20} color='#000' />
-                                                    <Text style={styles.transactionText}>{getSymbolFromCurrency(transaction.targetWallet.currency)} {ReduceFriendlyNumbers(transaction.targetAmount.toFixed(2), 1)}</Text>
+                                                    <Text style={styles.transactionText}>
+                                                        {
+                                                            currencyFormat === 'left' ? getSymbolFromCurrency(transaction.targetWallet.currency) + ' ' + ReduceFriendlyNumbers(transaction.targetAmount, 1) :
+                                                                ReduceFriendlyNumbers(transaction.targetAmount, 1) + ' ' + getSymbolFromCurrency(transaction.targetWallet.currency)
+                                                        }
+                                                    </Text>
                                                 </View>
                                     }
                                 </Text>
@@ -397,7 +424,7 @@ export default function TransactionList(props) {
                                 <View style={styles.transactionDate}>
                                     <Text style={styles.transactionTime}>
                                         {
-                                            new Date(transaction.createdAt).getDate() + '.' + (new Date(transaction.createdAt).getMonth() + 1) + '.' + new Date(transaction.createdAt).getFullYear()
+                                            format(new Date(transaction.createdAt).getTime(), dateFormat)
                                         }
                                     </Text>
                                 </View>
@@ -406,15 +433,35 @@ export default function TransactionList(props) {
                                         {
                                             transaction.sourceAmount !== null && transaction.targetAmount === null
                                                 ?
-                                                <Text>{getSymbolFromCurrency(transaction.sourceWallet.currency)} {ReduceFriendlyNumbers(transaction.sourceAmount, 1)}</Text>
+                                                <Text>
+                                                    {
+                                                        currencyFormat === 'left' ? getSymbolFromCurrency(transaction.sourceWallet.currency) + ' ' + ReduceFriendlyNumbers(transaction.sourceAmount, 1) :
+                                                            ReduceFriendlyNumbers(transaction.sourceAmount, 1) + ' ' + getSymbolFromCurrency(transaction.sourceWallet.currency)
+                                                    }
+                                                </Text>
                                                 : transaction.sourceAmount === null && transaction.targetAmount !== null
                                                     ?
-                                                    <Text>{getSymbolFromCurrency(transaction.targetWallet.currency)} {ReduceFriendlyNumbers(transaction.targetAmount, 1)}</Text>
+                                                    <Text>
+                                                        {
+                                                            currencyFormat === 'left' ? getSymbolFromCurrency(transaction.targetWallet.currency) + ' ' + ReduceFriendlyNumbers(transaction.targetAmount, 1) :
+                                                                ReduceFriendlyNumbers(transaction.targetAmount, 1) + ' ' + getSymbolFromCurrency(transaction.targetWallet.currency)
+                                                        }
+                                                    </Text>
 
                                                     : <View style={styles.amountTransfer}>
-                                                        <Text style={styles.transactionText}>{getSymbolFromCurrency(transaction.sourceWallet.currency)} {ReduceFriendlyNumbers(transaction.sourceAmount, 1)}</Text>
+                                                        <Text style={styles.transactionText}>
+                                                            {
+                                                                currencyFormat === 'left' ? getSymbolFromCurrency(transaction.sourceWallet.currency) + ' ' + ReduceFriendlyNumbers(transaction.sourceAmount, 1) :
+                                                                    ReduceFriendlyNumbers(transaction.sourceAmount, 1) + ' ' + getSymbolFromCurrency(transaction.sourceWallet.currency)
+                                                            }
+                                                        </Text>
                                                         <MaterialIcons name="arrow-downward" size={20} color='#000' />
-                                                        <Text style={styles.transactionText}>{getSymbolFromCurrency(transaction.targetWallet.currency)} {ReduceFriendlyNumbers(transaction.targetAmount.toFixed(2), 1)}</Text>
+                                                        <Text style={styles.transactionText}>
+                                                            {
+                                                                currencyFormat === 'left' ? getSymbolFromCurrency(transaction.targetWallet.currency) + ' ' + ReduceFriendlyNumbers(transaction.targetAmount, 1) :
+                                                                    ReduceFriendlyNumbers(transaction.targetAmount, 1) + ' ' + getSymbolFromCurrency(transaction.targetWallet.currency)
+                                                            }
+                                                        </Text>
                                                     </View>
                                         }
                                     </Text>
@@ -480,7 +527,7 @@ export default function TransactionList(props) {
                             <View style={styles.transactionDate}>
                                 <Text style={styles.transactionTime}>
                                     {
-                                        new Date(transaction.createdAt).getDate() + '.' + (new Date(transaction.createdAt).getMonth() + 1) + '.' + new Date(transaction.createdAt).getFullYear()
+                                        format(new Date(transaction.createdAt).getTime(), dateFormat)
                                     }
                                 </Text>
                             </View>
@@ -489,15 +536,35 @@ export default function TransactionList(props) {
                                     {
                                         transaction.sourceAmount !== null && transaction.targetAmount === null
                                             ?
-                                            <Text>{getSymbolFromCurrency(transaction.sourceWallet.currency)} {ReduceFriendlyNumbers(transaction.sourceAmount, 1)}</Text>
+                                            <Text>
+                                                {
+                                                    currencyFormat === 'left' ? getSymbolFromCurrency(transaction.sourceWallet.currency) + ' ' + ReduceFriendlyNumbers(transaction.sourceAmount, 1) :
+                                                        ReduceFriendlyNumbers(transaction.sourceAmount, 1) + ' ' + getSymbolFromCurrency(transaction.sourceWallet.currency)
+                                                }
+                                            </Text>
                                             : transaction.sourceAmount === null && transaction.targetAmount !== null
                                                 ?
-                                                <Text>{getSymbolFromCurrency(transaction.targetWallet.currency)} {ReduceFriendlyNumbers(transaction.targetAmount, 1)}</Text>
+                                                <Text>
+                                                    {
+                                                        currencyFormat === 'left' ? getSymbolFromCurrency(transaction.targetWallet.currency) + ' ' + ReduceFriendlyNumbers(transaction.targetAmount, 1) :
+                                                            ReduceFriendlyNumbers(transaction.targetAmount, 1) + ' ' + getSymbolFromCurrency(transaction.targetWallet.currency)
+                                                    }
+                                                </Text>
 
                                                 : <View style={styles.amountTransfer}>
-                                                    <Text style={styles.transactionText}>{getSymbolFromCurrency(transaction.sourceWallet.currency)} {ReduceFriendlyNumbers(transaction.sourceAmount, 1)}</Text>
+                                                    <Text style={styles.transactionText}>
+                                                        {
+                                                            currencyFormat === 'left' ? getSymbolFromCurrency(transaction.sourceWallet.currency) + ' ' + ReduceFriendlyNumbers(transaction.sourceAmount, 1) :
+                                                                ReduceFriendlyNumbers(transaction.sourceAmount, 1) + ' ' + getSymbolFromCurrency(transaction.sourceWallet.currency)
+                                                        }
+                                                    </Text>
                                                     <MaterialIcons name="arrow-downward" size={20} color='#000' />
-                                                    <Text style={styles.transactionText}>{getSymbolFromCurrency(transaction.targetWallet.currency)} {ReduceFriendlyNumbers(transaction.targetAmount.toFixed(2), 1)}</Text>
+                                                    <Text style={styles.transactionText}>
+                                                        {
+                                                            currencyFormat === 'left' ? getSymbolFromCurrency(transaction.targetWallet.currency) + ' ' + ReduceFriendlyNumbers(transaction.targetAmount, 1) :
+                                                                ReduceFriendlyNumbers(transaction.targetAmount, 1) + ' ' + getSymbolFromCurrency(transaction.targetWallet.currency)
+                                                        }
+                                                    </Text>
                                                 </View>
                                     }
                                 </Text>
@@ -567,7 +634,7 @@ export default function TransactionList(props) {
                             <View style={styles.transactionDate}>
                                 <Text style={styles.transactionTime}>
                                     {
-                                        new Date(transaction.createdAt).getDate() + '.' + (new Date(transaction.createdAt).getMonth() + 1) + '.' + new Date(transaction.createdAt).getFullYear()
+                                        format(new Date(transaction.createdAt).getTime(), dateFormat)
                                     }
                                 </Text>
                             </View>
@@ -576,15 +643,35 @@ export default function TransactionList(props) {
                                     {
                                         transaction.sourceAmount !== null && transaction.targetAmount === null
                                             ?
-                                            <Text>{getSymbolFromCurrency(transaction.sourceWallet.currency)} {ReduceFriendlyNumbers(transaction.sourceAmount, 1)}</Text>
+                                            <Text>
+                                                {
+                                                    currencyFormat === 'left' ? getSymbolFromCurrency(transaction.sourceWallet.currency) + ' ' + ReduceFriendlyNumbers(transaction.sourceAmount, 1) :
+                                                        ReduceFriendlyNumbers(transaction.sourceAmount, 1) + ' ' + getSymbolFromCurrency(transaction.sourceWallet.currency)
+                                                }
+                                            </Text>
                                             : transaction.sourceAmount === null && transaction.targetAmount !== null
                                                 ?
-                                                <Text>{getSymbolFromCurrency(transaction.targetWallet.currency)} {ReduceFriendlyNumbers(transaction.targetAmount, 1)}</Text>
+                                                <Text>
+                                                    {
+                                                        currencyFormat === 'left' ? getSymbolFromCurrency(transaction.targetWallet.currency) + ' ' + ReduceFriendlyNumbers(transaction.targetAmount, 1) :
+                                                            ReduceFriendlyNumbers(transaction.targetAmount, 1) + ' ' + getSymbolFromCurrency(transaction.targetWallet.currency)
+                                                    }
+                                                </Text>
 
                                                 : <View style={styles.amountTransfer}>
-                                                    <Text style={styles.transactionText}>{getSymbolFromCurrency(transaction.sourceWallet.currency)} {ReduceFriendlyNumbers(transaction.sourceAmount, 1)}</Text>
+                                                    <Text style={styles.transactionText}>
+                                                        {
+                                                            currencyFormat === 'left' ? getSymbolFromCurrency(transaction.sourceWallet.currency) + ' ' + ReduceFriendlyNumbers(transaction.sourceAmount, 1) :
+                                                                ReduceFriendlyNumbers(transaction.sourceAmount, 1) + ' ' + getSymbolFromCurrency(transaction.sourceWallet.currency)
+                                                        }
+                                                    </Text>
                                                     <MaterialIcons name="arrow-downward" size={20} color='#000' />
-                                                    <Text style={styles.transactionText}>{getSymbolFromCurrency(transaction.targetWallet.currency)} {ReduceFriendlyNumbers(transaction.targetAmount.toFixed(2), 1)}</Text>
+                                                    <Text style={styles.transactionText}>
+                                                        {
+                                                            currencyFormat === 'left' ? getSymbolFromCurrency(transaction.targetWallet.currency) + ' ' + ReduceFriendlyNumbers(transaction.targetAmount, 1) :
+                                                                ReduceFriendlyNumbers(transaction.targetAmount, 1) + ' ' + getSymbolFromCurrency(transaction.targetWallet.currency)
+                                                        }
+                                                    </Text>
                                                 </View>
                                     }
                                 </Text>
@@ -699,7 +786,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'center',
         width: 90,
-        marginLeft: -10,
+        marginLeft: -30,
     },
     transactionTime: {
         color: '#7D848FFF',
@@ -727,7 +814,9 @@ const styles = StyleSheet.create({
         marginTop: 0,
     },
     transactionDate: {
-        marginLeft: 25,
+        width: 140,
+        marginLeft: 15,
+        alignItems: 'center',
     },
     transactionAmount: {
         marginLeft: 'auto',

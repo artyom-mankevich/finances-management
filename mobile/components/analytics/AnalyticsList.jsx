@@ -22,6 +22,8 @@ export default function AnalyticsList(props) {
     const [threeMonths, setThreeMonths] = useState(false);
     const [oneYear, setOneYear] = useState(false);
     const [period, setPeriod] = useState('7d');
+    const [dateFormat, setDateFormat] = useState('d MMMM y');
+    const [currencyFormat, setCurrencyFormat] = useState('left');
 
 
     const getWalletsChartsList = async (period) => {
@@ -53,6 +55,10 @@ export default function AnalyticsList(props) {
 
     const getTransactionsChartsList = async () => {
         const accessToken = await AsyncStorage.getItem('accessToken');
+        const dateFormat = await AsyncStorage.getItem('dateFormat');
+        setDateFormat(dateFormat);
+        const currencFormat = await AsyncStorage.getItem('currencyFormat');
+        setCurrencyFormat(currencFormat);
         return await fetch(ngrokConfig.myUrl + '/v2/transactions/chart-data/',{
             method: 'GET',
             headers: {
@@ -235,7 +241,12 @@ export default function AnalyticsList(props) {
                 <View style={{paddingTop: 10}}>
                     <View style={styles.incomeTopHeader}>
                         <Text style={styles.incomeTopText}>Income</Text>
-                        <Text style={styles.incomeTopText}>$ {ReduceFriendlyNumbers(totalIncomes, 1)}</Text>
+                        <Text style={styles.incomeTopText}>
+                            {
+                            currencyFormat === 'left' ? '$ ' + ReduceFriendlyNumbers(totalIncomes, 1) :
+                                ReduceFriendlyNumbers(totalIncomes, 1) + ' $'
+                            }
+                        </Text>
                     </View>
                     <View style={styles.incomeTopBody}>
                         {
@@ -248,7 +259,11 @@ export default function AnalyticsList(props) {
                                             </View>
                                             <Text style={styles.incomeTopItemName}>{income.name}</Text>
                                         </View>
-                                        <Text style={styles.incomeTopItemValue}>$ {ReduceFriendlyNumbers(income.total, 1)}</Text>
+                                        <Text style={styles.incomeTopItemValue}>{
+                                            currencyFormat === 'left' ? '$ ' + ReduceFriendlyNumbers(income.total, 1) :
+                                                ReduceFriendlyNumbers(income.total, 1) + ' $'
+                                        }
+                                        </Text>
                                     </View>
                                 )
                             })
@@ -258,7 +273,12 @@ export default function AnalyticsList(props) {
                 <View style={{paddingTop: 30, paddingBottom: 20}}>
                     <View style={styles.incomeTopHeader}>
                         <Text style={styles.incomeTopText}>Expense</Text>
-                        <Text style={styles.incomeTopText}>$ {ReduceFriendlyNumbers(totalExpenses, 1)}</Text>
+                        <Text style={styles.incomeTopText}>
+                            {
+                            currencyFormat === 'left' ? '$ ' + ReduceFriendlyNumbers(totalExpenses, 1) :
+                                ReduceFriendlyNumbers(totalExpenses, 1) + ' $'
+                            }
+                        </Text>
                     </View>
                     <View style={styles.incomeTopBody}>
                         {
@@ -271,7 +291,12 @@ export default function AnalyticsList(props) {
                                             </View>
                                             <Text style={styles.incomeTopItemName}>{expense.name}</Text>
                                         </View>
-                                        <Text style={styles.incomeTopItemValue}>$ {ReduceFriendlyNumbers(expense.total, 1)}</Text>
+                                        <Text style={styles.incomeTopItemValue}>
+                                            {
+                                            currencyFormat === 'left' ? '$ ' + ReduceFriendlyNumbers(expense.total, 1) :
+                                                ReduceFriendlyNumbers(expense.total, 1) + ' $'
+                                            }
+                                        </Text>
                                     </View>
                                 )
                             })
