@@ -20,9 +20,10 @@ def get_stocks_news(news_filter, user_id):
 
     cache_key = f"news:{user_id}_{symbols}_{languages}"
 
-    cached_response = cache.get(cache_key)
-    if cached_response:
-        return cached_response
+    if len(cache_key) < 250:
+        cached_response = cache.get(cache_key)
+        if cached_response:
+            return cached_response
 
     try:
         response = requests.get(
@@ -42,6 +43,7 @@ def get_stocks_news(news_filter, user_id):
     stripped_response = [
         {"title": news["title"], "url": news["url"]} for news in response["data"]
     ]
-    cache.set(cache_key, stripped_response, 60 * 60 * 1)
+    if len(cache_key) < 250:
+        cache.set(cache_key, stripped_response, 60 * 60 * 1)
 
     return stripped_response
