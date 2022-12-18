@@ -1,8 +1,25 @@
 import {View, StyleSheet, Text} from "react-native";
 import {ReduceFriendlyNumbers} from "./WalletValidation";
 import getSymbolFromCurrency from "currency-symbol-map";
+import {format} from "date-fns";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {useEffect, useState} from "react";
 
 export default function WalletToUpdate(props) {
+    const [dateFormat, setDateFormat] = useState('d MMMM y');
+    const [currencyFormat, setCurrencyFormat] = useState('left');
+
+    const getDateFormat = async () => {
+        const dateFormat = await AsyncStorage.getItem('dateFormat');
+        setDateFormat(dateFormat);
+        const currencFormat = await AsyncStorage.getItem('currencyFormat');
+        setCurrencyFormat(currencFormat);
+    }
+
+    useEffect(() => {
+        getDateFormat().then();
+    },[]);
+
     return (
         <View style={{marginTop:10, width:350, height:250, borderRadius:30, backgroundColor:props.color}}>
             <View style={styles.walletHeader}>
@@ -11,19 +28,37 @@ export default function WalletToUpdate(props) {
                 </View>
                 <View style={styles.walletBalanceInfo}>
                     <View style={styles.walletBalance}>
-                        <Text style={styles.walletBalanceText}>{getSymbolFromCurrency(props.currency)}</Text>
-                        <Text style={styles.walletBalanceText}>{ReduceFriendlyNumbers(props.balance, 1)}</Text>
+                        {
+                            currencyFormat === 'left' ? <>
+                                <Text style={styles.walletBalanceText}>{getSymbolFromCurrency(props.currency)}</Text>
+                                <Text style={styles.walletBalanceText}>{ReduceFriendlyNumbers(props.balance, 1)}</Text>
+                            </> : <>
+                                <Text style={styles.walletBalanceText}>{ReduceFriendlyNumbers(props.balance, 1)}</Text>
+                                <Text style={styles.walletBalanceText}>{getSymbolFromCurrency(props.currency)}</Text>
+                            </>
+                        }
                     </View>
                     <View style={styles.walletGoal}>
-                        <Text style={styles.walletGoalText}>{getSymbolFromCurrency(props.currency)}</Text>
-                        <Text style={styles.walletGoalText}>{ReduceFriendlyNumbers(props.goal, 1)}</Text>
+                        {
+                            currencyFormat === 'left' ? <>
+                                <Text style={styles.walletGoalText}>{getSymbolFromCurrency(props.currency)}</Text>
+                                <Text style={styles.walletGoalText}>{ReduceFriendlyNumbers(props.goal, 1)}</Text>
+                            </> : <>
+                                <Text style={styles.walletGoalText}>{ReduceFriendlyNumbers(props.goal, 1)}</Text>
+                                <Text style={styles.walletGoalText}>{getSymbolFromCurrency(props.currency)}</Text>
+                            </>
+                        }
                     </View>
                 </View>
             </View>
             <View style={styles.walletFooter}>
                 <View style={styles.walletUpdateInfo}>
                     <Text style={styles.walletUpdateText}>Last Update:</Text>
-                    <Text style={styles.walletUpdateText}>{new Date(props.lastUpdated).toLocaleTimeString()} {new Date(props.lastUpdated).toDateString()}</Text>
+                    <Text style={styles.walletUpdateText}>
+                        {
+                            format(new Date(props.lastUpdated), dateFormat)
+                        }
+                    </Text>
                 </View>
             </View>
         </View>
