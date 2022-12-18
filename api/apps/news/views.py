@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 
+from base.views import RawListModelMixin
 from news.models import NewsFilter, NewsLanguage
 from news.serializers import NewsFilterSerializer, NewsLanguageSerializer
 from news.utils import get_stocks_news
@@ -26,9 +27,12 @@ class NewsFilterViewSet(GenericViewSet, UpdateModelMixin, ListModelMixin):
         return Response(data)
 
 
-class NewsLanguageViewSet(GenericViewSet, ListModelMixin):
-    queryset = NewsLanguage.objects.all()
+class NewsLanguageViewSet(GenericViewSet, RawListModelMixin):
     serializer_class = NewsLanguageSerializer
+
+    def get_rawqueryset(self):
+        return NewsLanguage.objects.raw(f"SELECT * FROM "
+                                        f"{NewsLanguage._meta.db_table};")
 
 
 class NewsAPIView(APIView):
