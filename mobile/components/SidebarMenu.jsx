@@ -11,6 +11,7 @@ import DebtsPage from "../screens/Debts";
 import CryptoPage from "../screens/Crypto"
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import * as React from "react";
+import SettingsPage from "../screens/Settings";
 
 export default function SidebarMenu(Drawer) {
     return (
@@ -42,6 +43,7 @@ export default function SidebarMenu(Drawer) {
                                drawerIcon: ({focused, size}) => (
                                    <MaterialIcons name="dashboard" size={size} color={focused ? '#ffffff' : '#363636'} />
                                ),
+                               unmountOnBlur: true,
                            }}
             />
             <Drawer.Screen name='Transactions' component={TransactionsPage}
@@ -49,6 +51,7 @@ export default function SidebarMenu(Drawer) {
                                drawerIcon: ({focused, size}) => (
                                    <FontAwesome name="dollar" size={size} color={focused ? '#ffffff' : '#363636'} />
                                ),
+                               unmountOnBlur: true,
                            }}
             />
             <Drawer.Screen name='Wallets' component={WalletPage}
@@ -56,6 +59,7 @@ export default function SidebarMenu(Drawer) {
                                drawerIcon: ({focused, size}) => (
                                    <Ionicons name="wallet" size={size} color={focused ? '#ffffff' : '#363636'} />
                                ),
+                                 unmountOnBlur: true,
                            }}
             />
             <Drawer.Screen name='Analytics' component={AnalyticsPage}
@@ -63,6 +67,7 @@ export default function SidebarMenu(Drawer) {
                                drawerIcon: ({focused, size}) => (
                                    <FontAwesome name="bar-chart-o" size={size} color={focused ? '#ffffff' : '#363636'} />
                                ),
+                               unmountOnBlur: true,
                            }}
             />
             <Drawer.Screen name='Investments' component={InvestmentsPage}
@@ -70,6 +75,7 @@ export default function SidebarMenu(Drawer) {
                                drawerIcon: ({focused, size}) => (
                                    <FontAwesome name="bank" size={size} color={focused ? '#ffffff' : '#363636'} />
                                ),
+                               unmountOnBlur: true,
                            }}
             />
             <Drawer.Screen name='Debts' component={DebtsPage}
@@ -77,6 +83,7 @@ export default function SidebarMenu(Drawer) {
                                drawerIcon: ({focused, size}) => (
                                    <FontAwesome name="shopping-bag" size={size} color={focused ? '#ffffff' : '#363636'} />
                                ),
+                               unmountOnBlur: true,
                            }}
             />
             <Drawer.Screen name='Crypto' component={CryptoPage}
@@ -84,7 +91,15 @@ export default function SidebarMenu(Drawer) {
                                drawerIcon: ({focused, size}) => (
                                    <MaterialCommunityIcons name="ethereum" size={size} color={focused ? '#ffffff' : '#363636'} />
                                ),
+                               unmountOnBlur: true,
                            }}
+            />
+            <Drawer.Screen name='Settings' component={SettingsPage}
+                            options={{
+                                drawerIcon: ({focused, size}) => (
+                                    <MaterialIcons name="settings" size={size} color={focused ? '#ffffff' : '#363636'} />
+                                ),
+                            }}
             />
         </Drawer.Navigator>
     )
