@@ -9,7 +9,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
-from accounts.views import SetUserIdFromTokenOnCreateMixin
+from base.views import SetUserIdFromTokenOnCreateMixin
 from wallets.models import (
     Currency,
     Wallet,
