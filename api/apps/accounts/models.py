@@ -1,6 +1,7 @@
 import uuid
 
 from django.db import models
+from django.db import connection
 
 from wallets.models import Currency
 
@@ -20,12 +21,57 @@ class AccountSettings(models.Model):
         Currency, on_delete=models.SET_DEFAULT, default="USD"
     )
     currency_format = models.CharField(
-        max_length=5, default=CURRENCY_FORMAT_LEFT, choices=CURRENCY_FORMAT_CHOICES
+        max_length=5, default=CURRENCY_FORMAT_LEFT,
+        choices=CURRENCY_FORMAT_CHOICES
     )
     start_page = models.ForeignKey(
         "StartPage", on_delete=models.SET_DEFAULT, default="Overview"
     )
 
+    def save(self, *args, **kwargs):
+        with connection.cursor() as cursor:
+            if self._state.adding:
+                cursor.execute(
+                    f"INSERT INTO {self._meta.db_table}"
+                    f"(id, user_id, date_format, main_currency_id, "
+                    f"start_page_id, currency_format)"
+                    f"VALUES(%(id)s, %(user_id)s, %(date_format)s, "
+                    f"%(main_currency_id)s, %(start_page_id)s, "
+                    f"%(currency_format)s);",
+                    {
+                        "id": self.id,
+                        "user_id": str(self.user_id),
+                        "date_format": self.date_format,
+                        "main_currency_id": self.main_currency.code,
+                        "start_page_id": self.start_page.name,
+                        "currency_format": self.currency_format
+                    }
+                )
+            else:
+                cursor.execute(
+                    f"UPDATE {self._meta.db_table} SET "
+                    f"id=%(id)s, user_id=%(user_id)s, "
+                    f"date_format=%(date_format)s, "
+                    f"main_currency_id=%(main_currency_id)s, "
+                    f"start_page_id=%(start_page_id)s, "
+                    f"currency_format=%(currency_format)s;",
+                    {
+                        "id": self.id,
+                        "user_id": str(self.user_id),
+                        "date_format": self.date_format,
+                        "main_currency_id": self.main_currency.code,
+                        "start_page_id": self.start_page.name,
+                        "currency_format": self.currency_format
+                    }
+                )
+
 
 class StartPage(models.Model):
     name = models.CharField(max_length=32, primary_key=True)
+
+    def save(self, *args, **kwargs):
+        with connection.cursor() as cursor:
+            if self._state.adding:
+                cursor.execute(
+                    f'INSERT INTO {self._meta.db_table} VALUES(%s)', [self.name]
+                )
