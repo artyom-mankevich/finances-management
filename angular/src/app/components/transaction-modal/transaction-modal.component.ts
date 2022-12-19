@@ -57,10 +57,11 @@ export class TransactionModalComponent implements OnInit {
       this.updateFormValues();
     }
     this.form.controls['sourceAmount'].valueChanges.subscribe(x => {
-      this.transaction.sourceAmount = x;
-      if (this.selectedType === TransactionTypes.Transfer) {
-        this.fillTargetAmount(x)
-      }
+      if (this.selectedType === TransactionTypes.Transfer  && 
+        !(this.modalMode === TransactionModalModes.Update && this.transaction.sourceAmount === x)) {
+            this.fillTargetAmount(x);
+        }
+        this.transaction.sourceAmount = x;
     })
     this.form.controls['category'].valueChanges.subscribe(val => {
       if (val) {
@@ -78,7 +79,8 @@ export class TransactionModalComponent implements OnInit {
         this.transaction.targetWallet = null;
         this.updateFormValues();
       }
-      if ( this.selectedType === TransactionTypes.Transfer && this.transaction.sourceAmount) {
+      if ( this.selectedType === TransactionTypes.Transfer && 
+        this.transaction.sourceAmount && this.modalMode === TransactionModalModes.Create) {
         this.fillTargetAmount(this.transaction.sourceAmount);
       }
     })
@@ -88,9 +90,9 @@ export class TransactionModalComponent implements OnInit {
         this.transaction.sourceWallet = null;
         this.updateFormValues();
       }
-      if (this.selectedType === TransactionTypes.Transfer && this.transaction.sourceAmount) {
-        this.fillTargetAmount(this.transaction.sourceAmount);
-      }
+      // if (this.selectedType === TransactionTypes.Transfer && this.transaction.sourceAmount) {
+      //   this.fillTargetAmount(this.transaction.sourceAmount);
+      // }
     })
     this.form.controls['description'].valueChanges.subscribe(val => this.transaction.description = val);
   }

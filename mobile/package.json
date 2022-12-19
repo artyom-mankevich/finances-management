@@ -34,7 +34,7 @@
     "react-native": "0.69.6",
     "react-native-actions-sheet-picker": "^0.3.5",
     "react-native-auth0": "^2.16.0",
-    "react-native-element-dropdown": "^2.5.0",
+    "react-native-element-dropdown": "^2.5.1",
     "react-native-gifted-charts": "^1.2.41",
     "react-native-linear-gradient": "^2.6.2",
     "react-native-material-dropdown": "^0.11.1",

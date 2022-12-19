@@ -69,11 +69,13 @@ const CustomSidebarMenu = (props) => {
         )
         setName(userInfo.name);
         setAvatar(userInfo.picture);
+        await AsyncStorage.setItem('onLogin', 'onLogin');
     }
 
-    const onLogout = () => {
+    const onLogout = async () => {
         setName(null);
         setAvatar(null);
+        await AsyncStorage.setItem('onLogin', 'onLogout');
     }
 
     return (
@@ -104,7 +106,7 @@ const CustomSidebarMenu = (props) => {
                         <MaterialCommunityIcons name="logout" size={size} color={focused ? '#fff' : '#363636FF'}/>
                     }
                     pressColor={"#f6f8ff"}
-                    label={() => <Text style={{fontSize: 18, color: '#363636FF'}}>Logout</Text>}
+                    label={() => <Text style={{fontSize: 16, color: '#363636FF'}}>Logout</Text>}
                     onPress={onLogout}
                 />
             }
@@ -114,7 +116,7 @@ const CustomSidebarMenu = (props) => {
                         <MaterialCommunityIcons name="login" size={size} color={focused ? '#fff' : '#363636FF'}/>
                     }
                     pressColor={"#f6f8ff"}
-                    label={() => <Text style={{fontSize: 18, color: '#363636FF'}}>Login</Text>}
+                    label={() => <Text style={{fontSize: 16, color: '#363636FF'}}>Login</Text>}
                     onPress={onLogin}
                 />
             }
@@ -123,7 +125,7 @@ const CustomSidebarMenu = (props) => {
                     <MaterialCommunityIcons name="web" size={size} color={focused ? '#fff' : '#363636FF'}/>
                 }
                 pressColor={"#f6f8ff"}
-                label={() => <Text style={{fontSize: 18, color: '#363636FF'}}>Website</Text>}
+                label={() => <Text style={{fontSize: 16, color: '#363636FF'}}>Website</Text>}
                 onPress={() => Linking.openURL('https://github.com/artyom-mankevich/trpo')}
             />
 
@@ -133,8 +135,8 @@ const CustomSidebarMenu = (props) => {
 
 const styles = StyleSheet.create({
     sideMenuProfileIcon: {
-        width: 100,
-        height: 100,
+        width: 80,
+        height: 80,
         borderRadius: 50,
         marginBottom: 10,
     },
@@ -144,7 +146,7 @@ const styles = StyleSheet.create({
     textHeader: {
         textAlignVertical: 'center',
         justifyContent: 'center',
-        marginLeft: 15,
+        marginLeft: 20,
         fontSize: 24,
     },
     customHeader: {
