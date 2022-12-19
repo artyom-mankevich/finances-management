@@ -8,6 +8,8 @@ def get_currencies_list():
     currencies_dict = requests.get(
         "https://api.exchangerate.host/symbols"
     ).json()["symbols"]
+    if currencies_dict.get("BTC"):
+        currencies_dict.pop("BTC")
     list_of_currencies = []
 
     for value in currencies_dict.values():
