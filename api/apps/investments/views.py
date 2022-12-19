@@ -1,35 +1,89 @@
-from django.db.models import Sum
-from rest_framework import viewsets, status
+from base.utils import dictfetchall, raw_get_object_or_404
+from django.db import connection
+from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
+import base
 from base.views import SetUserIdFromTokenOnCreateMixin
 from investments.models import Stock, Investment
 from investments.serializers import StockSerializer, InvestmentSerializer
 from investments.utils import set_stock_prices, get_stocks_chart_data
 
 
-class StockViewSet(viewsets.ModelViewSet, SetUserIdFromTokenOnCreateMixin):
+class StockViewSet(base.views.RawModelViewSet):
     serializer_class = StockSerializer
 
-    pagination_class = PageNumberPagination
+    def get_rawqueryset(self):
+        page = self.request.query_params.get("page")
+        if page is not None:
+            page = int(page)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.pagination_class.page_size = 5
+        sql_string = f"SELECT * FROM {Stock._meta.db_table} WHERE user_id=%s" \
+                     f" ORDER BY created_at DESC"
+        sql_string = self._paginate(sql_string, page)
 
-    def get_queryset(self):
-        return Stock.objects.all().filter(user_id=self.request.user).order_by(
-            "-created_at"
-        )
+        results = Stock.objects.raw(sql_string, [str(self.request.user)])
+
+        return results
+
+    def get_object(self):
+        return raw_get_object_or_404(Stock, field='id', value=self.kwargs['pk'])
+
+    def format_list_response(self, page, results):
+        if page is None:
+            page = 1
+
+        with connection.cursor() as cursor:
+            cursor.execute(
+                f"SELECT COUNT(*) FROM {Stock._meta.db_table} WHERE user_id=%s;",
+                [str(self.request.user)]
+            )
+            count = cursor.fetchone()[0]
+
+        if count > page * 5:
+            next_page = self.reverse_action("list") + f"?page={page + 1}"
+        else:
+            next_page = None
+
+        if page > 1:
+            previous_page = self.reverse_action("list") + f"?page={page - 1}"
+        else:
+            previous_page = None
+
+        response = {
+            "count": count,
+            "next": next_page,
+            "previous": previous_page,
+            "results": results
+        }
+        return response
+
+    def _paginate(self, sql_string, page):
+        limit = 5
+        if page is None:
+            return sql_string + f" LIMIT {limit};"
+        if page < 1:
+            page = 1
+        offset = (page - 1) * limit
+        sql_string += f" LIMIT {limit} OFFSET {offset};"
+        return sql_string
 
     def list(self, request, *args, **kwargs):
-        response = super().list(request, *args, **kwargs)
-        if response.data["results"]:
-            set_stock_prices(response.data["results"], str(request.user))
+        page = request.query_params.get("page")
+        if page is not None:
+            try:
+                page = int(page)
+            except ValueError:
+                return Response({"error": "Invalid page number"}, status=400)
 
-        return response
+        results = super().list(request, *args, **kwargs)
+        response = self.format_list_response(page, results.data)
+
+        if response["results"]:
+            set_stock_prices(response["results"], str(request.user))
+
+        return Response(response)
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
@@ -52,11 +106,16 @@ class StockViewSet(viewsets.ModelViewSet, SetUserIdFromTokenOnCreateMixin):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        stocks = (
-            Stock.objects.filter(user_id=self.request.user)
-            .values("ticker")
-            .annotate(amount=Sum("amount"))
-        )
+        with connection.cursor() as cursor:
+            cursor.execute(
+                f"SELECT ist.ticker_id as ticker, SUM(ist.amount) as amount"
+                f" FROM {Stock._meta.db_table} ist"
+                f" WHERE user_id=%s"
+                f" GROUP BY ist.ticker_id;",
+                [str(self.request.user)],
+            )
+            stocks = dictfetchall(cursor)
+
         if stocks:
             stocks_dict = {stock["ticker"]: stock["amount"] for stock in stocks}
             return Response(
@@ -66,10 +125,15 @@ class StockViewSet(viewsets.ModelViewSet, SetUserIdFromTokenOnCreateMixin):
         return Response(data={})
 
 
-class InvestmentViewSet(viewsets.ModelViewSet, SetUserIdFromTokenOnCreateMixin):
+class InvestmentViewSet(base.views.RawModelViewSet):
     serializer_class = InvestmentSerializer
 
-    def get_queryset(self):
-        return Investment.objects.all().filter(user_id=self.request.user).order_by(
-            "-created_at"
+    def get_rawqueryset(self):
+        return Investment.objects.raw(
+            f"SELECT * FROM {Investment._meta.db_table} WHERE user_id=%s"
+            f" ORDER BY created_at DESC;",
+            [str(self.request.user)]
         )
+
+    def get_object(self):
+        return raw_get_object_or_404(Investment, field='id', value=self.kwargs['pk'])
