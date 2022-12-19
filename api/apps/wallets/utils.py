@@ -273,7 +273,7 @@ def get_chart_period_dates(period: str) -> tuple[datetime, datetime]:
     today = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
     end_date = today.replace(hour=23, minute=59, second=59, microsecond=999999)
     if period == WalletLog.CHART_PERIOD_7_DAYS:
-        start_date = today - timezone.timedelta(days=today.weekday())
+        start_date = today - timezone.timedelta(days=7)
     elif period == WalletLog.CHART_PERIOD_1_MONTH:
         start_date = today - timezone.timedelta(days=30)
     elif period == WalletLog.CHART_PERIOD_3_MONTHS:
