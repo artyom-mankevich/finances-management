@@ -15,7 +15,16 @@ class Currency(models.Model):
         self, force_insert=False, force_update=False, using=None, update_fields=None
     ):
         with connection.cursor() as cursor:
-            if self._state.adding:
+            cursor.execute(
+                f"SELECT COUNT(*) FROM {self._meta.db_table} WHERE code=%s", [self.code]
+            )
+            if cursor.fetchone()[0] == 0:
+                adding = True
+            else:
+                adding = False
+
+        with connection.cursor() as cursor:
+            if adding:
                 cursor.execute(
                     f"INSERT INTO {self._meta.db_table} VALUES(%s, %s)",
                     [self.code, self.name]
@@ -70,7 +79,16 @@ class Wallet(models.Model):
 
     def save(self, *args, **kwargs):
         with connection.cursor() as cursor:
-            if self._state.adding:
+            cursor.execute(
+                f"SELECT COUNT(*) FROM {self._meta.db_table} WHERE id=%s", [self.id]
+            )
+            if cursor.fetchone()[0] == 0:
+                adding = True
+            else:
+                adding = False
+
+        with connection.cursor() as cursor:
+            if adding:
                 self.last_updated = timezone.now()
                 cursor.execute(
                     f"BEGIN; "
@@ -152,6 +170,14 @@ class WalletLog(models.Model):
     ]
 
     def save(self, *args, **kwargs):
+        with connection.cursor() as cursor:
+            cursor.execute(
+                f"SELECT COUNT(*) FROM {self._meta.db_table} WHERE id=%s", [self.id]
+            )
+            if cursor.fetchone()[0] == 0:
+                adding = True
+            else:
+                adding = False
         params = {
             "id": self.id,
             "wallet_id": self.wallet.id,
@@ -160,7 +186,7 @@ class WalletLog(models.Model):
             "date": self.date,
         }
         with connection.cursor() as cursor:
-            if self._state.adding:
+            if adding:
                 self.date = timezone.now().date()
                 params["date"] = self.date
                 cursor.execute(
@@ -200,10 +226,20 @@ class Debt(models.Model):
 
     def save(self, *args, **kwargs):
         with connection.cursor() as cursor:
-            if self._state.adding:
+            cursor.execute(
+                f"SELECT COUNT(*) FROM {self._meta.db_table} WHERE id=%s", [self.id]
+            )
+            if cursor.fetchone()[0] == 0:
+                adding = True
+            else:
+                adding = False
+
+        with connection.cursor() as cursor:
+            if adding:
                 cursor.execute(
                     f"BEGIN; "
                     f"INSERT INTO {self._meta.db_table}"
+                    f"(id, user_id, wallet_id, expires_at)"
                     f" VALUES(%s, %s, %s, %s);"
                     f" COMMIT;",
                     [self.id, self.user_id, self.wallet_id, self.expires_at]
@@ -213,7 +249,7 @@ class Debt(models.Model):
                     f"BEGIN; "
                     f"UPDATE {self._meta.db_table}"
                     f" SET id=%s, user_id=%s, wallet_id=%s, expires_at=%s"
-                    f" WHERE id=%s"
+                    f" WHERE id=%s;"
                     f" COMMIT;",
                     [self.id, self.user_id, self.wallet_id, self.expires_at, self.id]
                 )
@@ -265,7 +301,14 @@ class Transaction(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
-        update = self._state.adding is False
+        with connection.cursor() as cursor:
+            cursor.execute(
+                f"SELECT COUNT(*) FROM {self._meta.db_table} WHERE id=%s", [self.id]
+            )
+            if cursor.fetchone()[0] == 0:
+                update = False
+            else:
+                update = True
 
         source_amount = self.source_amount
         target_amount = self.target_amount
@@ -449,7 +492,16 @@ class TransactionCategory(models.Model):
 
     def save(self, *args, **kwargs):
         with connection.cursor() as cursor:
-            if self._state.adding:
+            cursor.execute(
+                f"SELECT COUNT(*) FROM {self._meta.db_table} WHERE id=%s",
+                [self.id]
+            )
+            if cursor.fetchone()[0] > 0:
+                adding = False
+            else:
+                adding = True
+        with connection.cursor() as cursor:
+            if adding:
                 self.created_at = timezone.now()
                 cursor.execute(
                     f"BEGIN; "

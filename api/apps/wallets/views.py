@@ -189,7 +189,11 @@ class TransactionViewSet(base.views.RawModelViewSet):
         page = request.query_params.get("page")
         _type = request.query_params.get("type")
         if page is not None:
-            page = int(page)
+            try:
+                page = int(page)
+            except ValueError:
+                return Response({"error": "Invalid page number"}, status=400)
+
         results = super().list(request, *args, **kwargs)
         response = self.format_list_response(page, results.data, _type)
 
