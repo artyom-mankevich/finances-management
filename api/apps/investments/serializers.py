@@ -1,4 +1,4 @@
-from django.db import transaction
+from django.db import transaction, connection
 from django.utils import timezone
 
 from decorations.models import Color
@@ -41,15 +41,22 @@ class StockSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Amount cannot be null")
 
         if value <= 0:
-            raise serializers.ValidationError("Amount must be greater than zero")
+            raise serializers.ValidationError(
+                "Amount must be greater than zero")
 
         return value
 
     def validate_ticker(self, value):
         if value is None:
             raise serializers.ValidationError("Ticker cannot be null")
-        value = Ticker.objects.get_or_create(code=value.upper())[0]
 
+        with connection.cursor() as cursor:
+            cursor.execute(f"INSERT INTO {Ticker._meta.db_table} VALUES(%s) "
+                           f"ON CONFLICT DO NOTHING", [value.upper()]
+                           )
+
+        value = Ticker.objects.raw(f"SELECT * FROM {Ticker._meta.db_table} "
+                                   f"WHERE code=%s LIMIT 1", [value.upper()])[0]
         return value
 
 
@@ -100,20 +107,24 @@ class InvestmentSerializer(serializers.ModelSerializer):
         name = validated_data.pop("name")
         percent = validated_data.get("percent")
         user_id = str(self.context["request"].user)
-        color = validated_data.pop("color", Color.objects.all().first())
+        color = validated_data.pop("color",
+                                   Color.objects.raw(
+                                       f"SELECT * FROM {Color._meta.db_table} "
+                                       f"LIMIT 1")[0]
+                                   )
         description = validated_data.pop("description", "")
 
         if percent <= 0:
             raise exceptions.ValidationError("Percent must be greater than 0")
 
-        wallet = Wallet.objects.create(
-            user_id=user_id,
-            currency=currency,
-            balance=balance,
-            name=name,
-            color=color,
-            description=description,
-        )
+        wallet = Wallet(user_id=user_id,
+                        currency=currency,
+                        balance=balance,
+                        name=name,
+                        color=color,
+                        description=description,
+                        )
+        wallet.save()
         validated_data["wallet"] = wallet
 
         return super().create(validated_data)
@@ -125,7 +136,8 @@ class InvestmentSerializer(serializers.ModelSerializer):
         name = validated_data.pop("name", instance.wallet.name)
         percent = validated_data.get("percent", instance.percent)
         color = validated_data.pop("color", instance.wallet.color)
-        description = validated_data.pop("description", instance.wallet.description)
+        description = validated_data.pop("description",
+                                         instance.wallet.description)
 
         if percent <= 0:
             raise exceptions.ValidationError("Percent must be greater than 0")
