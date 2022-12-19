@@ -92,7 +92,8 @@ return (
                 {backgroundColor: amount ? '#3e68d1' : '#b4b4b4'}]}
                               disabled={isDisabled} onPress={() => {
                                   setIsDisabled(true);
-                                  isDisabled ? setAsyncPayment().then() : null;
+                                  console.log("Payment created ", isDisabled);
+                                  !isDisabled ? setAsyncPayment().then() : null;
             }}>
                 <Text style={{fontSize: 22}}>{"Add payment"}</Text>
                 <MaterialIcons name="arrow-forward-ios" size={30} color='#000' />

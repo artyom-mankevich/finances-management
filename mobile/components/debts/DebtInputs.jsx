@@ -16,6 +16,7 @@ export default function DebtInputs(props) {
     const setAsyncDebt = async () => {
         setIsDisabled(true);
         const accessToken = await AsyncStorage.getItem('accessToken');
+        console.log("Debt created ", typeof props.expiresAt, ' ', props.expiresAt);
         return fetch(ngrokConfig.myUrl + '/v2/debts/',{
             method: 'POST',
             headers: {
@@ -27,7 +28,7 @@ export default function DebtInputs(props) {
                 'currency': props.currency,
                 'balance': Number(props.currentAmount),
                 'goal': Number(props.finalAmount),
-                'expiresAt': props.expiresAt.getTime(),
+                'expiresAt': typeof props.expiresAt === 'number' ? props.expiresAt : props.expiresAt.getTime(),
             })
         }).then((response) => {
             props.onUpdate();
@@ -41,6 +42,7 @@ export default function DebtInputs(props) {
 
     const setAsyncDebtUpdate = async () => {
         setIsDisabled(true);
+        console.log("Debt updated ", typeof props.expiresAt, ' ', props.expiresAt);
         const accessToken = await AsyncStorage.getItem('accessToken');
         const debtId = await AsyncStorage.getItem('debtId');
         return fetch(ngrokConfig.myUrl + '/v2/debts/' + debtId + '/',{
@@ -54,7 +56,7 @@ export default function DebtInputs(props) {
                 'currency': props.currency,
                 'balance': Number(props.currentAmount),
                 'goal': Number(props.finalAmount),
-                'expiresAt': props.expiresAt.getTime() ? props.expiresAt.getTime() : props.expiresAt,
+                'expiresAt': typeof props.expiresAt === 'number' ? props.expiresAt : props.expiresAt.getTime(),
             })
         }).then((response) => {
             props.onUpdate();
