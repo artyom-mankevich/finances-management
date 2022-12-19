@@ -10,7 +10,6 @@
 .transaction-main-info {
     display: flex;
     align-items: center;
-    min-width: 200px;
     max-width: 200px;
 }
 
@@ -24,11 +23,13 @@
 }
 
 .transaction-amount-wrapper {
-    width: 150px;
+    width: 200px;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 5px;
+    flex-wrap: wrap;
+    flex-grow: 1;
 }
 
 .transfer-wallets-names {
@@ -36,6 +37,7 @@
     justify-content: left;
     align-items: center;
     color: black;
+    flex-wrap: wrap;
     gap: 5px;
 }
 
