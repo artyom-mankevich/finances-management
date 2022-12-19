@@ -5,7 +5,7 @@ from django.db import connection
 
 class CustomRemoteUserBackend(RemoteUserBackend):
     def configure_user(self, request, user, created=True):
-        user = super().configure_user(request, user, created)
+        user = str(super().configure_user(request, user, created))
         if created:
             with connection.cursor() as cursor:
                 cursor.execute(

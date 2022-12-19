@@ -28,6 +28,16 @@ class Stock(models.Model):
 
     @transaction.atomic
     def save(self, *args, **kwargs):
+        with connection.cursor() as cursor:
+            cursor.execute(
+                f"SELECT COUNT(*) FROM {self._meta.db_table} WHERE id = %s",
+                [self.id],
+            )
+            if cursor.fetchone()[0] == 0:
+                adding = True
+            else:
+                adding = False
+
         params = {
             "id": self.id,
             "user_id": self.user_id,
@@ -36,52 +46,54 @@ class Stock(models.Model):
             "created_at": self.created_at
         }
         with connection.cursor() as cursor:
-            if self._state.adding:
+            if adding:
                 NewsFilter.add_ticker(self.user_id, self.ticker)
                 self.created_at = timezone.now()
                 params["created_at"] = self.created_at
-                cursor.execute(f"INSERT INTO {Stock._meta.db_table}"
-                               f"(id, user_id, amount, ticker_id, created_at)"
-                               f" VALUES(%(id)s, %(user_id)s, %(amount)s, "
-                               f"%(ticker_id)s, %(created_at)s);", params
-                               )
+                cursor.execute(
+                    f"INSERT INTO {Stock._meta.db_table} (id, user_id, amount,"
+                    f" ticker_id, created_at) VALUES(%(id)s, %(user_id)s, %(amount)s, "
+                    f"%(ticker_id)s, %(created_at)s);",
+                    params
+                )
             else:
-                obj_old = Stock.objects.raw(f"SELECT * FROM "
-                                            f"{Stock._meta.db_table} "
-                                            f"FOR UPDATE LIMIT 1")[0]
+                obj_old = Stock.objects.raw(
+                    f"SELECT * FROM {Stock._meta.db_table} FOR UPDATE LIMIT 1"
+                )[0]
                 if obj_old.ticker != self.ticker:
-                    cursor.execute(f"SELECT COUNT(*) FROM "
-                                   f"{Stock._meta.db_table} "
-                                   f"WHERE ticker_id=%s AND user_id=%s;",
-                                   [str(obj_old.ticker_id), self.user_id]
-                                   )
+                    cursor.execute(
+                        f"SELECT COUNT(*) FROM {Stock._meta.db_table} WHERE ticker_id=%s"
+                        f" AND user_id=%s;",
+                        [obj_old.ticker_id, self.user_id]
+                    )
                     count = cursor.fetchone()[0]
                     if count == 1:
                         NewsFilter.remove_ticker(self.user_id, obj_old.ticker)
-                cursor.execute(f"UPDATE {Stock._meta.db_table} "
-                               f"SET id=%(id)s, user_id=%(user_id)s, "
-                               f"amount=%(amount)s, "
-                               f"ticker_id=%(ticker_id)s, "
-                               f"created_at=%(created_at)s "
-                               f"WHERE id=%(id)s;", params
-                               )
+
+                cursor.execute(
+                    f"UPDATE {Stock._meta.db_table} SET id=%(id)s, user_id=%(user_id)s, "
+                    f"amount=%(amount)s, ticker_id=%(ticker_id)s, created_at=%(created_at)s "
+                    f"WHERE id=%(id)s;",
+                    params
+                )
 
         NewsFilter.add_ticker(self.user_id, self.ticker)
 
     @transaction.atomic
     def delete(self, *args, **kwargs):
         with connection.cursor() as cursor:
-            cursor.execute(f"SELECT COUNT(*) FROM "
-                           f"{Stock._meta.db_table} "
-                           f"WHERE id=%s;", [self.id]
-                           )
+            cursor.execute(
+                f"SELECT COUNT(*) FROM {Stock._meta.db_table} WHERE id=%s;",
+                [self.id]
+            )
             count = cursor.fetchone()[0]
             if count == 1:
                 NewsFilter.remove_ticker(self.user_id, self.ticker)
 
-            cursor.execute(f"DELETE FROM {Stock._meta.db_table} WHERE id=%s",
-                           [self.id]
-                           )
+            cursor.execute(
+                f"DELETE FROM {Stock._meta.db_table} WHERE id=%s",
+                [self.id]
+            )
 
 
 class Ticker(models.Model):
@@ -89,16 +101,27 @@ class Ticker(models.Model):
 
     def save(self, *args, **kwargs):
         with connection.cursor() as cursor:
-            if self._state.adding:
-                cursor.execute(f"INSERT INTO {Ticker._meta.db_table} "
-                               f"VALUES(%s);", [self.code]
-                               )
+            cursor.execute(
+                f"SELECT COUNT(*) FROM {Ticker._meta.db_table} WHERE code=%s;",
+                [self.code]
+            )
+            if cursor.fetchone()[0] == 0:
+                adding = True
+            else:
+                adding = False
+        with connection.cursor() as cursor:
+            if adding:
+                cursor.execute(
+                    f"INSERT INTO {Ticker._meta.db_table} VALUES(%s);",
+                    [self.code]
+                )
 
     def delete(self, *args, **kwargs):
         with connection.cursor() as cursor:
-            cursor.execute(f"DELETE FROM {Ticker._meta.db_table} "
-                           f"WHERE code=%s;", [self.code]
-                           )
+            cursor.execute(
+                f"DELETE FROM {Ticker._meta.db_table} WHERE code=%s;",
+                [self.code]
+            )
 
 
 class Investment(models.Model):
@@ -110,6 +133,16 @@ class Investment(models.Model):
 
     def save(self, *args, **kwargs):
         with connection.cursor() as cursor:
+            cursor.execute(
+                f"SELECT COUNT(*) FROM {self._meta.db_table} WHERE id = %s",
+                [self.id],
+            )
+            if cursor.fetchone()[0] == 0:
+                adding = True
+            else:
+                adding = False
+
+        with connection.cursor() as cursor:
             params = {
                 "id": self.id,
                 "user_id": self.user_id,
@@ -118,27 +151,24 @@ class Investment(models.Model):
                 "created_at": self.created_at
             }
 
-            if self._state.adding:
+            if adding:
                 self.created_at = timezone.now()
                 params["created_at"] = self.created_at
-                cursor.execute(f"INSERT INTO {Investment._meta.db_table}"
-                               f"(id, user_id, percent, wallet_id, created_at)"
-                               f" VALUES(%(id)s, %(user_id)s, %(percent)s, "
-                               f"%(wallet_id)s, %(created_at)s);", params
-                               )
+                cursor.execute(
+                    f"INSERT INTO {Investment._meta.db_table}"
+                    f"(id, user_id, percent, wallet_id, created_at)"
+                    f" VALUES(%(id)s, %(user_id)s, %(percent)s, "
+                    f"%(wallet_id)s, %(created_at)s);",
+                    params
+                )
             else:
-                cursor.execute(f"UPDATE {Investment._meta.db_table} "
-                               f"SET id=%(id)s, user_id=%(user_id)s, "
-                               f"percent=%(percent)s, "
-                               f"wallet_id=%(wallet_id)s, "
-                               f"created_at=%(created_at)s;", params
-                               )
+                cursor.execute(
+                    f"UPDATE {Investment._meta.db_table} SET id=%(id)s,"
+                    f" user_id=%(user_id)s, percent=%(percent)s, wallet_id=%(wallet_id)s,"
+                    f" created_at=%(created_at)s WHERE id=%(id)s;",
+                    params
+                )
 
     @transaction.atomic
     def delete(self, using=None, keep_parents=False):
         self.wallet.delete()
-
-        with connection.cursor() as cursor:
-            cursor.execute(f"DELETE FROM {Investment._meta.db_table} "
-                           f"WHERE id=%s", [self.id]
-                           )

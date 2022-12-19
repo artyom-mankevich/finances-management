@@ -18,23 +18,33 @@ class StockSerializer(serializers.ModelSerializer):
         )
         fields = read_only_fields + (
             "amount",
-            "ticker",
         )
 
     created_at = serializers.SerializerMethodField()
     amount = serializers.DecimalField(
         max_digits=30, decimal_places=10, coerce_to_string=False
     )
-    ticker = serializers.CharField(max_length=10)
 
     def to_representation(self, instance):
-        ticker_code = instance.ticker.code
+        ticker_code = instance.ticker_id
         data = super().to_representation(instance)
         data["ticker"] = ticker_code
         return data
 
     def get_created_at(self, obj):
         return obj.created_at.timestamp() * 1000
+
+    def create(self, validated_data):
+        ticker = self.validate_ticker(self.initial_data["ticker"])
+        validated_data["ticker"] = ticker
+
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        ticker = self.validate_ticker(self.initial_data["ticker"])
+        validated_data["ticker"] = ticker
+
+        return super().update(instance, validated_data)
 
     def validate_amount(self, value):
         if value is None:
@@ -50,13 +60,20 @@ class StockSerializer(serializers.ModelSerializer):
         if value is None:
             raise serializers.ValidationError("Ticker cannot be null")
 
-        with connection.cursor() as cursor:
-            cursor.execute(f"INSERT INTO {Ticker._meta.db_table} VALUES(%s) "
-                           f"ON CONFLICT DO NOTHING", [value.upper()]
-                           )
+        if len(value) > 5:
+            raise serializers.ValidationError("Ticker is too long")
 
-        value = Ticker.objects.raw(f"SELECT * FROM {Ticker._meta.db_table} "
-                                   f"WHERE code=%s LIMIT 1", [value.upper()])[0]
+        with connection.cursor() as cursor:
+            cursor.execute(
+                f"INSERT INTO {Ticker._meta.db_table} VALUES(%s) "
+                f"ON CONFLICT DO NOTHING",
+                [value.upper()]
+            )
+
+        value = Ticker.objects.raw(
+            f"SELECT * FROM {Ticker._meta.db_table} WHERE code=%s LIMIT 1",
+            [value.upper()]
+        )[0]
         return value
 
 
@@ -65,33 +82,32 @@ class InvestmentSerializer(serializers.ModelSerializer):
         model = Investment
         read_only_fields = ("id", "user_id", "created_at")
         fields = read_only_fields + (
-            "balance", "currency", "percent", "color", "name", "description"
+            "balance", "percent", "name", "description"
         )
 
     created_at = serializers.FloatField(read_only=True)
     balance = serializers.DecimalField(
         max_digits=30, decimal_places=10, coerce_to_string=False
     )
-    currency = serializers.PrimaryKeyRelatedField(
-        queryset=Currency.objects.all(), required=True
-    )
     percent = serializers.DecimalField(
         max_digits=30, decimal_places=10, coerce_to_string=False
-    )
-    color = serializers.PrimaryKeyRelatedField(
-        queryset=Color.objects.all(), required=False
     )
     name = serializers.CharField(required=True)
     description = serializers.CharField(required=False)
 
     def to_representation(self, instance):
+        wallet = Wallet.objects.raw(
+            f"SELECT * FROM {Wallet._meta.db_table} WHERE id=%s LIMIT 1",
+            [instance.wallet_id]
+        )[0]
+        instance.wallet = wallet
         data = {
             "id": instance.id,
             "user_id": instance.user_id,
             "balance": instance.wallet.balance,
-            "currency": instance.wallet.currency.code,
+            "currency": instance.wallet.currency_id,
             "percent": instance.percent,
-            "color": instance.wallet.color.hex_code,
+            "color": instance.wallet.color_id,
             "name": instance.wallet.name,
             "description": instance.wallet.description,
             "created_at": timezone.datetime.combine(
@@ -102,28 +118,34 @@ class InvestmentSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        currency = validated_data.pop("currency")
+        currency = self.validate_currency(self.initial_data.get("currency"))
+        currency = Currency.objects.raw(
+            f"SELECT * FROM {Currency._meta.db_table} WHERE code=%s LIMIT 1",
+            [currency]
+        )[0]
+
         balance = validated_data.pop("balance")
         name = validated_data.pop("name")
         percent = validated_data.get("percent")
         user_id = str(self.context["request"].user)
-        color = validated_data.pop("color",
-                                   Color.objects.raw(
-                                       f"SELECT * FROM {Color._meta.db_table} "
-                                       f"LIMIT 1")[0]
-                                   )
+        color = self.validate_color(self.initial_data.get("color"))
+        color = Color.objects.raw(
+            f"SELECT * FROM {Color._meta.db_table} WHERE hex_code=%s LIMIT 1",
+            [color]
+        )[0]
         description = validated_data.pop("description", "")
 
         if percent <= 0:
             raise exceptions.ValidationError("Percent must be greater than 0")
 
-        wallet = Wallet(user_id=user_id,
-                        currency=currency,
-                        balance=balance,
-                        name=name,
-                        color=color,
-                        description=description,
-                        )
+        wallet = Wallet(
+            user_id=user_id,
+            currency=currency,
+            balance=balance,
+            name=name,
+            color=color,
+            description=description,
+        )
         wallet.save()
         validated_data["wallet"] = wallet
 
@@ -131,13 +153,20 @@ class InvestmentSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def update(self, instance, validated_data):
-        currency = validated_data.pop("currency", instance.wallet.currency)
+        currency = self.validate_currency(self.initial_data.get("currency"))
+        currency = Currency.objects.raw(
+            f"SELECT * FROM {Currency._meta.db_table} WHERE code=%s LIMIT 1",
+            [currency]
+        )[0]
         balance = validated_data.pop("balance", instance.wallet.balance)
         name = validated_data.pop("name", instance.wallet.name)
         percent = validated_data.get("percent", instance.percent)
-        color = validated_data.pop("color", instance.wallet.color)
-        description = validated_data.pop("description",
-                                         instance.wallet.description)
+        color = self.validate_color(self.initial_data.get("color"))
+        color = Color.objects.raw(
+            f"SELECT * FROM {Color._meta.db_table} WHERE hex_code=%s LIMIT 1",
+            [color]
+        )[0]
+        description = validated_data.pop("description", instance.wallet.description)
 
         if percent <= 0:
             raise exceptions.ValidationError("Percent must be greater than 0")
@@ -150,3 +179,29 @@ class InvestmentSerializer(serializers.ModelSerializer):
         instance.wallet.save()
 
         return super().update(instance, validated_data)
+
+    def validate_currency(self, value):
+        if not value:
+            raise exceptions.ValidationError("Currency is required")
+        with connection.cursor() as cursor:
+            cursor.execute(
+                f"SELECT EXISTS(SELECT 1 FROM {Currency._meta.db_table} WHERE code=%s);",
+                [value]
+            )
+            exists = cursor.fetchone()[0]
+        if not exists:
+            raise exceptions.ValidationError("Invalid currency")
+        return value
+
+    def validate_color(self, value):
+        if not value:
+            raise exceptions.ValidationError("Color is required")
+        with connection.cursor() as cursor:
+            cursor.execute(
+                f"SELECT EXISTS(SELECT 1 FROM {Color._meta.db_table} WHERE hex_code=%s);",
+                [value]
+            )
+            exists = cursor.fetchone()[0]
+        if not exists:
+            raise exceptions.ValidationError("Invalid color")
+        return value
