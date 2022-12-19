@@ -167,11 +167,11 @@ def get_historical_stocks_data(
             if type(series[key]) == dict:
                 symbols = symbols.replace(key, "")
 
-    if not symbols:
-        return result
+        if not symbols:
+            return result
 
-    ticker = yq.Ticker(symbols=symbols, asynchronous=True, validate=True)
-    series = ticker.history(period=period, interval=interval)
+        ticker = yq.Ticker(symbols=symbols, asynchronous=True, validate=True)
+        series = ticker.history(period=period, interval=interval)
 
     series = series["close"]
 
