@@ -1,5 +1,6 @@
 import requests
 from django.core.management import BaseCommand
+from django.db import connection
 
 from wallets.models import Currency
 
@@ -27,16 +28,31 @@ class Command(BaseCommand):
 
         counter = 0
         for currency in get_currencies_list():
-            obj, created = Currency.objects.get_or_create(
-                code=currency["code"], name=currency["name"]
-            )
-            if created:
-                counter += 1
-                self.stdout.write(self.style.SUCCESS(f"Created Currency: {obj.code}, {obj.name}"))
-            else:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    f"SELECT EXISTS("
+                    f"SELECT 1 FROM {Currency._meta.db_table} WHERE code=%s"
+                    f");",
+                    [currency["code"]]
+                )
+                exists = cursor.fetchone()[0]
+            if exists:
                 self.stdout.write(
                     self.style.WARNING(
-                        f"Currency {obj.code} {currency['name']} already exists"
+                        f"Currency {currency['code']} {currency['name']} already exists"
+                    )
+                )
+            else:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        f"INSERT INTO {Currency._meta.db_table} (code, name)"
+                        f" VALUES(%s, %s);",
+                        [currency["code"], currency["name"]]
+                    )
+                counter += 1
+                self.stdout.write(
+                    self.style.SUCCESS(
+                        f"Created Currency: {currency['code']} {currency['name']}"
                     )
                 )
 

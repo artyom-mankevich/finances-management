@@ -13,23 +13,22 @@ class EthKeys(models.Model):
     private_key = models.CharField(max_length=256)
     address = models.CharField(max_length=128, unique=True)
 
-    def delete(self, *args, **kwrargs):
+    def delete(self, *args, **kwargs):
         with connection.cursor() as cursor:
             cursor.execute(
-                f'DELETE FROM {self._meta.db_table} WHERE id=%s', [self.id]
+                f'DELETE FROM {self._meta.db_table} WHERE id=%s;', [self.id]
             )
 
     def save(self, *args, **kwargs):
-        if (self._state.adding):
-            with connection.cursor() as cursor:
+        with connection.cursor() as cursor:
+            if self._state.adding:
                 cursor.execute(
-                    f'INSERT INTO {self._meta.db_table} VALUES(%s, %s, %s, %s)', [
-                        self.id, self.user_id, self.private_key, self.address]
+                    f'INSERT INTO {self._meta.db_table} VALUES(%s, %s, %s, %s);',
+                    [self.id, self.user_id, self.private_key, self.address]
                 )
-        else:
-            with connection.cursor() as cursor:
+            else:
                 cursor.execute(
-                    f'UPDATE {self._meta.db_table}'\
-                    ' SET id=%s, user_id=%s, private_key=%s, address=%s WHERE id=%s', [
-                        self.id, self.user_id, self.private_key, self.address, self.id]
+                    f'UPDATE {self._meta.db_table}'
+                    f' SET id=%s, user_id=%s, private_key=%s, address=%s WHERE id=%s;',
+                    [self.id, self.user_id, self.private_key, self.address, self.id]
                 )
