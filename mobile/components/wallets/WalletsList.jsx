@@ -93,6 +93,7 @@ export default function WalletsList(props) {
         getCurrencyList().then();
         getColorsList().then();
         getWalletsList().then();
+        console.log("WalletsList useEffect");
     },[]);
 
     props.refreshing ? getWalletsList().then() : null;

@@ -1,11 +1,12 @@
 from decimal import Decimal
 
 import requests
+from rest_framework.exceptions import NotFound
+
 from accounts.models import AccountSettings
 from django.core.cache import cache
 
 from project import settings
-from django.http import Http404
 
 
 def convert_currency(amount, currency, user_id):
@@ -32,8 +33,18 @@ def convert_currency(amount, currency, user_id):
     return amount
 
 
-def raw_get_object_or_404(model, field, id):
+def raw_get_object_or_404(model, field, value):
     try:
-        return model.objects.raw(f'SELECT * FROM {model._meta.db_table} WHERE {field}=%s LIMIT 1', [id])[0]
+        return model.objects.raw(
+            f'SELECT * FROM {model._meta.db_table} WHERE {field}=%s LIMIT 1', [value]
+        )[0]
     except IndexError:
-        raise Http404("Couldn't find matching object")
+        raise NotFound("Couldn't find matching object")
+
+
+def dictfetchall(cursor):
+    columns = [col[0] for col in cursor.description]
+    return [
+        dict(zip(columns, row))
+        for row in cursor.fetchall()
+    ]

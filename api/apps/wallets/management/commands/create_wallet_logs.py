@@ -11,18 +11,20 @@ class Command(BaseCommand):
             self.style.SUCCESS("START - Creating WalletLog objects for all wallets.")
         )
 
-        wallets = Wallet.objects.filter(debt__isnull=True)
-        self.stdout.write(f"Found {wallets.count()} wallets.")
-        logs = WalletLog.objects.bulk_create(
-            [
-                WalletLog(
-                    wallet=wallet,
-                    balance=wallet.balance,
-                    currency=wallet.currency.code,
-                ) for wallet in wallets
-            ]
+        wallets = Wallet.objects.raw(
+            "SELECT ww.* FROM wallets_wallet ww "
+            "LEFT JOIN wallets_debt wd on ww.id = wd.wallet_id "
+            "WHERE wd.id IS NULL"
         )
+        self.stdout.write(f"Found {len(wallets)} wallets.")
+        count = 0
+        for wallet in wallets:
+            WalletLog.objects.create(
+                wallet=wallet, balance=wallet.balance, currency=wallet.currency.code
+            )
+            count += 1
+            self.stdout.write(f"Created WalletLog for wallet {wallet.id}.")
 
         self.stdout.write(
-            self.style.SUCCESS(f"END - Created {len(logs)} WalletLog objects")
+            self.style.SUCCESS(f"END - Created {count} WalletLog objects")
         )

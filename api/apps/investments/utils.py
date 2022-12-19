@@ -48,8 +48,12 @@ def set_tickers_data_from_api(data: dict, tickers_to_fetch: list[str]):
             }
 
     for ticker in tickers_to_fetch:
-        price = financial_data[ticker].get("currentPrice")
-        currency = financial_data[ticker].get("financialCurrency")
+        if type(financial_data[ticker]) == str:
+            price = None
+            currency = None
+        else:
+            price = financial_data[ticker].get("currentPrice")
+            currency = financial_data[ticker].get("financialCurrency")
 
         data[ticker]["price"] = price
         data[ticker]["currency"] = currency
@@ -98,9 +102,10 @@ def get_stocks_chart_data(
     amounts_key = "_".join([str(val) for val in stocks.values()])
     cache_key = f"stocks_chart_data_{tickers_key}_{amounts_key}" \
                 f"_{period}_{interval}_{user_id}"
-    cached_value = cache.get(cache_key)
-    if cached_value:
-        return cached_value
+    if len(cache_key) < 250:
+        cached_value = cache.get(cache_key)
+        if cached_value:
+            return cached_value
 
     cache_lifetime = 60 * 60 * 24
 
@@ -115,8 +120,11 @@ def get_stocks_chart_data(
     if period in [Stock.CHART_PERIOD_7_DAYS, Stock.CHART_PERIOD_1_MONTH]:
         today = datetime.date.today()
         today_prices = get_stock_prices(tickers, user_id)
-        for ticker in today_prices:
-            today_prices[ticker] = today_prices[ticker] * stocks[ticker]
+        for ticker in list(today_prices.keys()):
+            if today_prices[ticker] is not None:
+                today_prices[ticker] = today_prices[ticker] * stocks[ticker]
+            else:
+                del today_prices[ticker]
         today_sum = {
             today.strftime("%d-%m-%Y"): sum(today_prices.values())
         }
@@ -131,7 +139,8 @@ def get_stocks_chart_data(
     average_price = sum(result["data"]["values"]) / len(result["data"]["values"])
     result["average_price"] = average_price
 
-    cache.set(cache_key, result, cache_lifetime)
+    if len(cache_key) < 250:
+        cache.set(cache_key, result, cache_lifetime)
 
     return result
 
@@ -149,12 +158,23 @@ def get_historical_stocks_data(
         return {}
 
     series = ticker.history(period=period, interval=interval)
-    if series.empty:
-        return {}
+
+    result = {}
+    if type(series) != dict and series.empty:
+        return result
+    if type(series) == dict:
+        for key in series:
+            if type(series[key]) == dict:
+                symbols = symbols.replace(key, "")
+
+    if not symbols:
+        return result
+
+    ticker = yq.Ticker(symbols=symbols, asynchronous=True, validate=True)
+    series = ticker.history(period=period, interval=interval)
 
     series = series["close"]
 
-    result = {}
     for i in range(len(series)):
         if np.isnan(series[i]):
             continue

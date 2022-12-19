@@ -3,20 +3,23 @@ from datetime import datetime, timedelta
 from decimal import Decimal
 
 import numpy as np
+from django.db import connection
+
 from accounts.models import AccountSettings
 from django.core.cache import cache
-from django.db.models.functions import TruncDate
 from django.utils import timezone
 from sklearn.linear_model import LinearRegression
 
-from base.utils import convert_currency
-from wallets.models import TransactionCategory, Transaction, WalletLog, Wallet, Debt
+from base.utils import convert_currency, dictfetchall
+from wallets.models import (
+    TransactionCategory, Transaction, WalletLog, Wallet, Debt, Currency
+)
 from wallets.serializers import ExtendedTransactionCategorySerializer
 
 
-def get_top_categories(queryset: TransactionCategory.objects, user_id: str) -> dict:
-    incomes = get_top_categories_queryset(queryset, "source", "target", user_id)
-    expenses = get_top_categories_queryset(queryset, "target", "source", user_id)
+def get_top_categories(user_id: str) -> dict:
+    incomes = get_top_categories_queryset("source", "target", user_id)
+    expenses = get_top_categories_queryset("target", "source", user_id)
 
     response = {
         "incomes": {
@@ -33,24 +36,28 @@ def get_top_categories(queryset: TransactionCategory.objects, user_id: str) -> d
 
 
 def get_top_categories_queryset(
-    initial_qs: TransactionCategory.objects,
     wallet_type: str,
     amount_type: str,
     user_id: str,
 ) -> list:
-    wallet_lookup = {f"transaction__{wallet_type}_wallet__isnull": True}
-    transaction_lookup = {f"{amount_type}_wallet__isnull": False}
+    categories = TransactionCategory.objects.raw(
+        f"SELECT * FROM {TransactionCategory._meta.db_table} wtc"
+        f" JOIN {Transaction._meta.db_table} wt ON wt.category_id = wtc.id"
+        f" WHERE wtc.user_id = %s AND wt.{wallet_type}_wallet_id IS NULL",
+        [user_id],
+    )
 
-    categories = initial_qs.filter(**wallet_lookup).distinct()
     list_of_categories = []
     for category in categories:
-        total = get_transactions_total_amount(
-            category.transaction_set.filter(**transaction_lookup).prefetch_related(
-                f"{wallet_type}_wallet__currency"
-            ),
-            amount_type,
-            user_id
+        transactions = Transaction.objects.raw(
+            f"SELECT wt.id, wt.{amount_type}_amount, wc.code as currency"
+            f" FROM {Transaction._meta.db_table} wt"
+            f" JOIN {Wallet._meta.db_table} ww ON wt.{amount_type}_wallet_id = ww.id"
+            f" JOIN {Currency._meta.db_table} wc ON ww.currency_id = wc.code"
+            f" WHERE wt.category_id = %s AND wt.{wallet_type}_wallet_id IS NULL;",
+            [category.id],
         )
+        total = get_transactions_total_amount(transactions, amount_type, user_id)
         if total != 0:
             category.total = total
             list_of_categories.append(category)
@@ -61,12 +68,12 @@ def get_top_categories_queryset(
 
 
 def get_transactions_total_amount(
-    transactions: Transaction.objects, amount_type: str, user_id: str
+    transactions, amount_type: str, user_id: str
 ) -> float:
     total = sum(
         convert_currency(
             getattr(transaction, f"{amount_type}_amount"),
-            getattr(transaction, f"{amount_type}_wallet").currency.code,
+            getattr(transaction, "currency"),
             user_id
         ) for transaction in transactions
     )
@@ -83,14 +90,17 @@ def get_categories_total_amount(categories: list) -> Decimal | None:
 
 
 def get_current_wallets_balance(user_id) -> Decimal:
-    balances = (
-        Wallet.objects.filter(user_id=user_id, debt__isnull=True)
-        .prefetch_related("currency")
-        .values("balance", "currency__code")
-        .exclude(balance=0)
-    )
+    with connection.cursor() as cursor:
+        cursor.execute(
+            f"SELECT ww.balance, ww.currency_id as currency FROM {Wallet._meta.db_table} ww"
+            f" LEFT JOIN {Debt._meta.db_table} wd ON ww.id = wd.wallet_id"
+            f" WHERE ww.user_id = %s AND ww.balance != 0 AND wd.wallet_id IS NULL;",
+            [user_id],
+        )
+        balances = dictfetchall(cursor)
+
     current_balances_sum = sum(
-        convert_currency(wallet["balance"], wallet["currency__code"], user_id)
+        convert_currency(wallet["balance"], wallet["currency"], user_id)
         for wallet in balances
     )
     return current_balances_sum
@@ -166,12 +176,26 @@ def get_predicted_balance(last_balance: Decimal, user_id: str) -> dict:
 
 
 def get_wallets_chart_data(period: str, user_id: str) -> dict:
-    current_currency = AccountSettings.objects.get(user_id=user_id).main_currency.code
+    with connection.cursor() as cursor:
+        cursor.execute(
+            f"SELECT main_currency_id FROM {AccountSettings._meta.db_table} "
+            f"WHERE user_id = %s;",
+            [user_id],
+        )
+        current_currency = dictfetchall(cursor)[0]["main_currency_id"]
     start_date, end_date = get_chart_period_dates(period)
 
-    logs = WalletLog.objects.filter(
-        wallet__user_id=user_id, date__range=(start_date, end_date)
-    ).order_by("date")
+    logs = WalletLog.objects.raw(
+        f"SELECT * FROM {WalletLog._meta.db_table} wl"
+        f" JOIN {Wallet._meta.db_table} ww ON wl.wallet_id = ww.id"
+        f" WHERE ww.user_id = %s AND wl.date >= %s AND wl.date <= %s"
+        f" ORDER BY wl.date;",
+        [
+            user_id,
+            start_date.strftime("%Y-%m-%d"),
+            end_date.strftime("%Y-%m-%d"),
+        ],
+    )
 
     current_balances_sum = get_current_wallets_balance(user_id)
     cache_key = f"{user_id}_{period}_{str(end_date.date())}_{current_currency}"
@@ -213,7 +237,7 @@ def get_today_grouped_wallet_log(period: str, user_id) -> dict:
     return today_data
 
 
-def group_wallet_logs(logs: WalletLog.objects, period: str, user_id: str) -> dict:
+def group_wallet_logs(logs, period: str, user_id: str) -> dict:
     grouped_logs = {}
     if not logs:
         return grouped_logs
@@ -266,12 +290,8 @@ def get_transactions_chart_data(user_id: str) -> dict:
     start_date = (timezone.now() - timedelta(days=30)).replace(
         hour=0, minute=0, second=0, microsecond=0
     )
-    expenses = list(
-        get_transaction_queryset_by_type(user_id, "target", "source", start_date)
-    )
-    incomes = list(
-        get_transaction_queryset_by_type(user_id, "source", "target", start_date)
-    )
+    expenses = get_transaction_queryset_by_type(user_id, "target", "source", start_date)
+    incomes = get_transaction_queryset_by_type(user_id, "source", "target", start_date)
 
     grouped_expenses = get_grouped_transactions(expenses, "source", user_id)
     grouped_incomes = get_grouped_transactions(incomes, "target", user_id)
@@ -301,25 +321,36 @@ def get_transaction_queryset_by_type(
     amount_type: str,
     start_date: datetime,
     end_date: datetime = None,
-) -> Transaction.objects:
+) -> list[dict]:
     if end_date is None:
         end_date = timezone.now().replace(
             hour=23, minute=59, second=59, microsecond=999999
         )
 
-    wallet_filter = {f"{wallet_type}_wallet__isnull": True}
-
-    return (
-        Transaction.objects.filter(
-            user_id=user_id,
-            created_at__range=(start_date, end_date),
-            **wallet_filter
+    with connection.cursor() as cursor:
+        start_date = start_date.strftime("%Y-%m-%d %H:%M:%S")
+        end_date = end_date.strftime("%Y-%m-%d %H:%M:%S")
+        sql_string = f"SELECT date_trunc('day', wt.created_at) as date," \
+                     f" wt.{amount_type}_amount, wc.code" \
+                     f" FROM wallets_transaction wt" \
+                     f" JOIN wallets_wallet ww ON wt.{amount_type}_wallet_id = ww.id" \
+                     f" JOIN wallets_currency wc ON ww.currency_id = wc.code" \
+                     f" WHERE wt.{wallet_type}_wallet_id IS NULL" \
+                     f" AND wt.created_at >= %(start_date)s" \
+                     f" AND wt.created_at <= %(end_date)s" \
+                     f" AND wt.user_id = %(user_id)s" \
+                     f" ORDER BY date"
+        cursor.execute(
+            sql_string,
+            {
+                "amount_type": amount_type,
+                "wallet_type": wallet_type,
+                "start_date": start_date,
+                "end_date": end_date,
+                "user_id": user_id,
+            }
         )
-        .prefetch_related(f"{amount_type}_wallet__currency")
-        .annotate(date=TruncDate("created_at"))
-        .order_by("date")
-        .values("date", f"{amount_type}_amount", f"{amount_type}_wallet__currency__code")
-    )
+        return dictfetchall(cursor)
 
 
 def get_grouped_transactions(transactions: list[dict], amount_type: str, user_id) -> dict:
@@ -330,7 +361,7 @@ def get_grouped_transactions(transactions: list[dict], amount_type: str, user_id
             result[date] = 0
         result[date] += convert_currency(
             transaction[f"{amount_type}_amount"],
-            transaction[f"{amount_type}_wallet__currency__code"],
+            transaction[f"code"],
             user_id
         )
 
