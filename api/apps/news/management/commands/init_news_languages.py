@@ -1,4 +1,5 @@
 from django.core.management import BaseCommand
+from django.db import connection
 
 from news.models import NewsLanguage
 
@@ -52,13 +53,32 @@ class Command(BaseCommand):
 
         counter = 0
         for language in languages:
-            obj, created = NewsLanguage.objects.get_or_create(code=language)
-            if created:
-                counter += 1
-                self.stdout.write(self.style.SUCCESS(f"Created NewsLanguage: {language}"))
-            else:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    f"SELECT EXISTS("
+                    f"SELECT 1 FROM {NewsLanguage._meta.db_table} "
+                    f"WHERE code=%s);",
+                    [language]
+                )
+                exists = cursor.fetchone()[0]
+            if exists:
                 self.stdout.write(
-                    self.style.WARNING(f"NewsLanguage {language} already exists")
+                    self.style.WARNING(
+                        f"NewsLanguage {language} already exists"
+                    )
+                )
+            else:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        f"INSERT INTO {NewsLanguage._meta.db_table}(code)"
+                        f" VALUES(%s);",
+                        [language]
+                    )
+                counter += 1
+                self.stdout.write(
+                    self.style.SUCCESS(
+                        f"Created NewsLanguage: {language}"
+                    )
                 )
 
         self.stdout.write(

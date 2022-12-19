@@ -1,6 +1,6 @@
 import uuid
 
-from django.db import models, transaction
+from django.db import models, transaction, connection
 
 
 class NewsFilter(models.Model):
@@ -38,3 +38,10 @@ class NewsFilter(models.Model):
 
 class NewsLanguage(models.Model):
     code = models.CharField(max_length=5, unique=True, primary_key=True)
+
+    def save(self, *args, **kwargs):
+        with connection.cursor() as cursor:
+            if self._state.adding:
+                cursor.execute(
+                    f'INSERT INTO {self._meta.db_table} VALUES(%s)', [self.code]
+                )
