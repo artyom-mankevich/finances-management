@@ -69,11 +69,13 @@ const CustomSidebarMenu = (props) => {
         )
         setName(userInfo.name);
         setAvatar(userInfo.picture);
+        await AsyncStorage.setItem('onLogin', 'onLogin');
     }
 
-    const onLogout = () => {
+    const onLogout = async () => {
         setName(null);
         setAvatar(null);
+        await AsyncStorage.setItem('onLogin', 'onLogout');
     }
 
     return (
