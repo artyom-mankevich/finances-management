@@ -1,23 +1,19 @@
-import {ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
-import {NameConstraint, NumberInputValidation} from "../wallets/WalletValidation";
-import SelectDropdown from "react-native-select-dropdown";
-import getSymbolFromCurrency from "currency-symbol-map";
-import {FontAwesome, MaterialIcons} from "@expo/vector-icons";
-import DateTimePickerAndroid from "@react-native-community/datetimepicker";
+import {Text, View, StyleSheet, TextInput, ScrollView, TouchableOpacity} from "react-native";
 import {useEffect, useState} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ngrokConfig from "../ngrok.config";
+import {NameConstraint, NumberInputValidation} from "../wallets/WalletValidation";
+import {FontAwesome, MaterialIcons} from "@expo/vector-icons";
+import SelectDropdown from "react-native-select-dropdown";
+import getSymbolFromCurrency from "currency-symbol-map";
 
-export default function DebtInputs(props) {
-    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-    const [date, setDate] = useState(new Date(props.expiresAt));
+export default function InvestmentInputs(props) {
     const [isDisabled, setIsDisabled] = useState(false);
 
-    const setAsyncDebt = async () => {
+    const setAsyncInvestment = async () => {
         setIsDisabled(true);
         const accessToken = await AsyncStorage.getItem('accessToken');
-        console.log("Debt created ", typeof props.expiresAt, ' ', props.expiresAt);
-        return fetch(ngrokConfig.myUrl + '/v2/debts/',{
+        return fetch(ngrokConfig.myUrl + '/v2/investments/',{
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
@@ -25,27 +21,30 @@ export default function DebtInputs(props) {
             },
             body: JSON.stringify({
                 'name': props.name,
+                'description': props.description,
+                'balance': Number(props.amount),
+                'percent': Number(props.mpy),
                 'currency': props.currency,
-                'balance': Number(props.currentAmount),
-                'goal': Number(props.finalAmount),
-                'expiresAt': typeof props.expiresAt === 'number' ? props.expiresAt : props.expiresAt.getTime(),
+                'color': props.color,
             })
         }).then((response) => {
             props.onUpdate();
             console.log("Debt created");
             props.setName('');
+            props.setDescription('');
+            props.setAmount('');
+            props.setMpy('');
+            props.setCurrency('USD');
         })
             .catch((error) => {
                 console.error(error);
             })
     }
 
-    const setAsyncDebtUpdate = async () => {
+    const setAsyncInvestmentUpdate = async () => {
         setIsDisabled(true);
-        console.log("Debt updated ", typeof props.expiresAt, ' ', props.expiresAt);
         const accessToken = await AsyncStorage.getItem('accessToken');
-        const debtId = await AsyncStorage.getItem('debtId');
-        return fetch(ngrokConfig.myUrl + '/v2/debts/' + debtId + '/',{
+        return fetch(ngrokConfig.myUrl + '/v2/investments/' + props.investmentId + '/',{
             method: 'PATCH',
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
@@ -53,25 +52,25 @@ export default function DebtInputs(props) {
             },
             body: JSON.stringify({
                 'name': props.name,
+                'description': props.description,
+                'balance': Number(props.amount),
+                'percent': Number(props.mpy),
                 'currency': props.currency,
-                'balance': Number(props.currentAmount),
-                'goal': Number(props.finalAmount),
-                'expiresAt': typeof props.expiresAt === 'number' ? props.expiresAt : props.expiresAt.getTime(),
+                'color': props.color,
             })
         }).then((response) => {
             props.onUpdate();
-            console.log("Debt updated");
+            console.log("Investment updated");
         })
             .catch((error) => {
                 console.error(error);
             })
     }
 
-    const deleteDebt = async () => {
+    const deleteInvestment = async () => {
         setIsDisabled(true);
         const accessToken = await AsyncStorage.getItem('accessToken');
-        const debtId = await AsyncStorage.getItem('debtId');
-        return fetch(ngrokConfig.myUrl + '/v2/debts/' + debtId + '/',{
+        return fetch(ngrokConfig.myUrl + '/v2/investments/' + props.investmentId + '/',{
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
@@ -87,16 +86,19 @@ export default function DebtInputs(props) {
     useEffect(() => {
         if (props.createElement) {
             props.setName('');
+            props.setDescription('');
+            props.setAmount('');
+            props.setMpy('');
             props.setCurrency('USD');
-            props.setCurrentAmount(0);
-            props.setFinalAmount(0);
-            props.setExpiresAt(new Date());
         }
     },[]);
 
     return (
         <View style={styles.container}>
-            <ScrollView style={{width: 300}} showsVerticalScrollIndicator={false}>
+            <ScrollView
+                style={{width: 300}}
+                showsVerticalScrollIndicator={false}
+                >
                 <View style={styles.inputInfo}>
                     <View style={styles.titleInfo}>
                         <Text style={styles.title}>Info</Text>
@@ -108,6 +110,44 @@ export default function DebtInputs(props) {
                             onChangeText={text => props.setName(NameConstraint(text))}
                             value={props.name ? props.name : ''}
                         />
+                    </View>
+                    <View style={styles.inputView}>
+                        <TextInput
+                            style={styles.inputText}
+                            placeholder="Description"
+                            onChangeText={text => props.setDescription(NameConstraint(text))}
+                            value={props.description ? props.description : ''}
+                        />
+                    </View>
+                </View>
+                <View style={styles.inputAmount}>
+                    <View style={styles.titleInfo}>
+                        <Text style={styles.title}>Amount</Text>
+                    </View>
+                    <View style={styles.inputView}>
+                        <TextInput
+                            keyboardType={'number-pad'}
+                            maxLength={17}
+                            style={styles.inputText}
+                            placeholder="Starting amount"
+                            onChangeText={text => props.setAmount(NumberInputValidation(text))}
+                            value={props.amount ? props.amount.toString() : ''}
+                        />
+                    </View>
+                    <View style={styles.inputView}>
+                        <TextInput
+                            keyboardType={'number-pad'}
+                            maxLength={17}
+                            style={styles.inputText}
+                            placeholder="MPY(%)"
+                            onChangeText={text => props.setMpy(NumberInputValidation(text))}
+                            value={props.mpy ? props.mpy.toString() : ''}
+                        />
+                    </View>
+                </View>
+                <View style={styles.inputCurrency}>
+                    <View style={styles.titleInfo}>
+                        <Text style={styles.title}>Currency</Text>
                     </View>
                     <View style={styles.dropdownContainer}>
                         <View style={styles.selectedContainer}>
@@ -125,7 +165,7 @@ export default function DebtInputs(props) {
                                     })
                                 }}
                                 defaultValue={getSymbolFromCurrency(props.currency.code) + ' ' + props.currency.code + ' ' + props.currency.name}
-                                defaultButtonText={<Text style={styles.defaultButtonText}>USD United States Dollar</Text>}
+                                defaultButtonText={<Text style={styles.defaultButtonText}>Select Currency</Text>}
                                 buttonTextAfterSelection={(selectedItem, index) => (selectedItem)}
                                 rowTextForSelection={(item, index) => (item)}
                                 buttonStyle={styles.dropdownBtnStyleWallet}
@@ -139,64 +179,24 @@ export default function DebtInputs(props) {
                         </View>
                     </View>
                 </View>
-                <View style={styles.inputAmount}>
-                    <View style={styles.titleInfo}>
-                        <Text style={styles.title}>Amount</Text>
-                    </View>
-                    <View style={styles.inputView}>
-                        <TextInput
-                            keyboardType={'number-pad'}
-                            maxLength={17}
-                            style={styles.inputText}
-                            placeholder="Final Amount"
-                            onChangeText={text =>
-                            {
-                                props.setFinalAmount(NumberInputValidation(text));
-                            }}
-                            value={props.finalAmount ? props.finalAmount.toString() : ''}
-                        />
-                    </View>
-                    <View style={styles.inputView}>
-                        <TextInput
-                            keyboardType={'number-pad'}
-                            maxLength={17}
-                            style={styles.inputText}
-                            placeholder="Current value (optional)"
-                            onChangeText={text =>
-                            {
-                                props.setCurrentAmount(NumberInputValidation(text));
-                            }}
-                            value={props.currentAmount ? props.currentAmount.toString() : ''}
-                        />
-                    </View>
+                <View style={styles.inputColor}>
+                    {
+                        props.colorList.map((color) => (
+                            <TouchableOpacity
+                                key={props.colorList.indexOf(color)}
+                                style={{
+                                    backgroundColor: color,
+                                    width: 40,
+                                    height: 40,
+                                    borderRadius: 40,
+                                    margin: 5
+                                }}
+                                onPress={() => props.setColor(color)}
+                            />
+                        ))
+                    }
                 </View>
-                <View style={styles.inputExpires}>
-                    <View style={styles.titleInfo}>
-                        <Text style={styles.title}>Expires at</Text>
-                    </View>
-                    <View style={styles.inputDate}>
-                        <TouchableOpacity
-                            style={styles.datePicker}
-                            onPress={() => setDatePickerVisibility(true)}
-                        >
-                            {isDatePickerVisible && (
-                                <DateTimePickerAndroid
-                                    value={new Date(props.expiresAt)}
-                                    mode={'date'}
-                                    onChange={(event, selectedDate) => {
-                                        const currentDate = selectedDate || date;
-                                        setDatePickerVisibility(false);
-                                        setDate(currentDate);
-                                        props.setExpiresAt(currentDate);
-                                    }}
-                                />)
-                            }
-                            <View style={styles.datePickerView}>
-                                <Text style={styles.datePickerText}>{date.toLocaleDateString()}</Text>
-                                <Text style={styles.datePickerText}>{<MaterialIcons name={'calendar-today'} color={'#000'} size={20}/>}</Text>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
+                <View style={styles.btnDelete}>
                     {
                         !props.createElement &&
                         <View style={styles.deleteView}>
@@ -204,7 +204,7 @@ export default function DebtInputs(props) {
                                 <TouchableOpacity
                                     style={styles.walletDeleteBtnTouchableOpacity}
                                     disabled={isDisabled}
-                                    onPress={() => deleteDebt()}>
+                                    onPress={() => deleteInvestment()}>
                                     <FontAwesome name="trash" size={55} color="#930000"/>
                                 </TouchableOpacity>
                             </View>
@@ -217,17 +217,17 @@ export default function DebtInputs(props) {
                     <MaterialIcons name="arrow-back" size={40} color='#4d4d4d' />
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.createWalletBtn,
-                    {backgroundColor: props.btnColorSet ? '#3e68d1' : '#b4b4b4'}]}
+                    {backgroundColor: props.btnColorSet ? props.color : '#b4b4b4'}]}
                                   disabled={isDisabled} onPress={() => {
                     setIsDisabled(true);
-                    props.createElement ? setAsyncDebt().then() : setAsyncDebtUpdate();
+                    props.createElement ? setAsyncInvestment().then() : setAsyncInvestmentUpdate().then();
                 }}>
                     <Text style={{fontSize: 22}}>{props.createElement ? "Create" : "Update"}</Text>
                     <MaterialIcons name="arrow-forward-ios" size={30} color='#000' />
                 </TouchableOpacity>
             </View>
         </View>
-        );
+    );
 }
 
 const styles = StyleSheet.create({
@@ -239,22 +239,24 @@ const styles = StyleSheet.create({
         borderRadius: 30,
     },
     titleInfo: {
-        padding: 20,
+        padding: 10,
     },
     title: {
         fontSize: 22,
         fontWeight: 'bold',
     },
-    deleteView: {
-        padding: 30,
+    btnDelete: {
+        flex: 1,
+        justifyContent: 'center',
         alignItems: 'center',
+        padding: 20,
     },
     inputView: {
         width: 300,
         backgroundColor: '#ececec',
         borderRadius: 20,
         height: 50,
-        marginBottom: 5,
+        marginBottom: 10,
         justifyContent: "center",
         alignSelf: 'center',
         padding: 20,
@@ -266,29 +268,6 @@ const styles = StyleSheet.create({
         fontSize: 18,
         plaseholderTextColor: '#464646',
     },
-    inputDate: {
-        width: 300,
-        backgroundColor: '#ececec',
-        borderRadius: 20,
-        height: 50,
-        justifyContent: "center",
-        alignSelf: 'center',
-        paddingLeft: 20,
-    },
-    datePickerView: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-    },
-    datePicker: {
-        width: 260,
-        alignSelf: 'center',
-        justifyContent: 'center',
-        paddingRight: 20,
-    },
-    datePickerText: {
-        fontSize: 18,
-        color: '#000',
-    },
     dropdownContainer: {
         justifyContent: 'center',
         alignItems: 'center',
@@ -296,13 +275,20 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         width: 300,
     },
+    dropdownBtnStyleWallet: {
+        width: 300,
+        borderRadius: 20,
+    },
     defaultButtonText: {
         color: '#8c8c8c',
         fontSize: 20,
     },
-    dropdownBtnStyleWallet: {
-        width: 300,
-        borderRadius: 20,
+    inputColor: {
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row',
+        paddingTop: 30,
     },
     modalSubmit: {
         flexDirection: 'row',

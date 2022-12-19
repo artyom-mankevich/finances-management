@@ -184,13 +184,14 @@ export default function DebtsList(props) {
                     <TouchableOpacity
                         style={styles.addDebtBtn}
                         onPress={() => {
-                            setModalVisiblePay(true);
+                            debtsData.length > 0 ? setModalVisiblePay(true) : null;
+//                            setModalVisiblePay(true);
                         }}
                     >
                         <Text style={styles.addDebtText}>Add Payment</Text>
                     </TouchableOpacity>
                 </View>
-                </View>
+            </View>
         </ScrollView>
         <View style={styles.chartContainer}>
             {
