@@ -1,4 +1,5 @@
 from django.core.management import BaseCommand
+from django.db import connection
 
 from decorations.models import Color
 
@@ -14,11 +15,16 @@ class Command(BaseCommand):
 
         counter = 0
         for color in colors:
-            obj, created = Color.objects.get_or_create(hex_code=color)
-            if created:
-                counter += 1
-                self.stdout.write(self.style.SUCCESS(f"Created Color {color}"))
-            else:
-                self.stdout.write(self.style.WARNING(f"Color {color} already exists"))
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    f"INSERT INTO {Color._meta.db_table} (hex_code) VALUES (%s) "
+                    f"ON CONFLICT (hex_code) DO NOTHING;",
+                    [color]
+                )
+                if cursor.rowcount > 0:
+                    counter += 1
+                    self.stdout.write(self.style.SUCCESS(f"Created Color {color}"))
+                else:
+                    self.stdout.write(self.style.WARNING(f"Color {color} already exists"))
 
         self.stdout.write(self.style.SUCCESS(f"END - Created {counter} Color objects"))

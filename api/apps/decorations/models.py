@@ -14,14 +14,24 @@ class Color(models.Model):
 
     def save(self, *args, **kwargs):
         with connection.cursor() as cursor:
-            if self._state.adding:
-                cursor.execute(f'INSERT INTO {self._meta.db_table} VALUES(%s)',
-                               [self.hex_code]
-                               )
+            cursor.execute(
+                f"SELECT COUNT(*) FROM {self._meta.db_table} WHERE hex_code=%s;",
+                [self.hex_code]
+            )
+            if cursor.fetchone()[0] > 0:
+                adding = False
+            else:
+                adding = True
+
+        with connection.cursor() as cursor:
+            if adding:
+                cursor.execute(
+                    f"INSERT INTO {self._meta.db_table} VALUES(%s)",
+                    [self.hex_code]
+                )
             else:
                 cursor.execute(
-                    f'UPDATE {self._meta.db_table} SET hex_color=%s WHERE '
-                    f'hex_code=%s',
+                    f"UPDATE {self._meta.db_table} SET hex_color=%s WHERE hex_code=%s",
                     [self.hex_code]
                 )
 
@@ -38,13 +48,22 @@ class Icon(models.Model):
 
     def save(self, *args, **kwargs):
         with connection.cursor() as cursor:
-            if self._state.adding:
-                cursor.execute(f'INSERT INTO {self._meta.db_table} VALUES(%s)',
-                               [self.code]
-                               )
+            cursor.execute(
+                f"SELECT COUNT(*) FROM {self._meta.db_table} WHERE code=%s;",
+                [self.code]
+            )
+            if cursor.fetchone()[0] > 0:
+                adding = False
+            else:
+                adding = True
+        with connection.cursor() as cursor:
+            if adding:
+                cursor.execute(
+                    f'INSERT INTO {self._meta.db_table} VALUES(%s)',
+                    [self.code]
+                )
             else:
                 cursor.execute(
-                    f'UPDATE {self._meta.db_table} SET code=%s WHERE '
-                    f'code=%s',
+                    f'UPDATE {self._meta.db_table} SET code=%s WHERE code=%s',
                     [self.code]
                 )

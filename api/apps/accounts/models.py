@@ -30,7 +30,17 @@ class AccountSettings(models.Model):
 
     def save(self, *args, **kwargs):
         with connection.cursor() as cursor:
-            if self._state.adding:
+            cursor.execute(
+                "SELECT COUNT(*) FROM accounts_accountsettings WHERE user_id = %s",
+                [self.user_id],
+            )
+            if cursor.fetchone()[0] == 0:
+                adding = True
+            else:
+                adding = False
+
+        with connection.cursor() as cursor:
+            if adding:
                 cursor.execute(
                     f"INSERT INTO {self._meta.db_table}"
                     f"(id, user_id, date_format, main_currency_id, "
@@ -71,7 +81,17 @@ class StartPage(models.Model):
 
     def save(self, *args, **kwargs):
         with connection.cursor() as cursor:
-            if self._state.adding:
+            cursor.execute(
+                f"SELECT COUNT(*) FROM {self._meta.db_table} WHERE name = %s",
+                [self.name],
+            )
+            if cursor.fetchone()[0] == 0:
+                adding = True
+            else:
+                adding = False
+
+        with connection.cursor() as cursor:
+            if adding:
                 cursor.execute(
                     f'INSERT INTO {self._meta.db_table} VALUES(%s)', [self.name]
                 )

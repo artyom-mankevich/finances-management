@@ -1,4 +1,5 @@
 from django.core.management import BaseCommand
+from django.db import connection
 
 from decorations.models import Icon
 
@@ -39,11 +40,16 @@ class Command(BaseCommand):
 
         counter = 0
         for icon in icons:
-            obj, created = Icon.objects.get_or_create(code=icon)
-            if created:
-                counter += 1
-                self.stdout.write(f"Created Icon {icon}")
-            else:
-                self.stdout.write(self.style.WARNING(f"Icon '{icon}' already exists"))
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    f"INSERT INTO {Icon._meta.db_table} (code) VALUES (%s) "
+                    f"ON CONFLICT (code) DO NOTHING;",
+                    [icon]
+                )
+                if cursor.rowcount > 0:
+                    counter += 1
+                    self.stdout.write(self.style.SUCCESS(f"Created Icon {icon}"))
+                else:
+                    self.stdout.write(self.style.WARNING(f"Icon {icon} already exists"))
 
         self.stdout.write(self.style.SUCCESS(f"END - Created {counter} Icon objects"))
