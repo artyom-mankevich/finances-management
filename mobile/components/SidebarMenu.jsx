@@ -12,6 +12,7 @@ import CryptoPage from "../screens/Crypto"
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import * as React from "react";
 import SettingsPage from "../screens/Settings";
+import StocksPage from "../screens/Stocks";
 
 export default function SidebarMenu(Drawer) {
     return (
@@ -31,7 +32,7 @@ export default function SidebarMenu(Drawer) {
                 drawerInactiveTintColor: '#363636',
                 drawerLabelStyle: {
                     marginLeft: -20,
-                    fontSize: 18,
+                    fontSize: 16,
                 },
                 drawerType: 'slide',
                 pressColor: '#363636',
@@ -70,10 +71,18 @@ export default function SidebarMenu(Drawer) {
                                unmountOnBlur: true,
                            }}
             />
-            <Drawer.Screen name='Investments' component={InvestmentsPage}
+            <Drawer.Screen name='Stocks' component={StocksPage}
                            options={{
                                drawerIcon: ({focused, size}) => (
                                    <FontAwesome name="bank" size={size} color={focused ? '#ffffff' : '#363636'} />
+                               ),
+                               unmountOnBlur: true,
+                           }}
+            />
+            <Drawer.Screen name='Investments' component={InvestmentsPage}
+                           options={{
+                               drawerIcon: ({focused, size}) => (
+                                   <MaterialIcons name="trending-up" size={size} color={focused ? '#ffffff' : '#363636'} />
                                ),
                                unmountOnBlur: true,
                            }}
