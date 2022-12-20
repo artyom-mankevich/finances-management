@@ -1,12 +1,28 @@
 import * as React from 'react';
-import { View, Text } from "react-native";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import {View, ScrollView, RefreshControl} from "react-native";
+import {useCallback, useState} from "react";
+import CryptoWalletList from "../components/crypto/CryptoWalletList";
+
+const wait = (timeout) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+}
 
 export default function CryptoPage() {
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        wait(100).then(() => setRefreshing(false));
+    }, []);
     return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <MaterialCommunityIcons name="ethereum" size={30} color='#3e68d1' />
-            <Text style={{fontSize:16,fontWeight:'700'}}>Crypto</Text>
+        <View>
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh}>
+                <ScrollView>
+                    <View>
+                        <CryptoWalletList refreshing={refreshing}/>
+                    </View>
+                </ScrollView>
+            </RefreshControl>
         </View>
     );
 }

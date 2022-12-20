@@ -4,39 +4,27 @@ import {useCallback, useEffect, useState} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import OverviewComponent from "../components/overview/OverviewComponent";
 import {MaterialCommunityIcons} from "@expo/vector-icons";
-import * as PropTypes from "prop-types";
 
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-function MaterialCommunityIconse(props) {
-    return null;
-}
-
-MaterialCommunityIconse.propTypes = {
-    size: PropTypes.number,
-    color: PropTypes.string,
-    name: PropTypes.string
-};
 export default function OverviewPage() {
     const [isLogged, setIsLogged] = useState({value: 'onLogout'});
     const [refreshing, setRefreshing] = useState(false);
 
     const onRefresh = useCallback(() => {
         setRefreshing(true);
-        getAsyncAccessToken().then();
+        getAsyncAccessName().then();
         wait(100).then(() => setRefreshing(false));
     }, []);
 
-    const getAsyncAccessToken = async () => {
+    const getAsyncAccessName = async () => {
         const onLogin = await AsyncStorage.getItem('onLogin');
         setIsLogged({value: onLogin});
     }
 
-    useEffect(() => {
-        getAsyncAccessToken().then();
-    }, []);
+    refreshing ? getAsyncAccessName().then() : null;
 
     return (
         <View>
