@@ -386,6 +386,7 @@ export default function OverviewComponent(props) {
                     showsHorizontalScrollIndicator={false}>
                     <View style={styles.walletsList}>
                         {
+                            wallets.length > 0 ?
                             wallets.slice(0,4).sort((a, b) => a.name > b.name ? 1 : -1).map((item) => {
                                 return (
                                     <View key={item.id}>
@@ -405,7 +406,7 @@ export default function OverviewComponent(props) {
                                         />
                                     </View>
                                 )
-                            })
+                            }) : null
                         }
                     </View>
                 </ScrollView>
