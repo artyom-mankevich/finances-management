@@ -226,7 +226,7 @@ export default function Setting(props) {
                         </View>
                     </View>
                 </View>
-                <View style={styles.settingDateFormat}>
+                {/*<View style={styles.settingDateFormat}>
                     <View style={styles.settingDateFormatLabel}>
                         <Text style={styles.settingDateFormatLabelText}>Starting Page</Text>
                     </View>
@@ -255,7 +255,7 @@ export default function Setting(props) {
                             />
                         </View>
                     </View>
-                </View>
+                </View>*/}
                 <View style={styles.addSettingView}>
                     <TouchableOpacity
                         style={[styles.addSettingBtn, !onClickSave ? {backgroundColor: '#3e68d1'} : {backgroundColor: '#e0e0e0'}]}
